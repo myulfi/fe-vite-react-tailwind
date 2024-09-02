@@ -1,0 +1,64 @@
+Installation in Local
+--------------------------------------------------------------------------------------
+| Description			| Command
+--------------------------------------------------------------------------------------
+| Create App			| D:\user\development npm create vite@latest
+| Install Library		| D:\user\development\fe-vite-react-tailwind npm install
+| Install Tailwind		| D:\user\development\fe-vite-react-tailwind npm install -D tailwindcss postcss autoprefixer
+| Change config content | D:\user\development\fe-vite-react-tailwind tailwind.config.js
+--------------------------------------------------------------------------------------
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+--------------------------------------------------------------------------------------
+| Change index.css      | D:\user\development\fe-vite-react-tailwind\src index.css
+--------------------------------------------------------------------------------------
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+--------------------------------------------------------------------------------------
+| Remove App.css        | D:\user\development\fe-vite-react-tailwind\src App.css
+| Router				| D:\user\development\fe-vite-react-tailwind npm install react-router-dom@latest
+| Axios					| D:\user\development\fe-vite-react-tailwind npm install axios@latest
+| Chartjs				| D:\user\development\fe-vite-react-tailwind npm i react-chartjs-2 chart.js
+| Run					| D:\user\development\fe-vite-react-tailwind npm run dev
+--------------------------------------------------------------------------------------
+
+Installation in Production
+--------------------------------------------------------------------------------------
+| Description			| Command
+--------------------------------------------------------------------------------------
+| Install Nginx
+--------------------------------------------------------------------------------------
+| Install Nginx     	| /home/ubuntu sudo apt install nginx
+| Create Folder     	| /var/www mkdir fe-vite-react-tailwind
+| CHMOD	Folder	     	| /home/ubuntu sudo chmod -R 777 /var/www/fe-vite-react-tailwind
+| CHMOD	Log	     		| /home/ubuntu sudo chmod -R 777 /var/log/nginx
+| Create config    		| /home/ubuntu sudo vim /etc/nginx/sites-available/main.conf
+--------------------------------------------------------------------------------------
+server {
+    listen 80;
+    listen [::]:80;
+    server_name fe-vite-react-tailwind.com;
+    root /var/www/fe-vite-react-tailwind;
+    index index.html;
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+--------------------------------------------------------------------------------------
+| Setup for access :80	| /home/ubuntu sudo rm /etc/nginx/sites-enabled/default
+| Configuration Changes	| /home/ubuntu sudo rm /etc/nginx/sites-enabled/main.conf
+| Update Configuration	| /home/ubuntu sudo vim /etc/nginx/sites-available/main.conf
+| Symlink				| /home/ubuntu sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/
+| Check Configuration	| /home/ubuntu sudo nginx -t
+| Reload Configuration	| /home/ubuntu sudo systemctl reload nginx
+| Restart Nginx			| /home/ubuntu sudo systemctl restart nginx.service
+| Start Nginx			| /home/ubuntu sudo systemctl start nginx
+| Status Nginx			| /home/ubuntu sudo systemctl status nginx
+--------------------------------------------------------------------------------------
