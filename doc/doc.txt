@@ -1,32 +1,38 @@
 Installation in Local
 --------------------------------------------------------------------------------------
-| Description			| Command
+| Description			  | Command
 --------------------------------------------------------------------------------------
-| Create App			| D:\user\development npm create vite@latest
-| Install Library		| D:\user\development\fe-vite-react-tailwind npm install
-| Install Tailwind		| D:\user\development\fe-vite-react-tailwind npm install -D tailwindcss postcss autoprefixer
-| Change config content | D:\user\development\fe-vite-react-tailwind tailwind.config.js
+| Create App        | D:\user\development npm create vite@latest fe-vite-react-tailwind -- --template react-ts
+| Install Tailwind	| D:\user\development\fe-vite-react-tailwind npm install tailwindcss @tailwindcss/vite
+| Change Config     | D:\user\development\fe-vite-react-tailwind vite.config.ts
 --------------------------------------------------------------------------------------
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {},
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    port: 5179,
+    host: true,
   },
-  plugins: [],
-}
+})
 --------------------------------------------------------------------------------------
-| Change index.css      | D:\user\development\fe-vite-react-tailwind\src index.css
+| Change index.css  | D:\user\development\fe-vite-react-tailwind\src index.css
 --------------------------------------------------------------------------------------
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 --------------------------------------------------------------------------------------
-| Remove App.css        | D:\user\development\fe-vite-react-tailwind\src App.css
-| Router				| D:\user\development\fe-vite-react-tailwind npm install react-router-dom@latest
-| Axios					| D:\user\development\fe-vite-react-tailwind npm install axios@latest
-| Chartjs				| D:\user\development\fe-vite-react-tailwind npm i react-chartjs-2 chart.js
-| Run					| D:\user\development\fe-vite-react-tailwind npm run dev
+| Add link css      | D:\user\development\fe-vite-react-tailwind\src index.html
+--------------------------------------------------------------------------------------
+<link href="/src/style.css" rel="stylesheet">
+--------------------------------------------------------------------------------------
+| Router			    	| D:\user\development\fe-vite-react-tailwind npm install react-router-dom@latest
+| Axios				  	  | D:\user\development\fe-vite-react-tailwind npm install axios@latest
+| Chartjs				    | D:\user\development\fe-vite-react-tailwind npm i react-chartjs-2 chart.js
+| Multiple Language	| D:\user\development\fe-vite-react-tailwind npm install i18next react-i18next
+| Multiple Language	| D:\user\development\fe-vite-react-tailwind npm install i18next-http-backend
+| Run			      		| D:\user\development\fe-vite-react-tailwind npm run dev
 --------------------------------------------------------------------------------------
 
 Installation in Production
@@ -38,7 +44,7 @@ Installation in Production
 | Install Nginx     	| /home/ubuntu sudo apt install nginx
 | Create Folder     	| /var/www mkdir fe-vite-react-tailwind
 | CHMOD	Folder	     	| /home/ubuntu sudo chmod -R 777 /var/www/fe-vite-react-tailwind
-| CHMOD	Log	     		| /home/ubuntu sudo chmod -R 777 /var/log/nginx
+| CHMOD	Log	       		| /home/ubuntu sudo chmod -R 777 /var/log/nginx
 | Create config    		| /home/ubuntu sudo vim /etc/nginx/sites-available/main.conf
 --------------------------------------------------------------------------------------
 server {
@@ -55,10 +61,15 @@ server {
 | Setup for access :80	| /home/ubuntu sudo rm /etc/nginx/sites-enabled/default
 | Configuration Changes	| /home/ubuntu sudo rm /etc/nginx/sites-enabled/main.conf
 | Update Configuration	| /home/ubuntu sudo vim /etc/nginx/sites-available/main.conf
-| Symlink				| /home/ubuntu sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/
-| Check Configuration	| /home/ubuntu sudo nginx -t
+| Symlink               | /home/ubuntu sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/
+| Check Configuration	  | /home/ubuntu sudo nginx -t
 | Reload Configuration	| /home/ubuntu sudo systemctl reload nginx
-| Restart Nginx			| /home/ubuntu sudo systemctl restart nginx.service
-| Start Nginx			| /home/ubuntu sudo systemctl start nginx
-| Status Nginx			| /home/ubuntu sudo systemctl status nginx
+| Restart Nginx			    | /home/ubuntu sudo systemctl restart nginx.service
+| Start Nginx			      | /home/ubuntu sudo systemctl start nginx
+| Status Nginx			    | /home/ubuntu sudo systemctl status nginx
 --------------------------------------------------------------------------------------
+
+
+belum dinamis:
+navbar-> dot kiri menu
+header-> tombol dark mode

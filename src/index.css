@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-primary-layout: #F8FAFC;
+    --color-primary-layout-dark: #0F172B;
+
+    --color-primary: #F8FAFC;
+    --color-on-primary: #314158;
+
+    --color-primary-dark: #0F172B;
+    --color-on-primary-dark: #CAD5E2;
+    /* --color-on-primary-dark: #F1F5F9; */
+
+    --color-secondary: #E2E8F0;
+    --color-secondary-dark: #1D293D;
+
+    --color-tertiary: #CAD5E2;
+    --color-tertiary-dark: #314158;
+}
+
+.btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+}
+
+.icon-primary {
+    @apply text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white;
+}

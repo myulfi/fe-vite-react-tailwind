@@ -1,0 +1,49 @@
+import { useEffect, useRef, useState } from "react"
+import Routes from "../../routes"
+import Header from "./body/Header"
+import Footer from "./body/Footer"
+import { SIDEBAR_WIDTH } from "../../constants/common-constants";
+
+type BodyProps = {
+    mobileFlag: boolean;
+    sidebarOpenFlag: boolean;
+    setSidebarOpenFlag: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export default function Body({
+    mobileFlag,
+    sidebarOpenFlag,
+    setSidebarOpenFlag,
+}: BodyProps) {
+    const [scrollDownFlag, setScrollDownFlag] = useState(false);
+    const prevScrollY = useRef(0);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > prevScrollY.current + 10) {
+                setScrollDownFlag(true)
+            } else if (currentScrollY < prevScrollY.current - 10) {
+                setScrollDownFlag(false)
+            }
+
+            prevScrollY.current = currentScrollY
+        }
+
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    return (
+        <div className={`flex flex-col min-h-screen relative flex-1 transition-all duration-500 bg-secondary dark:bg-secondary-dark ${sidebarOpenFlag && mobileFlag ? 'hidden' : ''}`}>
+            <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
+
+            <main className={`text-on-primary dark:text-on-primary-dark z-0 transition-all duration-500 ${sidebarOpenFlag ? `ml-[${SIDEBAR_WIDTH}px]` : 'ml-0'}`}>
+                <Routes />
+            </main>
+
+            <Footer sidebarOpenFlag={sidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
+        </div>
+    )
+}
