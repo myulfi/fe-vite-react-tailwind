@@ -1,6 +1,6 @@
 export default function Profile() {
     return (
-        <div className="grid grid-cols-5 gap-4 p-4">
+        <div className="grid md:grid-cols-5 grid-cols-3 gap-4 p-4">
             <div className="bg-primary-layout dark:bg-primary-layout-dark p-4 rounded-lg shadow-lg">
                 <p>Profile 1</p>
             </div>

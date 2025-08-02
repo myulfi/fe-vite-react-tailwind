@@ -4,7 +4,7 @@ import { useState } from "react"
 import { apiRequest } from "../api"
 import InputText from "../components/form/InputText"
 import InputPassword from "../components/form/InputPassword"
-import Button from "../components/form/button"
+import Button from "../components/form/Button"
 
 export default function Login() {
     const { t } = useTranslation()

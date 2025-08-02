@@ -71,8 +71,8 @@ const apiRequest = async (
             }
 
             result = {
-                data: response.data,
-                status: response.status,
+                ...response.data,
+                status: response.status
             }
 
         } catch (error) {

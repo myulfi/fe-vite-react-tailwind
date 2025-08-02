@@ -46,6 +46,11 @@ const menuData: MenuItem[] = [
             { label: 'Insights', link: '/insights' },
         ],
     },
+    {
+        label: 'Example Template',
+        icon: 'fa-solid fa-house',
+        link: '/test/example-template.html',
+    },
 ]
 
 const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () => void }> = ({ item, level = 0, onNavigate }) => {
