@@ -5,6 +5,8 @@ import { useEffect, useState } from "react"
 import { DEVICE, HTTP_CODE, METHOD, MODAL } from "../../constants/common-constants"
 import { apiRequest } from "../../api"
 import { formatDate } from "../../function/dateHelper"
+import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext"
+import Label from "../../components/form/label"
 
 export default function ExampleTemplate() {
     const { t } = useTranslation()
@@ -239,7 +241,20 @@ export default function ExampleTemplate() {
         }
     }
 
-    const entryExampleTemplate = (haveContentFlag: boolean) => {
+    const entryExampleTemplate = async (haveContentFlag: boolean) => {
+        // nyoba
+        const confirmed = await confirmDialog({
+            title: "Hapus Data?",
+            message: "Data ini akan dihapus permanen. Lanjutkan?",
+            confirmLabel: "Hapus",
+            cancelLabel: "Batal",
+        });
+
+        console.log(confirmed ? "Data dihapus." : "Dibatalkan.");
+        // setModalViewExampleTemplate(true);
+        //nyoba
+
+
         setExampleTemplateStateModal(MODAL.ENTRY)
         setExampleTemplateFormError([])
         if (haveContentFlag) {
@@ -357,8 +372,19 @@ export default function ExampleTemplate() {
         }
     }
 
+    const [modalViewExampleTemplate, setModalViewExampleTemplate] = useState(false);
+
+
     return (
         <div className="bg-primary-layout dark:bg-primary-layout-dark m-4 p-4 rounded-lg shadow-lg">
+            <ModalStackProvider>
+                <Modal show={modalViewExampleTemplate} size="lg" onClose={() => setModalViewExampleTemplate(false)}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Label text="NIK" value={"hahah"} />
+                    </div>
+                </Modal>
+
+            </ModalStackProvider>
             <Table
                 labelNewButton={t("common.button.createNew")}
                 onNewButtonClick={() => entryExampleTemplate(false)}

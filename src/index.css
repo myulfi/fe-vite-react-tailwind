@@ -19,6 +19,10 @@
     --color-tertiary-dark: #314158;
 }
 
+.modal-primary {
+    @apply bg-white dark:bg-zinc-900 text-black dark:text-white
+}
+
 .btn-primary {
     @apply bg-blue-600 hover:bg-blue-700 text-white;
 }

@@ -18,7 +18,7 @@ type ConfirmDialogProps = {
     cancelLabel?: string;
 };
 
-export function ConfirmDialog({
+function ConfirmDialog({
     show,
     onClose,
     onConfirm,
@@ -41,7 +41,7 @@ export function ConfirmDialog({
     );
 }
 
-function confirmDialog({
+export function confirmDialog({
     title,
     message,
     confirmLabel,
@@ -74,15 +74,17 @@ function confirmDialog({
         }
 
         root.render(
-            <ConfirmDialog
-                show={true}
-                onClose={onCancel}
-                onConfirm={onConfirm}
-                title={title}
-                message={message}
-                confirmLabel={confirmLabel}
-                cancelLabel={cancelLabel}
-            />
+            <ModalStackProvider>
+                <ConfirmDialog
+                    show={true}
+                    onClose={onCancel}
+                    onConfirm={onConfirm}
+                    title={title}
+                    message={message}
+                    confirmLabel={confirmLabel}
+                    cancelLabel={cancelLabel}
+                />
+            </ModalStackProvider>
         );
     });
 }

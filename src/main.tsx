@@ -4,11 +4,14 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import "./i18n"
+import { ModalStackProvider } from './ModalContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <ModalStackProvider>
+        <App />
+      </ModalStackProvider>
     </BrowserRouter>
   </StrictMode>,
 )

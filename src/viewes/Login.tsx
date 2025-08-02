@@ -69,10 +69,10 @@ export default function Login() {
                 )
 
                 if (HTTP_CODE.OK === response.status) {
-                    localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, response.data.accessToken)
-                    localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, response.data.refreshToken)
-                    localStorage.setItem(LOCAL_STORAGE.NAME, response.data.user.nickName)
-                    localStorage.setItem(LOCAL_STORAGE.ROLE, response.data.user.roleList)
+                    localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, response.accessToken)
+                    localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, response.refreshToken)
+                    localStorage.setItem(LOCAL_STORAGE.NAME, response.user.nickName)
+                    localStorage.setItem(LOCAL_STORAGE.ROLE, response.user.roleList)
                     window.location.reload()
                 } else {
                     setLoginFormError(t(response.message));

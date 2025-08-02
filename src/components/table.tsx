@@ -415,7 +415,7 @@ export default function Table({
                                                     {
                                                         columnHide
                                                             .map((column, index) => (
-                                                                <div key={index} className={`border-bottom mx-2 px-2 py-2 ${column.minDevice == DEVICE.TABLET ? "md:hidden" : column.minDevice == DEVICE.DESKTOP ? "lg:hidden" : ""}`}>
+                                                                <div key={index} className={`border-b border-l ml-6 mr-2 px-2 py-2 ${column.minDevice == DEVICE.TABLET ? "md:hidden" : column.minDevice == DEVICE.DESKTOP ? "lg:hidden" : ""}`}>
                                                                     <label className="fw-bold me-2">{column.name}</label>
                                                                     {
                                                                         column.render != undefined
@@ -579,6 +579,6 @@ export default function Table({
                     }
                 </Fragment>
             }
-        </div>
+        </div >
     )
 }
