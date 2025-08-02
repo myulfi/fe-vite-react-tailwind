@@ -133,7 +133,7 @@ function useModalStack() {
 // 🔳 Modal Component
 type ModalProps = {
     show: boolean;
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    size?: 'sm' | 'md' | 'lg' | 'xl';
     title: string;
     buttonArray?: React.ReactElement[]
     onClose: () => void;
@@ -178,27 +178,27 @@ export function Modal({ show, size = "xl", title, buttonArray = [], onClose, chi
     return createPortal(
         <div
             className={`
-        fixed inset-0 bg-black/40 flex items-center justify-center
+        fixed inset-0 bg-black/40
         transition-opacity duration-200
-        ${show && !isLeaving ? "opacity-100" : "opacity-0 pointer-events-none"}
-      `}
+        overflow-y-auto 
+        ${show && !isLeaving ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             style={{ zIndex }}
         >
             <div
-                // max-w-2xl
-                className={`relative ${sizeClasses[size]} h-full p-4 flex items-center justify-center`}
+                className="flex items-center justify-center min-h-screen py-4"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
                     className={`
                         modal-primary
-                        rounded-lg shadow-xl w-full max-h-[100vh]
-                        overflow-y-auto transition-all duration-200
+                     ${sizeClasses[size]}
+                        rounded-lg shadow-xl h-fit
+                        transition-all duration-200
                         transform
                         ${show && !isLeaving ? "scale-100 opacity-100" : "scale-95 opacity-0"}
-                        scrollbar-none
                         flex flex-col
                     `}
+                    onClick={(e) => e.stopPropagation()}
                 >
                     <div className="flex justify-between border-b p-4">
                         <strong className="text-xl">{title}</strong>
