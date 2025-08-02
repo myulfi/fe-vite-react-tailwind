@@ -7,86 +7,78 @@ import React, {
 import ReactDOM from "react-dom/client";
 import { createPortal } from "react-dom";
 import Button from "./components/form/Button";
+import { useTranslation } from "react-i18next";
 
 type ConfirmDialogProps = {
     show: boolean;
-    onClose: () => void;
+    type: ConfirmType;
+    message: string;
     onConfirm: () => void;
-    title?: string;
-    message?: string;
-    confirmLabel?: string;
-    cancelLabel?: string;
+    onClose: () => void;
 };
 
 function ConfirmDialog({
     show,
-    onClose,
+    type,
+    message,
     onConfirm,
-    title = "Konfirmasi",
-    message = "Apakah Anda yakin ingin melanjutkan?",
-    confirmLabel = "Ya",
-    cancelLabel = "Batal",
+    onClose,
 }: ConfirmDialogProps) {
+    const { t } = useTranslation();
     return (
-        <Modal show={show} size="sm" onClose={onClose}>
+        <Modal show={show} size="sm" title={t(`common.text.${type}`)} onClose={onClose}>
             <div className="text-center space-y-4">
-                <h2 className="text-lg font-semibold">{title}</h2>
+                <h2 className="text-lg font-semibold">{t(`common.text.${type}`)}</h2>
                 <p className="text-gray-600">{message}</p>
                 <div className="flex justify-center gap-4 mt-6">
-                    <Button label={cancelLabel} onClick={onClose} className="btn-secondary" />
-                    <Button label={confirmLabel} onClick={onConfirm} className="btn-danger" />
+                    {/* <Button label={confirmLabel} onClick={onConfirm} className="btn-danger" /> */}
+                    <Button label={t("common.button.close")} onClick={onClose} className="btn-secondary" />
                 </div>
             </div>
         </Modal>
     );
 }
 
+type ConfirmType = 'confirmation' | 'warning' | 'alert';
 export function confirmDialog({
-    title,
+    type,
     message,
-    confirmLabel,
-    cancelLabel,
+    onConfirm,
 }: {
-    title?: string;
-    message?: string;
-    confirmLabel?: string;
-    cancelLabel?: string;
-}): Promise<boolean> {
-    return new Promise((resolve) => {
-        const div = document.createElement("div");
-        document.body.appendChild(div);
+    type: ConfirmType;
+    message: string;
+    onConfirm?: () => void;
+}): void {
+    const div = document.createElement("div");
+    document.body.appendChild(div);
 
-        const root = ReactDOM.createRoot(div);
+    const root = ReactDOM.createRoot(div);
 
-        function cleanup() {
-            root.unmount();
-            div.remove();
-        }
+    function cleanup() {
+        root.unmount();
+        div.remove();
+    }
 
-        function onConfirm() {
-            cleanup();
-            resolve(true);
-        }
+    function onConfirmation() {
+        if (onConfirm) onConfirm();
+        cleanup();
+    }
 
-        function onCancel() {
-            cleanup();
-            resolve(false);
-        }
+    function onCancel() {
+        cleanup();
+    }
 
-        root.render(
-            <ModalStackProvider>
-                <ConfirmDialog
-                    show={true}
-                    onClose={onCancel}
-                    onConfirm={onConfirm}
-                    title={title}
-                    message={message}
-                    confirmLabel={confirmLabel}
-                    cancelLabel={cancelLabel}
-                />
-            </ModalStackProvider>
-        );
-    });
+    root.render(
+        <ModalStackProvider>
+            <ConfirmDialog
+                show={true}
+                type={type}
+                message={message}
+                onConfirm={onConfirmation}
+                onClose={onCancel}
+            />
+        </ModalStackProvider>
+    );
 }
 
 // 🧠 Modal Stack Context
@@ -141,19 +133,22 @@ function useModalStack() {
 // 🔳 Modal Component
 type ModalProps = {
     show: boolean;
-    size?: 'sm' | 'md' | 'lg' | 'xl';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    title: string;
+    buttonArray?: React.ReactElement[]
     onClose: () => void;
     children: React.ReactNode;
 };
 
 const sizeClasses = {
     sm: 'w-[320px]',
-    md: 'w-[768px]',
+    md: 'w-[640px]',
+    // md: 'w-[768px]',
     lg: 'w-[1024px]',
     xl: 'w-full',
 };
 
-export function Modal({ show, size = "xl", onClose, children }: ModalProps) {
+export function Modal({ show, size = "xl", title, buttonArray = [], onClose, children }: ModalProps) {
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
     const [isVisible, setIsVisible] = useState(false);
@@ -206,7 +201,7 @@ export function Modal({ show, size = "xl", onClose, children }: ModalProps) {
                     `}
                 >
                     <div className="flex justify-between border-b p-4">
-                        <strong className="text-xl">Header</strong>
+                        <strong className="text-xl">{title}</strong>
                         <button
                             className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white hover:cursor-pointer p-1 rounded"
                             onClick={onClose}
@@ -219,6 +214,7 @@ export function Modal({ show, size = "xl", onClose, children }: ModalProps) {
                         {children}
                     </div>
                     <div className="flex justify-end border-t p-4">
+                        {buttonArray}
                         <Button
                             label="Tutup"
                             onClick={onClose}

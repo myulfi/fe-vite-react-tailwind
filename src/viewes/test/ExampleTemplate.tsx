@@ -1,18 +1,25 @@
 import { useTranslation } from "react-i18next"
 import Button from "../../components/form/Button"
 import Table from "../../components/table"
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { DEVICE, HTTP_CODE, METHOD, MODAL } from "../../constants/common-constants"
 import { apiRequest } from "../../api"
 import { formatDate } from "../../function/dateHelper"
 import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext"
-import Label from "../../components/form/label"
+import Label from "../../components/form/Label"
+import toast from "../../Toast"
+import InputText from "../../components/form/InputText"
+import TextArea from "../../components/form/TextArea"
+import InputDecimal from "../../components/form/InputDecimal"
+import InputDate from "../../components/form/InputDate"
+import Radio from "../../components/form/Radio"
+import Select from "../../components/form/Select"
 
 export default function ExampleTemplate() {
     const { t } = useTranslation()
 
     type ExampleTemplateData = {
-        name?: string;
+        name: string;
         description?: string;
         value: number;
         // valueMultiple: [];
@@ -34,7 +41,7 @@ export default function ExampleTemplate() {
 
     const exampleTemplateInitial = {
         // id: 0,
-        name: undefined,
+        name: "",
         description: undefined,
         value: 0,
         // valueMultiple: [],
@@ -85,7 +92,7 @@ export default function ExampleTemplate() {
 
 
     type ModalType = {
-        title?: string;
+        title: string;
         submitLabel?: string;
         submitClass?: string;
         submitIcon?: string,
@@ -102,7 +109,7 @@ export default function ExampleTemplate() {
     const [exampleTemplateForm, setExampleTemplateForm] = useState<ExampleTemplateData>(exampleTemplateInitial)
     const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError | []>([])
 
-    const onExampleTemplateFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const onExampleTemplateFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target
         setExampleTemplateForm({ ...exampleTemplateForm, [name]: value })
         setExampleTemplateFormError({ ...exampleTemplateFormError, [name]: undefined })
@@ -128,25 +135,11 @@ export default function ExampleTemplate() {
         if (!data.description?.trim()) error.description = t("validate.text.required", { name: t("text.description") });
         if (data.value <= 0) error.value = t("validate.text.required", { name: t("text.value") });
 
-        // if (!data.email.trim()) error.email = t("validate.text.required", { name: t("common.text.email") })
-        // else if (!/\S+@\S+\.\S+/.test(data.email)) error.email = t("validate.text.invalid", { name: t("common.text.email") })
+        // if (!data.email.trim()) error.email = t("validate.required", { name: t("text.email") })
+        // else if (!/\S+@\S+\.\S+/.test(data.email)) error.email = t("validate.invalid", { name: t("text.email") })
         setExampleTemplateFormError(error)
         return Object.keys(error).length === 0
     }
-
-    // const [toast, setToast] = useState({})
-    // useEffect(() => {
-    //     if (toast?.message !== undefined) {
-    //         ToastHelper.show("toast_example_template")
-    //     }
-    // }, [toast])
-
-    // const [dialog, setDialog] = useState({})
-    // useEffect(() => {
-    //     if (dialog?.message !== undefined) {
-    //         ModalHelper.show("dialog_example_template")
-    //     }
-    // }, [dialog])
 
     useEffect(() => { getExampleTemplate({ page: 1, length: 10, search: '' }) }, [])
 
@@ -186,7 +179,7 @@ export default function ExampleTemplate() {
                 }, {})
             )
         } else {
-            // setToast({ type: "failed", message: response.message })
+            toast.show({ type: 'error', message: response.message });
         }
 
         setExampleTemplateTableLoadingFlag(false)
@@ -221,14 +214,14 @@ export default function ExampleTemplate() {
                 setExampleTemplateEntryModal({
                     ...exampleTemplateEntryModal,
                     title: exampleTemplate.name,
-                    submitLabel: t("common.button.edit"),
+                    submitLabel: t("button.edit"),
                     submitIcon: "bi-pencil",
                     submitLoadingFlag: false,
                 })
 
-                // ModalHelper.show("modal_example_template")
+                setModalExampleTemplate(true);
             } else {
-                // setToast({ type: "failed", message: response.message })
+                toast.show({ type: 'error', message: response.message });
             }
 
             setExampleTemplateOptionColumnTable(prev => ({
@@ -241,27 +234,14 @@ export default function ExampleTemplate() {
         }
     }
 
-    const entryExampleTemplate = async (haveContentFlag: boolean) => {
-        // nyoba
-        const confirmed = await confirmDialog({
-            title: "Hapus Data?",
-            message: "Data ini akan dihapus permanen. Lanjutkan?",
-            confirmLabel: "Hapus",
-            cancelLabel: "Batal",
-        });
-
-        console.log(confirmed ? "Data dihapus." : "Dibatalkan.");
-        // setModalViewExampleTemplate(true);
-        //nyoba
-
-
+    const entryExampleTemplate = (haveContentFlag: boolean) => {
         setExampleTemplateStateModal(MODAL.ENTRY)
         setExampleTemplateFormError([])
         if (haveContentFlag) {
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
                 title: exampleTemplateForm.name,
-                submitLabel: t("common.button.update"),
+                submitLabel: t("button.update"),
                 submitIcon: "bi-arrow-repeat",
                 submitLoadingFlag: false,
             })
@@ -269,42 +249,47 @@ export default function ExampleTemplate() {
             setExampleTemplateForm(exampleTemplateInitial)
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
-                title: t("common.button.createNew"),
-                submitLabel: t("common.button.save"),
+                title: t("button.createNew"),
+                submitLabel: t("button.save"),
                 submitIcon: "bi-bookmark",
                 submitLoadingFlag: false,
-            })
-            // ModalHelper.show("modal_example_template")
+            });
+
+            setModalExampleTemplate(true);
         }
     }
 
-    const confirmStoreExampleTemplate = () => {
+    const confirmStoreExampleTemplate = async () => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
-            // setDialog({
-            //     message: exampleTemplateForm.id === undefined ? t("common.confirmation.create", { name: exampleTemplateForm.name }) : t("common.confirmation.update", { name: exampleTemplateForm.name }),
-            //     type: "confirmation",
-            //     onConfirm: (e) => storeExampleTemplate(e),
-            // })
+            confirmDialog({
+                type: 'confirmation',
+                //nyoba
+                // message: exampleTemplateForm.id === undefined ? t("confirmation.create", { name: exampleTemplateForm.name }) : t("confirmation.update", { name: exampleTemplateForm.name }),
+                message: "",
+                onConfirm: () => storeExampleTemplate(),
+            });
         }
     }
 
-    const storeExampleTemplate = async (id: number) => {
+    const storeExampleTemplate = async (id?: number) => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
+            setModalExampleTemplate(false);
             // ModalHelper.hide("dialog_example_template")
-            setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: true })
+            setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
                 id === undefined ? METHOD.POST : METHOD.PATCH,
                 id === undefined ? '/test/example-template.json' : `/test/${id}/example-template.json`,
                 exampleTemplateForm,
-            )
+            );
 
             if (HTTP_CODE.OK === response.status) {
-                getExampleTemplate(exampleTemplateAttributeTable)
+                getExampleTemplate(exampleTemplateAttributeTable);
+                toast.show({ type: "success", message: response.message });
                 // setToast({ type: "success", message: response.message })
-                // ModalHelper.hide("modal_example_template")
+                setModalExampleTemplate(false);
             } else {
-                // setToast({ type: "failed", message: response.message })
+                toast.show({ type: "error", message: response.message });
             }
 
             setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: false })
@@ -313,28 +298,33 @@ export default function ExampleTemplate() {
 
     const confirmDeleteExampleTemplate = (id?: number, name?: string) => {
         if (id !== undefined) {
-            // setDialog({
-            //     message: t("common.confirmation.delete", { name: name }),
-            //     type: "warning",
-            //     onConfirm: () => deleteExampleTemplate(id),
-            // })
+            confirmDialog({
+                type: 'warning',
+                message: t("confirmation.delete", { name: name }),
+                onConfirm: () => deleteExampleTemplate(id),
+            });
         } else {
             if (exampleTemplateCheckBoxTableArray.length > 0) {
+                confirmDialog({
+                    type: 'warning',
+                    message: t("confirmation.delete", { name: t("text.amountItem", { amount: exampleTemplateCheckBoxTableArray.length }) }),
+                    onConfirm: () => deleteExampleTemplate(),
+                });
                 // setDialog({
-                //     message: t("common.confirmation.delete", { name: t("common.text.amountItem", { amount: exampleTemplateCheckBoxTableArray.length }) }),
+                //     message: t("confirmation.delete", { name: t("text.amountItem", { amount: exampleTemplateCheckBoxTableArray.length }) }),
                 //     type: "warning",
                 //     onConfirm: () => deleteExampleTemplate(),
                 // })
             } else {
-                // setDialog({
-                //     message: t("validate.text.pleaseTickAtLeastAnItem"),
-                //     type: "alert"
-                // })
+                confirmDialog({
+                    type: 'alert',
+                    message: t("validate.text.pleaseTickAtLeastAnItem")
+                });
             }
         }
     }
 
-    const deleteExampleTemplate = async (id: number) => {
+    const deleteExampleTemplate = async (id?: number) => {
         // ModalHelper.hide("dialog_example_template")
         if (id !== undefined) {
             setExampleTemplateOptionColumnTable(prev => ({
@@ -372,27 +362,100 @@ export default function ExampleTemplate() {
         }
     }
 
-    const [modalViewExampleTemplate, setModalViewExampleTemplate] = useState(false);
+    const [modalExampleTemplate, setModalExampleTemplate] = useState(false);
 
 
     return (
         <div className="bg-primary-layout dark:bg-primary-layout-dark m-4 p-4 rounded-lg shadow-lg">
             <ModalStackProvider>
-                <Modal show={modalViewExampleTemplate} size="lg" onClose={() => setModalViewExampleTemplate(false)}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Label text="NIK" value={"hahah"} />
+                <Modal
+                    show={modalExampleTemplate}
+                    size="md"
+                    title={exampleTemplateEntryModal.title}
+                    onClose={() => setModalExampleTemplate(false)}
+                    buttonArray={[
+                        MODAL.ENTRY === exampleTemplateStateModal && (
+                            <Button
+                                key="entry"
+                                label={exampleTemplateEntryModal.submitLabel}
+                                onClick={() => confirmStoreExampleTemplate()}
+                                className="btn-primary"
+                                icon={exampleTemplateEntryModal.submitIcon}
+                                loadingFlag={exampleTemplateEntryModal.submitLoadingFlag}
+                            />
+                        ),
+                        MODAL.VIEW === exampleTemplateStateModal && (
+                            <Button
+                                key="view"
+                                label={exampleTemplateEntryModal.submitLabel}
+                                onClick={() => entryExampleTemplate(true)}
+                                className="btn-primary"
+                                icon={exampleTemplateEntryModal.submitIcon}
+                                loadingFlag={false}
+                            />
+                        )
+                    ].filter(Boolean) as React.ReactElement[]}
+                >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {
+                            MODAL.ENTRY === exampleTemplateStateModal
+                            && <Fragment>
+                                <InputText label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
+                                <TextArea label={t("text.description")} name="description" rows={3} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
+                                <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} />
+                                {/* <Select label={t("common.text.value")} name="multipleValue" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
+                            liveSearch={true}
+                            actionBox={true}
+                            dataSize={5}
+                            onChange={onExampleTemplateFormChange}
+                            className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} /> */}
+                                <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.amount} />
+                                <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.date} />
+                                <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} map={yesNoMap} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.activeFlag} />
+                            </Fragment>
+                        }
+                        {
+                            MODAL.VIEW === exampleTemplateStateModal
+                            && <Fragment>
+                                <Label text={t("text.name")} value={exampleTemplateForm.name} />
+                                <Label text={t("text.description")} value={exampleTemplateForm.description} />
+                                <Label text={t("text.value")} value={exampleTemplateForm.value} />
+                                <Label text={t("text.amount")} value={exampleTemplateForm.amount} />
+                                <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "yyyy-MM-dd")} />
+                                <Label text={t("text.activeFlag")} value={exampleTemplateForm.activeFlag} />
+                            </Fragment>
+                        }
                     </div>
                 </Modal>
-
             </ModalStackProvider>
             <Table
-                labelNewButton={t("common.button.createNew")}
+                labelNewButton={t("button.createNew")}
                 onNewButtonClick={() => entryExampleTemplate(false)}
+                additionalButtonArray={[
+                    {
+                        label: 'haha',
+                        className: 'btn-primary',
+                        onClick: () => setModalExampleTemplate(false),
+                        icon: 'fa-solid fa-plus'
+                    },
+                    {
+                        label: 'hihi',
+                        className: 'btn-primary',
+                        onClick: () => setModalExampleTemplate(false),
+                        icon: 'fa-solid fa-plus'
+                    },
+                    {
+                        label: 'huhu',
+                        className: 'btn-primary',
+                        onClick: () => setModalExampleTemplate(false),
+                        icon: 'fa-solid fa-plus'
+                    }
+                ]}
 
                 bulkOptionLoadingFlag={exampleTemplateBulkOptionLoadingFlag}
                 bulkOptionArray={[
                     {
-                        label: t("common.button.delete"),
+                        label: t("button.delete"),
                         icon: "bi-trash",
                         onClick: () => confirmDeleteExampleTemplate(),
                     }

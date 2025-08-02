@@ -2,7 +2,7 @@ import { onCopy } from "../../function/commonHelper";
 
 interface LabelProps {
     text: string;
-    value?: string;
+    value?: string | number;
     copy?: boolean
 }
 
@@ -17,11 +17,11 @@ export default function Label({
             <label className="block mb-1 text-md font-normal">
                 {value}
                 {
-                    copy && value !== undefined && value.trim.length > 0
+                    copy && value !== undefined && new String(value).trim.length > 0
                     && <>
                         &nbsp;<i
                             className="fa-solid fa-copy cursor-pointer"
-                            onClick={(e) => onCopy(e, value)}
+                            onClick={(e) => onCopy(e, String(value))}
                         />
                     </>
                 }

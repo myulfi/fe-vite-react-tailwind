@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useState } from "react";
 import { DEVICE, TABLE } from "../constants/common-constants";
 import { getNestedValue, onCopy } from "../function/commonHelper";
+import { Trans, useTranslation } from "react-i18next";
+import Button from "./form/Button";
 
 interface TableProps {
     showFlag?: boolean;
@@ -74,7 +76,7 @@ export default function Table({
     onRender,
     loadingFlag = false,
 }: TableProps) {
-    // const { t } = useTranslation()
+    const { t } = useTranslation()
     const [loadMoreButtonFlag, setLoadMoreButtonFlag] = useState(true)
     const [itemArray, setItemArray] = useState(dataArray)
     const [search, setSearch] = useState("")
@@ -254,53 +256,51 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="clearfix">
+                <div className="flex flex-col md:flex-row md:justify-between gap-4">
+
                     {
                         labelNewButton != undefined
-                        && <div className="float-sm-start d-grid d-sm-flex mb-2 me-sm-3">
-                            <button className="btn btn-md btn-primary rounded border-0 shadow-sm" type="button" onClick={() => onNewButtonClick()}>
-                                <span className="bi-plus-circle">&nbsp;{labelNewButton}</span>
-                            </button>
+                        && <div className="w-full md:w-auto">
+                            <Button label={labelNewButton} className="btn-primary" size="md" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
                         </div>
                     }
                     {
-                        additionalButtonArray.length > 0
-                        && additionalButtonArray.map((additionalButton, index) => (
-                            <div key={index} className={`float-sm-start mb-2 me-sm-3 ${additionalButton.label === undefined ? "d-none" : "d-grid d-sm-flex"}`}>
-                                <button className={`btn btn-md ${additionalButton.className ?? "btn-primary"} rounded border-0 shadow-sm`} disabled={additionalButton.loadingFlag} type="button" onClick={() => additionalButton.onClick()}>
-                                    <span className={additionalButton.loadingFlag ? "spinner-grow spinner-grow-sm mx-2" : undefined} role="status" aria-hidden="true" />
-                                    <span className={additionalButton.icon}>&nbsp;{additionalButton.label}</span>
-                                </button>
+                        additionalButtonArray.map((additionalButton, index) => (
+                            <div className="w-full md:w-auto">
+                                <Button key={index} label={additionalButton.label} className={additionalButton.className} size="md" icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
                             </div>
                         ))
                     }
                     {
                         bulkOptionArray.length > 0
-                        && <div className="float-sm-end d-grid d-sm-flex mb-2">
-                            <div className="btn-group">
-                                <button className="btn btn-outline-dark shadow-sm dropdown-toggle" disabled={bulkOptionLoadingFlag} data-bs-toggle="dropdown">
-                                    <span className={bulkOptionLoadingFlag ? "spinner-border spinner-border-sm mx-2" : undefined} role="status" aria-hidden="true" />
-                                    <span className="bi-stack">&nbsp;{checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : null}{("common.button.bulkOption")}</span>
-                                </button>
-                                <div className="dropdown-menu">
-                                    {/* {
-                                        bulkOptionArray.map((bulkOption, index) => (
-                                            <Dropdown key={index} label={bulkOption.label} icon={bulkOption.icon} onClick={() => bulkOption.onClick()}></Dropdown>
-                                        ))
-                                    } */}
-                                </div>
-                            </div>
+                        && <div className="w-full md:w-auto md:ml-auto pb-4">
+                            <Button label={t("button.bulkOption")} className="btn-primary" size="md" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
                         </div>
+                        // && <div className="w-full md:w-auto md:ml-auto pb-4">
+                        //     <div className="btn-group">
+                        //         <button className="btn btn-outline-dark shadow-sm dropdown-toggle" disabled={bulkOptionLoadingFlag} data-bs-toggle="dropdown">
+                        //             <span className={bulkOptionLoadingFlag ? "spinner-border spinner-border-sm mx-2" : undefined} role="status" aria-hidden="true" />
+                        //             <span className="bi-stack">&nbsp;{checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : null}{t("button.bulkOption")}</span>
+                        //         </button>
+                        //         <div className="dropdown-menu">
+                        //             {
+                        //                 bulkOptionArray.map((bulkOption, index) => (
+                        //                     <Dropdown key={index} label={bulkOption.label} icon={bulkOption.icon} onClick={() => bulkOption.onClick()}></Dropdown>
+                        //                 ))
+                        //             }
+                        //         </div>
+                        //     </div>
+                        // </div>
                     }
                 </div>
                 <div className="flex flex-col md:flex-row md:justify-between gap-2">
                     {
                         lengthFlag
                         && <div className="w-full md:w-auto p-4r">
-                            {/* <Trans
-                                i18nKey="datatable.text.lengthMenu"
+                            <Trans
+                                i18nKey="table.lengthMenu"
                                 components={{
-                                    menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, e.target.value, search)}>
+                                    menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, Number(e.target.value), search)}>
                                         {
                                             lengthArray.map((length) => (
                                                 <option value={length} key={length}>{length}</option>
@@ -308,7 +308,7 @@ export default function Table({
                                         }
                                     </select>
                                 }}
-                            /> */}
+                            />
                         </div>
                     }
                     {
@@ -318,7 +318,7 @@ export default function Table({
                                 autoFocus
                                 type="text"
                                 value={search}
-                                placeholder={("common.text.search")}
+                                placeholder={t("text.search")}
                                 className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
          bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
          placeholder-gray-400 dark:placeholder-gray-500 
@@ -446,7 +446,7 @@ export default function Table({
                                 ))
                                 : <tr>
                                     <td colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)} className="text-center">
-                                        {("datatable.text.emptyTable")}
+                                        {t("table.emptyTable")}
                                     </td>
                                 </tr>
                         }
@@ -461,7 +461,7 @@ export default function Table({
                         {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`}
                         {/* {t
                             (
-                                "datatable.text.info",
+                                "table.info",
                                 {
                                     start: ((currentPage - 1) * sizePage + 1) > dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
                                     end: ((currentPage - 1) * sizePage + 1) > dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
@@ -482,7 +482,7 @@ export default function Table({
                                             bg-gray-200 dark:bg-gray-700
                                             border-gray-300 dark:border-gray-600
                                             cursor-default pointer-events-none"
-                                                aria-disabled="true">{("datatable.text.previous")}</a>
+                                                aria-disabled="true">{t("table.previous")}</a>
                                             : <a className="px-3 py-2 ml-0 leading-tight rounded-l-md border
                                             text-gray-500 dark:text-gray-400
                                             bg-white dark:bg-gray-800
@@ -491,7 +491,7 @@ export default function Table({
                                             hover:bg-gray-100 dark:hover:bg-gray-700
                                             cursor-pointer"
                                                 onClick={() => onPageChange(currentPage - 1, sizePage, search)} role="button">
-                                                {("datatable.text.previous")}
+                                                {t("table.previous")}
                                             </a>
                                     }
                                 </li>
@@ -543,7 +543,7 @@ export default function Table({
                                             bg-gray-200 dark:bg-gray-700
                                             border-gray-300 dark:border-gray-600
                                             cursor-default pointer-events-none"
-                                                aria-disabled="true">{("datatable.text.next")}</a>
+                                                aria-disabled="true">{t("table.next")}</a>
                                             : <a className="px-3 py-2 ml-0 leading-tight rounded-r-md border
                                             text-gray-500 dark:text-gray-400
                                             bg-white dark:bg-gray-800
@@ -552,7 +552,7 @@ export default function Table({
                                             hover:bg-gray-100 dark:hover:bg-gray-700
                                             cursor-pointer"
                                                 onClick={() => onPageChange(currentPage + 1, sizePage, search)} role="button">
-                                                {("datatable.text.next")}
+                                                {t("table.next")}
                                             </a>
                                     }
                                 </li>
@@ -566,14 +566,14 @@ export default function Table({
                 && itemArray.length > 0
                 && <Fragment>
                     <div className="mt-2">
-                        {/* {t("common.text.amountItem", { amount: itemArray.length })} */}
+                        {/* {t("text.amountItem", { amount: itemArray.length })} */}
                     </div>
                     {
                         loadMoreButtonFlag
                         && <div className="text-center mt-2">
                             <button className="btn btn-md btn-primary rounded border-0 shadow-sm" disabled={loadingFlag} type="button" onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}>
                                 <span className={loadingFlag ? "spinner-border spinner-border-sm mx-2" : undefined} role="status" aria-hidden="true" />
-                                <span className="bi-arrow-down-circle">&nbsp;&nbsp;{("common.button.loadMore")}</span>
+                                <span className="bi-arrow-down-circle">&nbsp;&nbsp;{t("button.loadMore")}</span>
                             </button>
                         </div>
                     }
