@@ -54,31 +54,41 @@ export function confirmDialog({
 
     const root = ReactDOM.createRoot(div);
 
-    function cleanup() {
-        root.unmount();
-        div.remove();
-    }
+    const Wrapper = () => {
+        const [show, setShow] = useState(true);
 
-    function onConfirmation() {
-        if (onConfirm) onConfirm();
-        cleanup();
-    }
+        const handleConfirm = () => {
+            if (onConfirm) onConfirm();
+            setShow(false);
+        };
 
-    function onCancel() {
-        cleanup();
-    }
+        const handleClose = () => setShow(false);
 
-    root.render(
-        <ModalStackProvider>
-            <ConfirmDialog
-                show={true}
-                type={type}
-                message={message}
-                onConfirm={onConfirmation}
-                onClose={onCancel}
-            />
-        </ModalStackProvider>
-    );
+        useEffect(() => {
+            if (!show) {
+                const timer = setTimeout(() => {
+                    root.unmount();
+                    div.remove();
+                }, 200); // sesuai durasi animasi modal
+
+                return () => clearTimeout(timer);
+            }
+        }, [show]);
+
+        return (
+            <ModalStackProvider>
+                <ConfirmDialog
+                    show={show}
+                    type={type}
+                    message={message}
+                    onConfirm={handleConfirm}
+                    onClose={handleClose}
+                />
+            </ModalStackProvider>
+        );
+    };
+
+    root.render(<Wrapper />);
 }
 
 // 🧠 Modal Stack Context
