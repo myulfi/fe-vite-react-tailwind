@@ -18,7 +18,6 @@ type InputDecimalProps = {
     valueUnit?: string | number;
     valueUnitList?: UnitOption[];
     onChangeUnit?: (e: { target: { name: string; value: number } }) => void;
-    className?: string;
     error?: string;
 };
 
@@ -34,7 +33,6 @@ export default function InputDecimal({
     valueUnit,
     valueUnitList,
     onChangeUnit,
-    className = "",
     error,
 }: InputDecimalProps) {
     const { t } = useTranslation();
@@ -93,10 +91,12 @@ export default function InputDecimal({
   `;
 
     return (
-        <div className={`mb-4 ${className}`}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-                {label}
-            </label>
+        <div className="text-dark dark:text-tertiary">
+            {label && (
+                <label className="block mb-1 text-md font-bold">
+                    {label}
+                </label>
+            )}
 
             {positionUnit === undefined ? (
                 <input

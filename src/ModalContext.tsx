@@ -159,6 +159,7 @@ const sizeClasses = {
 };
 
 export function Modal({ show, size = "xl", title, buttonArray = [], onClose, children }: ModalProps) {
+    const { t } = useTranslation();
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
     const [isVisible, setIsVisible] = useState(false);
@@ -223,10 +224,10 @@ export function Modal({ show, size = "xl", title, buttonArray = [], onClose, chi
                     <div className="py-4 px-8">
                         {children}
                     </div>
-                    <div className="flex justify-end border-t p-4">
+                    <div className="flex justify-end border-t gap-4 p-4">
                         {buttonArray}
                         <Button
-                            label="Tutup"
+                            label={t("button.close")}
                             onClick={onClose}
                             className="btn-secondary"
                             icon="fa-solid fa-xmark"

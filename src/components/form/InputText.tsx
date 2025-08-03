@@ -20,7 +20,6 @@ type InputTextProps = {
     valueUnitList?: UnitOption[];
     onChangeUnit?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     refference?: React.Ref<HTMLInputElement>;
-    className?: string;
     error?: string;
 };
 
@@ -38,7 +37,6 @@ export default function InputText({
     valueUnitList,
     onChangeUnit,
     refference,
-    className = '',
     error,
 }: InputTextProps) {
     const { t } = useTranslation();
@@ -92,14 +90,14 @@ export default function InputText({
     };
 
     return (
-        <div className={`mb-4 ${className}`}>
+        <div className="text-dark dark:text-tertiary">
             {label && (
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-md font-bold">
                     {label}
                 </label>
             )}
 
-            <div className="flex">
+            <div className="mb-1 flex">
                 {renderUnitLeft()}
 
                 <input

@@ -215,7 +215,7 @@ export default function ExampleTemplate() {
                     ...exampleTemplateEntryModal,
                     title: exampleTemplate.name,
                     submitLabel: t("button.edit"),
-                    submitIcon: "bi-pencil",
+                    submitIcon: "fa-solid fa-pen",
                     submitLoadingFlag: false,
                 })
 
@@ -242,7 +242,7 @@ export default function ExampleTemplate() {
                 ...exampleTemplateEntryModal,
                 title: exampleTemplateForm.name,
                 submitLabel: t("button.update"),
-                submitIcon: "bi-arrow-repeat",
+                submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
             })
         } else {
@@ -251,7 +251,7 @@ export default function ExampleTemplate() {
                 ...exampleTemplateEntryModal,
                 title: t("button.createNew"),
                 submitLabel: t("button.save"),
-                submitIcon: "bi-bookmark",
+                submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
 
@@ -384,6 +384,17 @@ export default function ExampleTemplate() {
                                 loadingFlag={exampleTemplateEntryModal.submitLoadingFlag}
                             />
                         ),
+                        MODAL.ENTRY === exampleTemplateStateModal && (
+                            <Button
+                                key="view"
+                                label={"View"}
+                                onClick={() => setExampleTemplateStateModal(MODAL.VIEW)}
+                                className="btn-primary"
+                                icon="fa-solid fa-list"
+                                loadingFlag={false}
+                            />
+                        )
+                        ,
                         MODAL.VIEW === exampleTemplateStateModal && (
                             <Button
                                 key="view"
@@ -401,7 +412,7 @@ export default function ExampleTemplate() {
                             MODAL.ENTRY === exampleTemplateStateModal
                             && <Fragment>
                                 <InputText label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
-                                <TextArea label={t("text.description")} name="description" rows={3} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
+                                <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
                                 <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} />
                                 {/* <Select label={t("common.text.value")} name="multipleValue" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
                             liveSearch={true}
@@ -456,7 +467,7 @@ export default function ExampleTemplate() {
                 bulkOptionArray={[
                     {
                         label: t("button.delete"),
-                        icon: "bi-trash",
+                        icon: "fa-solid fa-trash",
                         onClick: () => confirmDeleteExampleTemplate(),
                     }
                 ]}
@@ -483,13 +494,13 @@ export default function ExampleTemplate() {
                         width: 10,
                         minDevice: DEVICE.TABLET,
                     },
-                    {
-                        data: "date",
-                        name: t("text.date"),
-                        class: "text-nowrap",
-                        width: 10,
-                        minDevice: DEVICE.DESKTOP
-                    },
+                    // {
+                    //     data: "date",
+                    //     name: t("text.date"),
+                    //     class: "text-nowrap",
+                    //     width: 10,
+                    //     minDevice: DEVICE.DESKTOP
+                    // },
                     {
                         data: "createdBy",
                         name: t("text.createdBy"),
@@ -511,22 +522,22 @@ export default function ExampleTemplate() {
                     {
                         data: "id",
                         name: t("text.option"),
-                        class: "text-center",
+                        class: "text-nowrap",
                         render: function (data, row) {
                             return (
                                 <>
                                     <Button
                                         label={t("button.view")}
                                         onClick={() => viewExampleTemplate(data)}
-                                        className="btn-primary"
-                                        icon="bi-list-ul"
+                                        className="btn-primary mx-2"
+                                        icon="fa-solid fa-list"
                                         loadingFlag={exampleTemplateOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
                                         label={t("button.delete")}
                                         onClick={() => confirmDeleteExampleTemplate(data, row.name)}
                                         className="btn-danger"
-                                        icon="bi-trash"
+                                        icon="fa-solid fa-trash"
                                         loadingFlag={exampleTemplateOptionColumnTable[data]?.deletedButtonFlag}
                                     />
                                 </>

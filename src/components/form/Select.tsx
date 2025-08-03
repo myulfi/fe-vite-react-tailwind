@@ -14,7 +14,6 @@ type SelectProps = {
     multiple?: boolean;
     dataSize?: number;
     onChange: (e: { target: { name: string; value: any } }) => void;
-    className?: string;
     error?: string;
 };
 
@@ -26,7 +25,6 @@ export default function Select({
     multiple = false,
     dataSize = 5,
     onChange,
-    className = "",
     error,
 }: SelectProps) {
     const { t } = useTranslation();
@@ -102,10 +100,12 @@ export default function Select({
     };
 
     return (
-        <div className={`mb-4 ${className}`}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-                {label}
-            </label>
+        <div className="text-dark dark:text-tertiary">
+            {label && (
+                <label className="block mb-1 text-md font-bold">
+                    {label}
+                </label>
+            )}
 
             <div className="relative" ref={dropdownRef}>
                 <button

@@ -13,7 +13,6 @@ type RadioProps = {
     map: RadioOption[];
     customFlag?: boolean;
     onChange: (e: { target: { name: string; value: number | string } }) => void;
-    className?: string;
     error?: string;
 };
 
@@ -24,7 +23,6 @@ export default function Radio({
     map,
     customFlag = false,
     onChange,
-    className = "",
     error,
 }: RadioProps) {
     const { t } = useTranslation();
@@ -58,10 +56,12 @@ export default function Radio({
     };
 
     return (
-        <div className={`mb-4 ${className}`}>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-                {label}
-            </label>
+        <div className="text-dark dark:text-tertiary">
+            {label && (
+                <label className="block mb-1 text-md font-bold">
+                    {label}
+                </label>
+            )}
 
             <div className="flex flex-wrap gap-2">
                 {map.map((option) => (

@@ -14,7 +14,6 @@ type InputTextProps = {
     disabled?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-    className?: string;
     placeholder?: string;
     error?: string;
 };
@@ -27,22 +26,21 @@ export default function TextArea({
     disabled = false,
     onChange,
     onKeyDown,
-    className = '',
     placeholder,
     error,
 }: InputTextProps) {
     const { t } = useTranslation();
 
     return (
-        <div className={`mb-4 ${className}`}>
+        <div className="text-dark dark:text-tertiary">
             {label && (
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-md font-bold">
                     {label}
                 </label>
             )}
 
             <textarea
-                className={`flex-1 border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-md`}
+                className={`mb-1 w-full flex-1 border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-md`}
                 name={name}
                 rows={rows}
                 value={value ?? ''}

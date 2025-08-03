@@ -256,25 +256,25 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:justify-between gap-4 pb-4 max-sm:pb-2">
 
                     {
                         labelNewButton != undefined
                         && <div className="w-full md:w-auto">
-                            <Button label={labelNewButton} className="btn-primary" size="md" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
+                            <Button label={labelNewButton} className="w-full text-nowrap $ btn-primary" size="md" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
                         </div>
                     }
                     {
                         additionalButtonArray.map((additionalButton, index) => (
                             <div className="w-full md:w-auto">
-                                <Button key={index} label={additionalButton.label} className={additionalButton.className} size="md" icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
+                                <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
                             </div>
                         ))
                     }
                     {
                         bulkOptionArray.length > 0
-                        && <div className="w-full md:w-auto md:ml-auto pb-4">
-                            <Button label={t("button.bulkOption")} className="btn-primary" size="md" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
+                        && <div className="w-full md:w-auto md:ml-auto">
+                            <Button label={t("button.bulkOption")} className="w-full text-nowrap btn-primary" size="md" icon="fa-solid fa-boxes-stacked" onClick={() => onNewButtonClick()} />
                         </div>
                         // && <div className="w-full md:w-auto md:ml-auto pb-4">
                         //     <div className="btn-group">
@@ -293,10 +293,10 @@ export default function Table({
                         // </div>
                     }
                 </div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-2">
+                <div className="flex flex-col md:flex-row md:justify-between gap-4 max-sm:gap-2 pb-4">
                     {
                         lengthFlag
-                        && <div className="w-full md:w-auto p-4r">
+                        && <div className="w-full md:w-auto mt-1.5 max-sm:my-0">
                             <Trans
                                 i18nKey="table.lengthMenu"
                                 components={{
@@ -313,7 +313,7 @@ export default function Table({
                     }
                     {
                         searchFlag
-                        && <div className="w-full md:w-auto md:ml-auto pb-4">
+                        && <div className="w-full md:w-auto md:ml-auto">
                             <input
                                 autoFocus
                                 type="text"
@@ -456,8 +456,8 @@ export default function Table({
             {
                 TABLE.PAGINATION === type
                 && dataTotal > 0
-                && <div className="flex flex-col md:flex-row md:justify-between gap-2">
-                    <div className="w-full md:w-auto p-4r pb-2 mt-3 md:mt-6">
+                && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-6 pb-2">
+                    <div className="w-full md:w-auto max-sm:my-2">
                         {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`}
                         {/* {t
                             (
@@ -470,7 +470,7 @@ export default function Table({
                             )
                         } */}
                     </div>
-                    <div className="w-full md:w-auto md:ml-auto md:mt-6 pb-2">
+                    <div className="w-full md:w-auto md:ml-auto">
                         {
                             pages.length > 1
                             && <ul className="inline-flex items-center -space-x-px text-sm">
