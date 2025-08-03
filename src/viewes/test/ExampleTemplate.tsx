@@ -109,7 +109,7 @@ export default function ExampleTemplate() {
     const [exampleTemplateForm, setExampleTemplateForm] = useState<ExampleTemplateData>(exampleTemplateInitial)
     const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError | []>([])
 
-    const onExampleTemplateFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const onExampleTemplateFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setExampleTemplateForm({ ...exampleTemplateForm, [name]: value })
         setExampleTemplateFormError({ ...exampleTemplateFormError, [name]: undefined })
@@ -263,9 +263,7 @@ export default function ExampleTemplate() {
         if (exampleTemplateValidate(exampleTemplateForm)) {
             confirmDialog({
                 type: 'confirmation',
-                //nyoba
-                // message: exampleTemplateForm.id === undefined ? t("confirmation.create", { name: exampleTemplateForm.name }) : t("confirmation.update", { name: exampleTemplateForm.name }),
-                message: "",
+                message: exampleTemplateForm.id === undefined ? t("confirmation.create", { name: exampleTemplateForm.name }) : t("confirmation.update", { name: exampleTemplateForm.name }),
                 onConfirm: () => storeExampleTemplate(),
             });
         }
@@ -421,7 +419,7 @@ export default function ExampleTemplate() {
                             onChange={onExampleTemplateFormChange}
                             className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} /> */}
                                 <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.amount} />
-                                <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.date} />
+                                <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
                                 <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} map={yesNoMap} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.activeFlag} />
                             </Fragment>
                         }

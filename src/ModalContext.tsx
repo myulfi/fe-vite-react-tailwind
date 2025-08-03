@@ -26,14 +26,47 @@ function ConfirmDialog({
 }: ConfirmDialogProps) {
     const { t } = useTranslation();
     return (
-        <Modal show={show} size="sm" title={t(`common.text.${type}`)} onClose={onClose}>
+        <Modal
+            show={show}
+            size="sm"
+            title={t(`text.${type}`)}
+            buttonArray={[
+                'alert' === type && (
+                    <Button
+                        label={t("button.understood")}
+                        onClick={onClose}
+                        className="btn-warning"
+                        icon="fa-solid fa-lightbulb"
+                    />
+                ),
+                // 'alert' !== type && (
+                //     <Button
+                //         label={t("button.close")}
+                //         onClick={onClose}
+                //         className="btn-secondary"
+                //         icon="fa-solid fa-xmark"
+                //     />
+                // ),
+                'confirmation' === type && (
+                    <Button
+                        label={t("button.ok")}
+                        onClick={() => onConfirm()}
+                        className="btn-primary"
+                        icon="fa-solid fa-circle-check"
+                    />
+                ),
+                'warning' === type && (
+                    <Button
+                        label={t("button.ofCourse")}
+                        onClick={() => onConfirm()}
+                        className="btn-danger"
+                        icon="fa-solid fa-circle-check"
+                    />
+                ),
+            ].filter(Boolean) as React.ReactElement[]}
+            onClose={onClose}>
             <div className="text-center space-y-4">
-                <h2 className="text-lg font-semibold">{t(`common.text.${type}`)}</h2>
                 <p className="text-gray-600">{message}</p>
-                <div className="flex justify-center gap-4 mt-6">
-                    {/* <Button label={confirmLabel} onClick={onConfirm} className="btn-danger" /> */}
-                    <Button label={t("common.button.close")} onClick={onClose} className="btn-secondary" />
-                </div>
             </div>
         </Modal>
     );
