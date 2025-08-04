@@ -80,16 +80,16 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
 
     return (
         <div className="relative">
-            <div className="relative">
+            <div className="relative text-light-base-line-secondary dark:text-dark-base-line-secondary">
                 {level > 0 && (
-                    <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-400 dark:bg-slate-500 rounded-full'></span>
+                    <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 bg-light-clear dark:bg-dark-clear rounded-full'></span>
                 )}
 
                 {item.link && !hasChildrenFlag ? (
                     <Link
                         to={item.link}
                         onClick={onNavigate}
-                        className={`flex items-center w-full p-2 hover:bg-tertiary dark:hover:bg-tertiary-dark cursor-pointer rounded-l-lg ${activeFlag ? 'bg-secondary dark:bg-secondary-dark font-semibold' : ''}`}
+                        className={`flex items-center w-full p-2 hover:text-light-base-line hover:dark:hover:text-dark-base-line hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer rounded-l-lg ${activeFlag ? 'text-light-base-line dark:text-dark-base-line bg-light-clear-secondary dark:bg-dark-clear-secondary font-semibold' : ''}`}
                     >
                         {item.icon && <span className='mr-2'><i className={`${item.icon}`} /></span>}
                         {item.label}
@@ -97,7 +97,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                 ) : (
                     <button
                         onClick={handleClick}
-                        className="flex items-center w-full p-2 pl-2 hover:bg-tertiary dark:hover:bg-tertiary-dark cursor-pointer rounded"
+                        className="flex items-center w-full p-2 pl-2 hover:text-light-base-line hover:dark:hover:text-dark-base-line hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer rounded-l-lg"
                     >
                         {item.icon && <span className="mr-2"><i className={`${item.icon}`} /></span>}
                         {item.label}
@@ -110,7 +110,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                 className={`overflow-hidden transition-all duration-500 ease-in-out ${openFlag ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
             >
                 {openFlag && hasChildrenFlag && (
-                    <div className="ml-4 pl-4 border-l border-tertiary dark:border-tertiary-dark">
+                    <div className="ml-4 pl-4 border-l border-light-clear dark:border-dark-clear">
                         {item.children!.map((c, i) => (
                             <SidebarItem key={i} item={c} level={level + 1} onNavigate={onNavigate} />
                         ))}
@@ -134,15 +134,15 @@ export default function SideBar({
 }: SideBarProps) {
     return (
         <div
-            className={`fixed top-0 left-0 h-full overflow-y-auto bg-primary-layout dark:bg-primary-layout-dark text-on-primary dark:text-on-primary-dark z-20 transition-transform duration-500 ease-in-out w-screen md:w-[${SIDEBAR_WIDTH}px] ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}`}
+            className={`fixed top-0 left-0 h-full overflow-y-auto bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line z-20 transition-transform duration-500 ease-in-out w-screen md:w-[256px] ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}`}
         >
-            <div className='relative border-b border-on-primary dark:border-on-primary-dark pb-4 m-4'>
+            <div className='relative border-b border-light-clear dark:border-dark-clear pb-4 m-4'>
                 <span className='block text-center font-bold text-lg'>SAPA UMKM</span>
                 {
                     mobileFlag &&
                     <button
                         onClick={() => setSidebarOpenFlag(false)}
-                        className='absolute right-0 top-0 icon-primary cursor-pointer'
+                        className='absolute right-0 top-0 text-light-clear dark:text-dark-clear cursor-pointer'
                         aria-label='Close sidebar'
                     >
                         <i className='fa-solid fa-xmark'></i>

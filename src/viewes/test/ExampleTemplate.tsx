@@ -272,7 +272,6 @@ export default function ExampleTemplate() {
     const storeExampleTemplate = async (id?: number) => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
             setModalExampleTemplate(false);
-            // ModalHelper.hide("dialog_example_template")
             setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
@@ -283,8 +282,7 @@ export default function ExampleTemplate() {
 
             if (HTTP_CODE.OK === response.status) {
                 getExampleTemplate(exampleTemplateAttributeTable);
-                toast.show({ type: "success", message: response.message });
-                // setToast({ type: "success", message: response.message })
+                toast.show({ type: "done", message: response.message });
                 setModalExampleTemplate(false);
             } else {
                 toast.show({ type: "error", message: response.message });
@@ -308,22 +306,17 @@ export default function ExampleTemplate() {
                     message: t("confirmation.delete", { name: t("text.amountItem", { amount: exampleTemplateCheckBoxTableArray.length }) }),
                     onConfirm: () => deleteExampleTemplate(),
                 });
-                // setDialog({
-                //     message: t("confirmation.delete", { name: t("text.amountItem", { amount: exampleTemplateCheckBoxTableArray.length }) }),
-                //     type: "warning",
-                //     onConfirm: () => deleteExampleTemplate(),
-                // })
             } else {
                 confirmDialog({
                     type: 'alert',
-                    message: t("validate.text.pleaseTickAtLeastAnItem")
+                    message: t("validate.pleaseTickAtLeastAnItem")
                 });
             }
         }
     }
 
     const deleteExampleTemplate = async (id?: number) => {
-        // ModalHelper.hide("dialog_example_template")
+        setModalExampleTemplate(false);
         if (id !== undefined) {
             setExampleTemplateOptionColumnTable(prev => ({
                 ...prev,
@@ -342,9 +335,9 @@ export default function ExampleTemplate() {
             if (id === undefined) {
                 setExampleTemplateCheckBoxTableArray([])
             }
-            // setToast({ type: "success", message: response.message })
+            toast.show({ type: "done", message: response.message });
         } else {
-            // setToast({ type: "failed", message: response.message })
+            toast.show({ type: "error", message: response.message });
         }
 
         if (id !== undefined) {
@@ -364,7 +357,7 @@ export default function ExampleTemplate() {
 
 
     return (
-        <div className="bg-primary-layout dark:bg-primary-layout-dark m-4 p-4 rounded-lg shadow-lg">
+        <div className="bg-light-clear dark:bg-dark-clear m-6 p-4 rounded-lg shadow-lg">
             <ModalStackProvider>
                 <Modal
                     show={modalExampleTemplate}
@@ -376,9 +369,9 @@ export default function ExampleTemplate() {
                             <Button
                                 key="entry"
                                 label={exampleTemplateEntryModal.submitLabel}
-                                onClick={() => confirmStoreExampleTemplate()}
-                                className="btn-primary"
+                                type="primary"
                                 icon={exampleTemplateEntryModal.submitIcon}
+                                onClick={() => confirmStoreExampleTemplate()}
                                 loadingFlag={exampleTemplateEntryModal.submitLoadingFlag}
                             />
                         ),
@@ -386,9 +379,9 @@ export default function ExampleTemplate() {
                             <Button
                                 key="view"
                                 label={"View"}
-                                onClick={() => setExampleTemplateStateModal(MODAL.VIEW)}
-                                className="btn-primary"
+                                type="primary"
                                 icon="fa-solid fa-list"
+                                onClick={() => setExampleTemplateStateModal(MODAL.VIEW)}
                                 loadingFlag={false}
                             />
                         )
@@ -397,9 +390,9 @@ export default function ExampleTemplate() {
                             <Button
                                 key="view"
                                 label={exampleTemplateEntryModal.submitLabel}
-                                onClick={() => entryExampleTemplate(true)}
-                                className="btn-primary"
+                                type="primary"
                                 icon={exampleTemplateEntryModal.submitIcon}
+                                onClick={() => entryExampleTemplate(true)}
                                 loadingFlag={false}
                             />
                         )
@@ -440,26 +433,6 @@ export default function ExampleTemplate() {
             <Table
                 labelNewButton={t("button.createNew")}
                 onNewButtonClick={() => entryExampleTemplate(false)}
-                additionalButtonArray={[
-                    {
-                        label: 'haha',
-                        className: 'btn-primary',
-                        onClick: () => setModalExampleTemplate(false),
-                        icon: 'fa-solid fa-plus'
-                    },
-                    {
-                        label: 'hihi',
-                        className: 'btn-primary',
-                        onClick: () => setModalExampleTemplate(false),
-                        icon: 'fa-solid fa-plus'
-                    },
-                    {
-                        label: 'huhu',
-                        className: 'btn-primary',
-                        onClick: () => setModalExampleTemplate(false),
-                        icon: 'fa-solid fa-plus'
-                    }
-                ]}
 
                 bulkOptionLoadingFlag={exampleTemplateBulkOptionLoadingFlag}
                 bulkOptionArray={[
@@ -523,22 +496,24 @@ export default function ExampleTemplate() {
                         class: "text-nowrap",
                         render: function (data, row) {
                             return (
-                                <>
+                                <div className="flex flex-row justify-evenly">
                                     <Button
                                         label={t("button.view")}
-                                        onClick={() => viewExampleTemplate(data)}
-                                        className="btn-primary mx-2"
+                                        className="btn-primary"
+                                        type='primary'
                                         icon="fa-solid fa-list"
+                                        onClick={() => viewExampleTemplate(data)}
                                         loadingFlag={exampleTemplateOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
                                         label={t("button.delete")}
-                                        onClick={() => confirmDeleteExampleTemplate(data, row.name)}
                                         className="btn-danger"
+                                        type='danger'
                                         icon="fa-solid fa-trash"
+                                        onClick={() => confirmDeleteExampleTemplate(data, row.name)}
                                         loadingFlag={exampleTemplateOptionColumnTable[data]?.deletedButtonFlag}
                                     />
-                                </>
+                                </div>
                             )
                         }
                     }

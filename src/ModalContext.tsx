@@ -29,14 +29,15 @@ function ConfirmDialog({
         <Modal
             show={show}
             size="sm"
+            icon={'alert' === type ? "fa-solid fa-triangle-exclamation" : 'confirmation' === type ? "fa-solid fa-circle-question" : 'warning' === type ? "fa-solid fa-circle-exclamation" : ""}
             title={t(`text.${type}`)}
             buttonArray={[
                 'alert' === type && (
                     <Button
                         label={t("button.understood")}
-                        onClick={onClose}
-                        className="btn-warning"
+                        type="warning"
                         icon="fa-solid fa-lightbulb"
+                        onClick={onClose}
                     />
                 ),
                 // 'alert' !== type && (
@@ -50,23 +51,23 @@ function ConfirmDialog({
                 'confirmation' === type && (
                     <Button
                         label={t("button.ok")}
-                        onClick={() => onConfirm()}
-                        className="btn-primary"
+                        type="primary"
                         icon="fa-solid fa-circle-check"
+                        onClick={() => onConfirm()}
                     />
                 ),
                 'warning' === type && (
                     <Button
                         label={t("button.ofCourse")}
-                        onClick={() => onConfirm()}
-                        className="btn-danger"
+                        type="danger"
                         icon="fa-solid fa-circle-check"
+                        onClick={() => onConfirm()}
                     />
                 ),
             ].filter(Boolean) as React.ReactElement[]}
             onClose={onClose}>
             <div className="text-center space-y-4">
-                <p className="text-gray-600">{message}</p>
+                <p>{message}</p>
             </div>
         </Modal>
     );
@@ -178,6 +179,7 @@ type ModalProps = {
     show: boolean;
     size?: 'sm' | 'md' | 'lg' | 'xl';
     title: string;
+    icon?: string;
     buttonArray?: React.ReactElement[]
     onClose: () => void;
     children: React.ReactNode;
@@ -191,7 +193,7 @@ const sizeClasses = {
     xl: 'w-full',
 };
 
-export function Modal({ show, size = "xl", title, buttonArray = [], onClose, children }: ModalProps) {
+export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClose, children }: ModalProps) {
     const { t } = useTranslation();
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
@@ -222,7 +224,7 @@ export function Modal({ show, size = "xl", title, buttonArray = [], onClose, chi
     return createPortal(
         <div
             className={`
-        fixed inset-0 bg-black/40
+        fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
         transition-opacity duration-200
         overflow-y-auto 
         ${show && !isLeaving ? "opacity-100" : "opacity-0 pointer-events-none"}`}
@@ -234,7 +236,7 @@ export function Modal({ show, size = "xl", title, buttonArray = [], onClose, chi
             >
                 <div
                     className={`
-                        modal-primary
+                        bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line
                      ${sizeClasses[size]}
                         rounded-lg shadow-xl h-fit
                         transition-all duration-200
@@ -244,26 +246,29 @@ export function Modal({ show, size = "xl", title, buttonArray = [], onClose, chi
                     `}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <div className="flex justify-between border-b p-4">
-                        <strong className="text-xl">{title}</strong>
+                    <div className="flex justify-between p-4">
+                        <strong className="text-xl text-light-base-line-base dark:text-dark-base-line">
+                            {icon && <i className={`${icon} mr-2`}></i>}
+                            {title}
+                        </strong>
                         <button
-                            className="text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white hover:cursor-pointer p-1 rounded"
+                            className="text-light-base-line dark:text-dark-base-line hover:text-light-base-line-secondary hover:dark:text-dark-base-line-secondary cursor-pointer p-1 rounded"
                             onClick={onClose}
                             aria-label="Open sidebar"
                         >
                             <i className="fa-solid fa-xmark text-xl" />
                         </button>
                     </div>
-                    <div className="py-4 px-8">
+                    <div className="py-4 px-8 border-y-1 border-light-divider dark:border-dark-divider">
                         {children}
                     </div>
-                    <div className="flex justify-end border-t gap-4 p-4">
+                    <div className="flex justify-end gap-4 p-4">
                         {buttonArray}
                         <Button
                             label={t("button.close")}
-                            onClick={onClose}
-                            className="btn-secondary"
+                            type="secondary"
                             icon="fa-solid fa-xmark"
+                            onClick={() => onClose()}
                         />
                     </div>
                 </div>

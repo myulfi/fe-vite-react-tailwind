@@ -1,4 +1,4 @@
-type ToastType = 'success' | 'error' | 'info' | 'warning';
+type ToastType = 'info' | 'done' | 'problem' | 'error';
 
 interface ToastOptions {
     type?: ToastType;
@@ -22,17 +22,17 @@ function getToastContainer(): HTMLElement {
 function getToastClasses(type: ToastType): string {
     const base = `
     toast
-    w-72 flex items-center justify-between px-4 py-3 rounded shadow-lg border
+    w-72 flex items-center justify-between px-4 py-3 rounded shadow-lg
     opacity-0 translate-y-2
     transition-all duration-300 ease-in-out
     will-change-transform
   `.trim();
 
     const styles = {
-        success: 'bg-green-100 border-green-300 text-green-800',
-        error: 'bg-red-100 border-red-300 text-red-800',
-        info: 'bg-blue-100 border-blue-300 text-blue-800',
-        warning: 'bg-yellow-100 border-yellow-300 text-yellow-800',
+        info: 'bg-light-info-base dark:bg-dark-info-base text-light-info-base-line dark:text-dark-info-base-line',
+        done: 'bg-light-done-base dark:bg-dark-done-base text-light-done-base-line dark:text-dark-done-base-line',
+        problem: 'bg-light-problem-base dark:bg-dark-problem-base text-light-problem-base-line dark:text-dark-problem-base-line',
+        error: 'bg-light-error-base dark:bg-dark-error-base text-light-error-base-line dark:text-dark-error-base-line',
     };
 
     return `${base} ${styles[type]}`;

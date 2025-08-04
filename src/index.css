@@ -2,35 +2,102 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --color-primary-layout: #F8FAFC;
-    --color-primary-layout-dark: #0F172B;
+    /* Light */
+    --color-light-base: #0090E7;
+    --color-light-base-secondary: #26A1EB;
+    --color-light-base-line: #314158;
+    --color-light-base-line-secondary: #314158;
+    --color-light-clear: #F9FAFB;
+    --color-light-clear-secondary: #E2E8F0;
+    --color-light-outline: #D1D5DC;
 
-    --color-primary: #F8FAFC;
-    --color-on-primary: #314158;
+    --color-light-divider: #DEE2E6;
 
-    --color-primary-dark: #0F172B;
-    --color-on-primary-dark: #CAD5E2;
-    /* --color-on-primary-dark: #F1F5F9; */
+    --color-light-primary-base: #0090E7;
+    --color-light-primary-base-hover: #26A1EB;
+    --color-light-primary-base-line: #FFFFFF;
 
-    --color-secondary: #E2E8F0;
-    --color-secondary-dark: #1D293D;
+    --color-light-success-base: #00D25B;
+    --color-light-success-base-hover: #26D974;
+    --color-light-success-base-line: #FFFFFF;
 
-    --color-tertiary: #CAD5E2;
-    --color-tertiary-dark: #314158;
+    --color-light-danger-base: #FC424A;
+    --color-light-danger-base-hover: #fC5E65;
+    --color-light-danger-base-line: #FFFFFF;
+
+    --color-light-warning-base: #FFAB00;
+    --color-light-warning-base-hover: #FFB826;
+    --color-light-warning-base-line: #FFFFFF;
+
+    --color-light-secondary-base: #6c757d;
+    --color-light-secondary-base-hover: #5c636a;
+    --color-light-secondary-base-line: #FFFFFF;
+
+    --color-light-info-base: rgb(0, 144, 231);
+    --color-light-info-base-line: #FFFFFF;
+
+    --color-light-done-base: rgb(0, 210, 91);
+    --color-light-done-base-line: #FFFFFF;
+
+    --color-light-error-base: rgb(252, 66, 74);
+    --color-light-error-base-line: #FFFFFF;
+
+    --color-light-problem-base: rgb(255, 171, 0);
+    --color-light-problem-base-line: #FFFFFF;
+
+    /* Dark */
+    --color-dark-base: #8F5FE8;
+    --color-dark-base-secondary: #A077EB;
+    --color-dark-base-line: #F8F8F9;
+    --color-dark-base-line-secondary: #6C7293;
+    --color-dark-clear: #191C24;
+    --color-dark-clear-secondary: #0F1015;
+    --color-dark-outline: #311B92;
+
+    --color-dark-divider: #2C2E33;
+
+    --color-dark-primary-base: rgba(143, 95, 232, 0.2);
+    --color-dark-primary-base-hover: rgba(143, 95, 232, 0.5);
+    --color-dark-primary-base-line: #8f5fe8;
+
+    /* --color-dark-primary-base: rgba(0, 144, 231, 0.2);
+    --color-dark-primary-base-hover: rgba(0, 144, 231, 0.5);
+    --color-dark-primary-base-line: #0090E7; */
+
+    --color-dark-success-base: rgba(0, 210, 91, 0.2);
+    --color-dark-success-base-hover: rgba(0, 210, 91, 0.5);
+    --color-dark-success-base-line: #00D25B;
+
+    --color-dark-danger-base: rgba(252, 66, 74, 0.2);
+    --color-dark-danger-base-hover: rgba(252, 66, 74, 0.5);
+    --color-dark-danger-base-line: #FC424A;
+
+    --color-dark-warning-base: rgba(255, 171, 0, 0.2);
+    --color-dark-warning-base-hover: rgba(255, 171, 0, 0.5);
+    --color-dark-warning-base-line: #FFAB00;
+
+    --color-dark-secondary-base: rgba(228, 234, 236, 0.2);
+    --color-dark-secondary-base-hover: rgba(228, 234, 236, 0.5);
+    --color-dark-secondary-base-line: #FFFFFF;
+
+    --color-dark-info-base: rgba(143, 95, 232, 0.8);
+    --color-dark-info-base-line: #FFFFFF;
+
+    --color-dark-done-base: rgba(0, 210, 91, 0.8);
+    --color-dark-done-base-line: #FFFFFF;
+
+    --color-dark-error-base: rgba(252, 66, 74, 0.8);
+    --color-dark-error-base-line: #FFFFFF;
+
+    --color-dark-problem-base: rgba(255, 171, 0, 0.8);
+    --color-dark-problem-base-line: #FFFFFF;
 }
 
+/* 
 .modal-primary {
     @apply bg-white dark:bg-zinc-900 text-black dark:text-white
 }
 
-.btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white;
-}
-
-.btn-danger {
-    @apply bg-red-600 hover:bg-red-700 text-white;
-}
-
 .icon-primary {
     @apply text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white;
-}
+} */

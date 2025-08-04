@@ -3,6 +3,7 @@ import { DEVICE, TABLE } from "../constants/common-constants";
 import { getNestedValue, onCopy } from "../function/commonHelper";
 import { Trans, useTranslation } from "react-i18next";
 import Button from "./form/Button";
+import InputText from "./form/InputText";
 
 interface TableProps {
     showFlag?: boolean;
@@ -11,9 +12,10 @@ interface TableProps {
     onNewButtonClick?: () => void;
     additionalButtonArray?: {
         label?: string;
+        className?: string;
+        type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
         icon?: string;
         onClick: () => void;
-        className?: string;
         loadingFlag?: boolean;
     }[];
     bulkOptionLoadingFlag?: boolean;
@@ -257,24 +259,23 @@ export default function Table({
         <div>
             <div>
                 <div className="flex flex-col md:flex-row md:justify-between gap-4 pb-4 max-sm:pb-2">
-
                     {
                         labelNewButton != undefined
                         && <div className="w-full md:w-auto">
-                            <Button label={labelNewButton} className="w-full text-nowrap $ btn-primary" size="md" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
+                            <Button label={labelNewButton} className="w-full text-nowrap" size="md" type="primary" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
                         </div>
                     }
                     {
                         additionalButtonArray.map((additionalButton, index) => (
                             <div className="w-full md:w-auto">
-                                <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
+                                <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" type={additionalButton.type} icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
                             </div>
                         ))
                     }
                     {
                         bulkOptionArray.length > 0
                         && <div className="w-full md:w-auto md:ml-auto">
-                            <Button label={t("button.bulkOption")} className="w-full text-nowrap btn-primary" size="md" icon="fa-solid fa-boxes-stacked" onClick={() => onNewButtonClick()} />
+                            <Button label={t("button.bulkOption")} className="w-full text-nowrap btn-primary" size="md" type="secondary" icon="fa-solid fa-boxes-stacked" onClick={() => onNewButtonClick()} />
                         </div>
                         // && <div className="w-full md:w-auto md:ml-auto pb-4">
                         //     <div className="btn-group">
@@ -314,26 +315,21 @@ export default function Table({
                     {
                         searchFlag
                         && <div className="w-full md:w-auto md:ml-auto">
-                            <input
-                                autoFocus
-                                type="text"
+                            <InputText
+                                autoFocus={true}
+                                autoComplete="off"
+                                name="name"
                                 value={search}
-                                placeholder={t("text.search")}
-                                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-         bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
-         placeholder-gray-400 dark:placeholder-gray-500 
-         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent 
-         transition duration-200"
                                 onChange={event => setSearch(event.target.value)}
-                                onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }}
-                            />
+                                onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
                         </div>
                     }
                 </div>
             </div>
             <div className="overflow-x-auto w-full">
                 <table className="min-w-full table-auto">
-                    <thead className="bg-slate-300 dark:bg-gray-700">
+                    {/* bg-slate-300 dark:bg-gray-700 */}
+                    <thead className='text-light-base-line-secondary dark:text-dark-base-line-secondary border-y-1 border-light-divider dark:border-dark-divider'>
                         <tr>
                             {
                                 checkBoxArray.length > 0
@@ -345,7 +341,7 @@ export default function Table({
                             }
                             {
                                 columnShow.map((column, index) => (
-                                    <th key={index} scope="col" className={`px-4 py-2 align-middle border border-gray-200 dark:border-gray-600 ${column.class} ${column.minDevice == DEVICE.DESKTOP ? "max-lg:hidden" : column.minDevice == DEVICE.TABLET ? "max-md:hidden" : ""}`} style={column.width != null ? { width: `${column.width}%` } : {}}>
+                                    <th key={index} scope="col" className={`px-4 py-4 align-middle ${column.class} ${column.minDevice == DEVICE.DESKTOP ? "max-lg:hidden" : column.minDevice == DEVICE.TABLET ? "max-md:hidden" : ""}`} style={column.width != null ? { width: `${column.width}%` } : {}}>
                                         <span className="flex items-center justify-between w-full">
                                             <span>{column.name}</span>
                                             {
@@ -363,7 +359,7 @@ export default function Table({
                             itemArray.length > 0
                                 ? itemArray.map((data, indexRow) => (
                                     <Fragment key={indexRow}>
-                                        <tr className="bg-white dark:bg-gray-900 hover:bg-slate-100 hover:dark:bg-gray-800">
+                                        <tr className="border-b-1 border-light-divider dark:border-dark-divider">
                                             {
                                                 checkBoxArray.length > 0
                                                 && data.id !== undefined
@@ -380,7 +376,7 @@ export default function Table({
                                             {
                                                 columnShow
                                                     .map((column, index) => (
-                                                        <td key={index} className={`px-4 py-2 border-b ${index === 0 && column.copy !== true ? "cursor-pointer" : undefined} ${column.class} ${column.minDevice == DEVICE.DESKTOP ? "max-lg:hidden" : column.minDevice == DEVICE.TABLET ? "max-md:hidden" : ""}`} onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
+                                                        <td key={index} className={`px-4 py-3 ${index === 0 && column.copy !== true ? "cursor-pointer" : undefined} ${column.class} ${column.minDevice == DEVICE.DESKTOP ? "max-lg:hidden" : column.minDevice == DEVICE.TABLET ? "max-md:hidden" : ""}`} onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
                                                             {
                                                                 index == 0 &&
                                                                 <span className={`cursor-pointer me-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : null}`} onClick={column.copy ? () => showDetail(indexRow) : undefined} ><i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} /></span>
@@ -458,17 +454,18 @@ export default function Table({
                 && dataTotal > 0
                 && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-6 pb-2">
                     <div className="w-full md:w-auto max-sm:my-2">
-                        {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`}
-                        {/* {t
+                        {/* {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`} */}
+                        {t
                             (
                                 "table.info",
                                 {
-                                    start: ((currentPage - 1) * sizePage + 1) > dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
-                                    end: ((currentPage - 1) * sizePage + 1) > dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
+
+                                    start: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
+                                    end: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
                                     total: dataTotal
                                 }
                             )
-                        } */}
+                        }
                     </div>
                     <div className="w-full md:w-auto md:ml-auto">
                         {

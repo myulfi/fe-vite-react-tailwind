@@ -7,6 +7,8 @@ type UnitOption = {
 };
 
 type InputTextProps = {
+    autoFocus?: boolean;
+    autoComplete?: string;
     label?: string;
     name: string;
     value: string;
@@ -24,6 +26,8 @@ type InputTextProps = {
 };
 
 export default function InputText({
+    autoFocus = false,
+    autoComplete,
     label,
     name,
     value,
@@ -90,7 +94,7 @@ export default function InputText({
     };
 
     return (
-        <div className="text-dark dark:text-tertiary">
+        <div className="text-light-base-line dark:text-dark-base-line">
             {label && (
                 <label className="block mb-1 text-md font-bold">
                     {label}
@@ -102,7 +106,9 @@ export default function InputText({
 
                 <input
                     ref={refference}
-                    className={`flex-1 border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${positionUnit === 'left'
+                    autoFocus={autoFocus}
+                    autoComplete={autoComplete}
+                    className={`flex-1 border border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base ${positionUnit === 'left'
                         ? 'rounded-r-md'
                         : positionUnit === 'right'
                             ? 'rounded-l-md'
@@ -115,7 +121,7 @@ export default function InputText({
                     onChange={onChange}
                     onKeyDown={onKeyDown}
                     onBlur={onBlur}
-                    placeholder={t('common.text.inputName', { name: label })}
+                    placeholder={t('text.inputName', { name: label })}
                 />
 
                 {renderUnitRight()}

@@ -67,17 +67,17 @@ export default function Header({
 
     return (
         <div
-            className={`sticky top-0 z-10 transition-all duration-500 shadow-inner text-sm p-4 bg-primary dark:bg-primary-dark text-secondary-dark dark:text-primary-dark flex items-center justify-between ${sidebarOpenFlag ? `ml-[${SIDEBAR_WIDTH}px]` : 'ml-0'} ${scrollDownFlag ? '-translate-y-full' : 'translate-y-0'}`}
+            className={`sticky top-0 z-10 transition-all duration-500 shadow-inner text-sm p-4 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base flex items-center justify-between ${sidebarOpenFlag ? `ml-[256px]` : 'ml-0'} ${scrollDownFlag ? '-translate-y-full' : 'translate-y-0'}`}
         >
             <div className="flex items-center gap-3 flex-1">
                 <button
-                    className="icon-primary cursor-pointer p-1"
+                    className="text-light-base dark:text-dark-base hover:text-light-base-secondary hover:dark:text-dark-base-secondary cursor-pointer p-1"
                     onClick={() => setSidebarOpenFlag(!sidebarOpenFlag)}
                     aria-label="Open sidebar"
                 >
                     <i className="fa-solid fa-bars text-2xl" />
                 </button>
-                {/* <h1 className="text-2xl font-semibold max-sm:hidden">Dashboard Content</h1> */}
+                <h1 className="text-2xl font-semibold max-sm:hidden">Dashboard Content</h1>
             </div>
 
             <div className="mx-2">
@@ -96,22 +96,22 @@ export default function Header({
             <div className="relative" ref={rieghtMenuRef}>
                 <button
                     onClick={() => setRightMenuOpenFlag(!rightMenuOpenFlag)}
-                    className="icon-primary hover:cursor-pointer focus:outline-none flex items-center"
+                    className="text-light-base dark:text-dark-base hover:text-light-base-secondary hover:dark:hover:text-dark-base-secondary cursor-pointer focus:outline-none flex items-center"
                 >
                     <i className="fa-solid fa-circle-user text-2xl" />
                 </button>
 
                 {rightMenuOpenFlag && (
-                    <div id="div_menu_right" className="fixed right-4 top-16 w-48 bg-primary dark:bg-primary-dark text-on-primary dark:text-on-primary-dark border border-tertiary dark:border-tertiary-dark rounded shadow-md z-20">
-                        <Link to="/profile" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-tertiary dark:hover:bg-tertiary-dark hover:cursor-pointer flex items-center gap-2'>
+                    <div id="div_menu_right" className="fixed right-4 top-16 w-48 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base border border-t-0 border-light-outline dark:border-dark-outline rounded-b-md shadow-md z-20">
+                        <Link to="/profile" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
                             <i className="fa-solid fa-circle-user" /> Profile
                         </Link>
-                        <Link to="/setting" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-tertiary dark:hover:bg-tertiary-dark hover:cursor-pointer flex items-center gap-2'>
+                        <Link to="/setting" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
                             <i className="fa-solid fa-gear" /> Settings
                         </Link>
-                        <hr className="my-1 border-t border-gray-200" />
+                        <hr className="my-1 border-t border-light-base dark:border-dark-base" />
                         <button
-                            className="w-full text-left px-4 py-2 hover:bg-tertiary dark:hover:bg-tertiary-dark hover:cursor-pointer flex items-center gap-2 text-red-500"
+                            className="w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer rounded-b-md flex items-center gap-2"
                             onClick={() => doLogout()}>
                             <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
                         </button>

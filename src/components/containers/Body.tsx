@@ -36,10 +36,10 @@ export default function Body({
     }, [])
 
     return (
-        <div className={`flex flex-col min-h-screen relative flex-1 transition-all duration-500 bg-secondary dark:bg-secondary-dark ${sidebarOpenFlag && mobileFlag ? 'hidden' : ''}`}>
+        <div className={`flex flex-col min-h-screen relative flex-1 transition-all duration-500 bg-light-clear-secondary dark:bg-dark-clear-secondary ${sidebarOpenFlag && mobileFlag ? 'hidden' : ''}`}>
             <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
 
-            <main className={`text-on-primary dark:text-on-primary-dark z-0 transition-all duration-500 ${sidebarOpenFlag ? `ml-[${SIDEBAR_WIDTH}px]` : 'ml-0'}`}>
+            <main className={`text-light-base-line dark:text-dark-base-line z-0 transition-all duration-500 ${sidebarOpenFlag ? `ml-[256px]` : 'ml-0'}`}>
                 <Routes />
             </main>
 
