@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "./Button";
+import InputText from "./InputText";
 
 type Option = {
     key: string | number;
@@ -30,17 +31,21 @@ export default function Select({
 }: SelectProps) {
     const { t } = useTranslation();
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const valueRef = useRef<HTMLDivElement>(value);
     const [itemList, setItemList] = useState<Option[]>(map);
     const [searchValue, setSearchValue] = useState("");
     const [labelValue, setLabelValue] = useState<string | null | undefined>("");
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
-    const isMultiple = Array.isArray(value);
-
     useEffect(() => {
         setItemList(map);
         updateLabel(value);
     }, [map, value]);
+
+    useEffect(() => {
+        valueRef.current = value
+        updateLabel(valueRef.current)
+    }, [value])
 
     const updateLabel = (val: any) => {
         if (multiple) {
@@ -124,15 +129,13 @@ export default function Select({
                 </button>
 
                 {dropdownOpen && (
-                    <div className="absolute z-10 w-full bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base border border-t-0 border-light-outline dark:border-dark-outline rounded-b-md shadow-lg">
+                    <div className="absolute z-10 w-full bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line border border-t-0 border-light-outline dark:border-dark-outline rounded-b-md shadow-lg">
                         {map.length > dataSize && (
                             <div className="p-2">
-                                <input
-                                    type="text"
+                                <InputText
+                                    name=""
                                     value={searchValue}
                                     onChange={handleSearchChange}
-                                    className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring"
-                                    placeholder={t("text.search")}
                                 />
                             </div>
                         )}
@@ -156,16 +159,16 @@ export default function Select({
                             </div>
                         )}
 
-                        <ul className="max-h-48 overflow-y-auto divide-y text-sm">
+                        <ul className="max-h-48 overflow-y-auto text-sm">
                             {itemList.map((item) => (
                                 <li
                                     key={item.key}
                                     onClick={() => handleSelect(item.key)}
-                                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center"
+                                    className="px-6 py-2 hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer flex justify-between items-center"
                                 >
                                     <span>{item.value}</span>
                                     {isSelected(item.key) && (
-                                        <i className="bi bi-check-lg text-blue-600"></i>
+                                        <i className="fa-solid fa-check"></i>
                                     )}
                                 </li>
                             ))}
