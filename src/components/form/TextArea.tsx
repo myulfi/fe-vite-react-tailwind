@@ -32,7 +32,7 @@ export default function TextArea({
     const { t } = useTranslation();
 
     return (
-        <div className="text-dark dark:text-tertiary">
+        <div className="text-light-base-line dark:text-dark-base-line">
             {label && (
                 <label className="block mb-1 text-md font-bold">
                     {label}
@@ -40,7 +40,7 @@ export default function TextArea({
             )}
 
             <textarea
-                className={`mb-1 w-full flex-1 border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-md`}
+                className={`w-full flex-1 border border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base rounded-md`}
                 name={name}
                 rows={rows}
                 value={value ?? ''}

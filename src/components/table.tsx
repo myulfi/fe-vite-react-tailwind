@@ -258,7 +258,7 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-4 pb-4 max-sm:pb-2">
+                <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5 max-sm:pb-2">
                     {
                         labelNewButton != undefined
                         && <div className="w-full md:w-auto">
@@ -294,7 +294,7 @@ export default function Table({
                         // </div>
                     }
                 </div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-4 max-sm:gap-2 pb-4">
+                <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5">
                     {
                         lengthFlag
                         && <div className="w-full md:w-auto mt-1.5 max-sm:my-0">
@@ -326,7 +326,7 @@ export default function Table({
                     }
                 </div>
             </div>
-            <div className="overflow-x-auto w-full">
+            <div className="overflow-x-auto w-full pb-5">
                 <table className="min-w-full table-auto">
                     {/* bg-slate-300 dark:bg-gray-700 */}
                     <thead className='text-light-base-line-secondary dark:text-dark-base-line-secondary border-y-1 border-light-divider dark:border-dark-divider'>
@@ -452,7 +452,7 @@ export default function Table({
             {
                 TABLE.PAGINATION === type
                 && dataTotal > 0
-                && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-6 pb-2">
+                && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-1 pb-3">
                     <div className="w-full md:w-auto max-sm:my-2">
                         {/* {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`} */}
                         {t

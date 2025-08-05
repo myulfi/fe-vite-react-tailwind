@@ -85,23 +85,44 @@ export default function InputDecimal({
         });
     };
 
-    const inputClasses = `w-full px-3 py-2 border text-sm rounded-md focus:ring-1 focus:outline-none 
-    ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"} 
-    ${disabled ? "bg-gray-100 text-gray-400" : "text-gray-900"} 
-  `;
-
     return (
-        <div className="text-dark dark:text-tertiary">
+        <div className="text-light-base-line dark:text-dark-base-line">
             {label && (
                 <label className="block mb-1 text-md font-bold">
                     {label}
                 </label>
             )}
 
-            {positionUnit === undefined ? (
+
+            <div className="flex rounded-md shadow-sm">
+                {positionUnit === "left" && (
+                    <>
+                        {valueUnitList ? (
+                            <select
+                                className="rounded-l-md border border-gray-300 bg-gray-50 px-2 text-sm text-gray-700"
+                                name={nameUnit}
+                                value={valueUnit}
+                                disabled={disabled}
+                                onChange={onInputUnitChange}
+                            >
+                                {valueUnitList.map((object) => (
+                                    <option value={object.key} key={object.key}>
+                                        {object.value}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            <span className="inline-flex items-center px-3 rounded-l-md border border-gray-300 bg-gray-100 text-gray-600 text-sm">
+                                {valueUnit}
+                            </span>
+                        )}
+                    </>
+                )}
+
                 <input
                     ref={inputRef}
-                    className={inputClasses}
+                    className={`flex-1 border border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base ${positionUnit === "left" ? "rounded-l-none" : ""
+                        } ${positionUnit === "right" ? "rounded-r-none" : ""}`}
                     name={name}
                     type="text"
                     value={valueInput}
@@ -109,69 +130,31 @@ export default function InputDecimal({
                     onChange={onInputChange}
                     placeholder={t("common.text.inputName", { name: label })}
                 />
-            ) : (
-                <div className="flex rounded-md shadow-sm">
-                    {positionUnit === "left" && (
-                        <>
-                            {valueUnitList ? (
-                                <select
-                                    className="rounded-l-md border border-gray-300 bg-gray-50 px-2 text-sm text-gray-700"
-                                    name={nameUnit}
-                                    value={valueUnit}
-                                    disabled={disabled}
-                                    onChange={onInputUnitChange}
-                                >
-                                    {valueUnitList.map((object) => (
-                                        <option value={object.key} key={object.key}>
-                                            {object.value}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <span className="inline-flex items-center px-3 rounded-l-md border border-gray-300 bg-gray-100 text-gray-600 text-sm">
-                                    {valueUnit}
-                                </span>
-                            )}
-                        </>
-                    )}
 
-                    <input
-                        ref={inputRef}
-                        className={`${inputClasses} ${positionUnit === "left" ? "rounded-l-none" : ""
-                            } ${positionUnit === "right" ? "rounded-r-none" : ""}`}
-                        name={name}
-                        type="text"
-                        value={valueInput}
-                        disabled={disabled}
-                        onChange={onInputChange}
-                        placeholder={t("common.text.inputName", { name: label })}
-                    />
-
-                    {positionUnit === "right" && (
-                        <>
-                            {valueUnitList ? (
-                                <select
-                                    className="rounded-r-md border border-gray-300 bg-gray-50 px-2 text-sm text-gray-700"
-                                    name={nameUnit}
-                                    value={valueUnit}
-                                    disabled={disabled}
-                                    onChange={onInputUnitChange}
-                                >
-                                    {valueUnitList.map((object) => (
-                                        <option value={object.key} key={object.key}>
-                                            {object.value}
-                                        </option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <span className="inline-flex items-center px-3 rounded-r-md border border-gray-300 bg-gray-100 text-gray-600 text-sm">
-                                    {valueUnit}
-                                </span>
-                            )}
-                        </>
-                    )}
-                </div>
-            )}
+                {positionUnit === "right" && (
+                    <>
+                        {valueUnitList ? (
+                            <select
+                                className="rounded-r-md border border-gray-300 bg-gray-50 px-2 text-sm text-gray-700"
+                                name={nameUnit}
+                                value={valueUnit}
+                                disabled={disabled}
+                                onChange={onInputUnitChange}
+                            >
+                                {valueUnitList.map((object) => (
+                                    <option value={object.key} key={object.key}>
+                                        {object.value}
+                                    </option>
+                                ))}
+                            </select>
+                        ) : (
+                            <span className="inline-flex items-center px-3 rounded-r-md border border-gray-300 bg-gray-100 text-gray-600 text-sm">
+                                {valueUnit}
+                            </span>
+                        )}
+                    </>
+                )}
+            </div>
 
             {error && (
                 <p className="mt-1 text-xs text-red-600 font-medium">{error}</p>

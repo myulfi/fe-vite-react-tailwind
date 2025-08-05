@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Button from "./Button";
 
 type Option = {
     key: string | number;
@@ -31,7 +32,7 @@ export default function Select({
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [itemList, setItemList] = useState<Option[]>(map);
     const [searchValue, setSearchValue] = useState("");
-    const [labelValue, setLabelValue] = useState<string>("");
+    const [labelValue, setLabelValue] = useState<string | null | undefined>("");
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const isMultiple = Array.isArray(value);
@@ -44,16 +45,16 @@ export default function Select({
     const updateLabel = (val: any) => {
         if (multiple) {
             if (!val || val.length === 0) {
-                setLabelValue(t("text.selectName", { name }));
+                setLabelValue(null);
             } else if (val.length === 1) {
                 const item = map.find((item) => item.key === val[0]);
-                setLabelValue(item?.value ?? "");
+                setLabelValue(item?.value ?? null);
             } else {
                 setLabelValue(`${val.length} items selected`);
             }
         } else {
             const item = map.find((item) => item.key === val);
-            setLabelValue(item?.value ?? t("text.selectName", { name }));
+            setLabelValue(item?.value);
         }
     };
 
@@ -100,7 +101,7 @@ export default function Select({
     };
 
     return (
-        <div className="text-dark dark:text-tertiary">
+        <div className="text-light-base-line dark:text-dark-base-line">
             {label && (
                 <label className="block mb-1 text-md font-bold">
                     {label}
@@ -110,20 +111,20 @@ export default function Select({
             <div className="relative" ref={dropdownRef}>
                 <button
                     type="button"
-                    className="w-full border border-gray-300 rounded-md bg-white px-3 py-2 text-sm text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className={`w-full ${dropdownOpen ? "rounded-t border-x border-t" : 'rounded border'} border-light-outline dark:border-dark-outline px-3 py-2 text-sm focus:border-light-base focus:dark:border-dark-base focus:outline-none cursor-pointer`}
                     onClick={() => {
                         setDropdownOpen(!dropdownOpen);
                         handleSearchChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
                     }}
                 >
                     <div className="flex justify-between items-center">
-                        <span className="text-gray-700">{labelValue}</span>
-                        <i className="bi bi-chevron-down text-gray-500 text-sm"></i>
+                        <span className={`${labelValue ? 'text-light-base-line dark:text-dark-base-line' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { name })}</span>
+                        <i className="fa-solid fa-chevron-down text-sm"></i>
                     </div>
                 </button>
 
                 {dropdownOpen && (
-                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                    <div className="absolute z-10 w-full bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base border border-t-0 border-light-outline dark:border-dark-outline rounded-b-md shadow-lg">
                         {map.length > dataSize && (
                             <div className="p-2">
                                 <input
@@ -137,21 +138,21 @@ export default function Select({
                         )}
 
                         {multiple && map.length > dataSize && (
-                            <div className="flex justify-between px-2 pb-1">
-                                <button
-                                    type="button"
+                            <div className="flex gap-1 mx-2 pb-1">
+                                <Button
+                                    label={t("button.selectAll")}
+                                    className="flex-1"
+                                    size="sm"
+                                    type="secondary"
                                     onClick={selectAll}
-                                    className="text-xs text-blue-600 hover:underline"
-                                >
-                                    {t("button.selectAll")}
-                                </button>
-                                <button
-                                    type="button"
+                                />
+                                <Button
+                                    label={t("button.deselectAll")}
+                                    className="flex-1"
+                                    size="sm"
+                                    type="secondary"
                                     onClick={deselectAll}
-                                    className="text-xs text-blue-600 hover:underline"
-                                >
-                                    {t("button.deselectAll")}
-                                </button>
+                                />
                             </div>
                         )}
 

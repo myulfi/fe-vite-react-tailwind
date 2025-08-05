@@ -20,7 +20,7 @@ export default function InputDate({
     const { t } = useTranslation();
 
     return (
-        <div className="text-dark dark:text-tertiary">
+        <div className="text-light-base-line dark:text-dark-base-line">
             {label && (
                 <label className="block mb-1 text-md font-bold">
                     {label}
@@ -28,8 +28,8 @@ export default function InputDate({
             )}
             <input
                 className={`
-          w-full px-3 py-2 border text-sm rounded-md focus:ring-1 focus:outline-none
-          ${error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}
+border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base
+          ${error ? "border-red-500 focus:ring-red-500" : ""}
           ${disabled ? "bg-gray-100 text-gray-400" : "text-gray-900"}
         `}
                 name={name}
@@ -37,7 +37,7 @@ export default function InputDate({
                 value={value}
                 disabled={disabled}
                 onChange={onChange}
-                placeholder={t("common.text.selectName", { name: label })}
+                placeholder={t("text.selectName", { name: label })}
             />
             {error && (
                 <p className="mt-1 text-xs text-red-600 font-medium">{error}</p>
