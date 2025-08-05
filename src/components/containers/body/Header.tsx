@@ -67,7 +67,7 @@ export default function Header({
 
     return (
         <div
-            className={`sticky top-0 z-10 transition-all duration-500 shadow-inner text-sm p-4 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base flex items-center justify-between ${sidebarOpenFlag ? `ml-[256px]` : 'ml-0'} ${scrollDownFlag ? '-translate-y-full' : 'translate-y-0'}`}
+            className={`sticky top-0 z-10 transition-all duration-500 shadow-inner text-sm py-6 px-4 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base flex items-center justify-between ${sidebarOpenFlag ? `md:ml-[256px] max-md:ml-0` : 'ml-0'} ${scrollDownFlag ? 'max-sm:-translate-y-full' : 'translate-y-0'}`}
         >
             <div className="flex items-center gap-3 flex-1">
                 <button
@@ -77,7 +77,7 @@ export default function Header({
                 >
                     <i className="fa-solid fa-bars text-2xl" />
                 </button>
-                <h1 className="text-2xl font-semibold max-sm:hidden">Dashboard Content</h1>
+                {/* <h1 className="text-light-base-line dark:text-dark-base-line text-2xl font-semibold max-sm:hidden">Dashboard Content</h1> */}
             </div>
 
             <div className="mx-2">

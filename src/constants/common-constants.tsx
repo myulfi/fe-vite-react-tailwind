@@ -39,4 +39,4 @@ export const HTTP_CODE = {
     UNAUTHORIZED: 401
 }
 
-export const SIDEBAR_WIDTH = "256";
+export const SIDEBAR_WIDTH = 256;

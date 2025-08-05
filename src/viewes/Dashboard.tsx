@@ -3,13 +3,14 @@ import Body from "../components/containers/Body";
 import SideBar from "../components/containers/SideBar";
 
 export default function Dashboard() {
-    const [mobileFlag, setMobileFlag] = useState(false);
+    const [tabletFlag, setTabletFlag] = useState(false);
     const [sidebarOpenFlag, setSidebarOpenFlag] = useState(true);
 
     useEffect(() => {
         const checkMobile = () => {
-            const mobile = window.innerWidth < 768;
-            setMobileFlag(mobile);
+            const mobile = window.innerWidth < 321;
+            const tablet = window.innerWidth < 769;
+            setTabletFlag(tablet);
             setSidebarOpenFlag(!mobile);
         }
 
@@ -20,8 +21,8 @@ export default function Dashboard() {
 
     return (
         <React.Fragment>
-            <SideBar mobileFlag={mobileFlag} sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
-            <Body mobileFlag={mobileFlag} sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
+            <SideBar tabletFlag={tabletFlag} sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
+            <Body sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
         </React.Fragment>
     )
 }

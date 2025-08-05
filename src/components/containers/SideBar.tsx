@@ -122,32 +122,29 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
 }
 
 type SideBarProps = {
-    mobileFlag: boolean;
+    tabletFlag: boolean;
     sidebarOpenFlag: boolean;
     setSidebarOpenFlag: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function SideBar({
-    mobileFlag,
+    tabletFlag,
     sidebarOpenFlag,
     setSidebarOpenFlag,
 }: SideBarProps) {
     return (
         <div
-            className={`fixed top-0 left-0 h-full overflow-y-auto bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line z-20 transition-transform duration-500 ease-in-out w-screen md:w-[256px] ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}`}
+            className={`fixed top-0 left-0 h-full overflow-y-auto bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line z-20 transition-transform duration-500 ease-in-out sm:w-[256px] max-sm:w-screen ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}`}
         >
             <div className='relative border-b border-light-clear dark:border-dark-clear pb-4 m-4'>
-                <span className='block text-center font-bold text-lg'>SAPA UMKM</span>
-                {
-                    mobileFlag &&
-                    <button
-                        onClick={() => setSidebarOpenFlag(false)}
-                        className='absolute right-0 top-0 text-light-clear dark:text-dark-clear cursor-pointer'
-                        aria-label='Close sidebar'
-                    >
-                        <i className='fa-solid fa-xmark'></i>
-                    </button>
-                }
+                <span className='block text-center font-bold text-3xl text-light-base dark:text-dark-base'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span>
+                <button
+                    onClick={() => setSidebarOpenFlag(false)}
+                    className='absolute right-0 top-0 md:hidden cursor-pointer'
+                    aria-label='Close sidebar'
+                >
+                    <i className='fa-solid fa-xmark' />
+                </button>
             </div>
 
             <nav className='pl-4'>
@@ -156,7 +153,7 @@ export default function SideBar({
                         key={idx}
                         item={item}
                         onNavigate={() => {
-                            if (mobileFlag) {
+                            if (tabletFlag) {
                                 setSidebarOpenFlag(false)
                             }
                         }}

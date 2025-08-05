@@ -40,14 +40,6 @@ function ConfirmDialog({
                         onClick={onClose}
                     />
                 ),
-                // 'alert' !== type && (
-                //     <Button
-                //         label={t("button.close")}
-                //         onClick={onClose}
-                //         className="btn-secondary"
-                //         icon="fa-solid fa-xmark"
-                //     />
-                // ),
                 'confirmation' === type && (
                     <Button
                         label={t("button.ok")}
@@ -231,7 +223,7 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
             style={{ zIndex }}
         >
             <div
-                className="flex items-center justify-center min-h-screen py-4"
+                className="flex items-center justify-center min-h-screen py-4 px-4"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
@@ -262,7 +254,7 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
                     <div className="py-4 px-8 border-y-1 border-light-divider dark:border-dark-divider">
                         {children}
                     </div>
-                    <div className="flex justify-end gap-4 p-4">
+                    <div className="flex md:justify-end flex-col md:flex-row gap-4 p-4">
                         {buttonArray}
                         <Button
                             label={t("button.close")}

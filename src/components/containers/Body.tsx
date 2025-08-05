@@ -2,16 +2,13 @@ import { useEffect, useRef, useState } from "react"
 import Routes from "../../routes"
 import Header from "./body/Header"
 import Footer from "./body/Footer"
-import { SIDEBAR_WIDTH } from "../../constants/common-constants";
 
 type BodyProps = {
-    mobileFlag: boolean;
     sidebarOpenFlag: boolean;
     setSidebarOpenFlag: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Body({
-    mobileFlag,
     sidebarOpenFlag,
     setSidebarOpenFlag,
 }: BodyProps) {
@@ -36,10 +33,10 @@ export default function Body({
     }, [])
 
     return (
-        <div className={`flex flex-col min-h-screen relative flex-1 transition-all duration-500 bg-light-clear-secondary dark:bg-dark-clear-secondary ${sidebarOpenFlag && mobileFlag ? 'hidden' : ''}`}>
+        <div className={`flex flex-col min-h-screen relative flex-1 transition-all duration-500 bg-light-clear-secondary dark:bg-dark-clear-secondary ${sidebarOpenFlag ? 'max-sm:hidden' : ''}`}>
             <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
 
-            <main className={`text-light-base-line dark:text-dark-base-line z-0 transition-all duration-500 ${sidebarOpenFlag ? `ml-[256px]` : 'ml-0'}`}>
+            <main className={`text-light-base-line dark:text-dark-base-line z-0 transition-all duration-500 ${sidebarOpenFlag ? `md:ml-[256px] max-md:ml-0` : 'ml-0'}`}>
                 <Routes />
             </main>
 
