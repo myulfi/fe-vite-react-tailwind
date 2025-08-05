@@ -7,7 +7,8 @@ import { apiRequest } from "../../api"
 import { formatDate } from "../../function/dateHelper"
 import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext"
 import Label from "../../components/form/Label"
-import toast from "../../Toast"
+// import toast from "../../Toast"
+import { toast } from "../../ToastContext"
 import InputText from "../../components/form/InputText"
 import TextArea from "../../components/form/TextArea"
 import InputDecimal from "../../components/form/InputDecimal"
@@ -22,7 +23,7 @@ export default function ExampleTemplate() {
         name: string;
         description?: string;
         value: number;
-        // valueMultiple: [];
+        valueMultiple: [];
         amount: number,
         date?: Date,
         activeFlag: number,
@@ -44,7 +45,7 @@ export default function ExampleTemplate() {
         name: "",
         description: undefined,
         value: 0,
-        // valueMultiple: [],
+        valueMultiple: [],
         amount: 0,
         date: undefined,
         activeFlag: 0,
@@ -109,7 +110,7 @@ export default function ExampleTemplate() {
     const [exampleTemplateForm, setExampleTemplateForm] = useState<ExampleTemplateData>(exampleTemplateInitial)
     const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError | []>([])
 
-    const onExampleTemplateFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const onExampleTemplateFormChange = (e: { target: { name: string; value: any } }) => {
         const { name, value } = e.target
         setExampleTemplateForm({ ...exampleTemplateForm, [name]: value })
         setExampleTemplateFormError({ ...exampleTemplateFormError, [name]: undefined })
@@ -357,7 +358,7 @@ export default function ExampleTemplate() {
 
 
     return (
-        <div className="bg-light-clear dark:bg-dark-clear m-6 p-4 rounded-lg shadow-lg">
+        <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 rounded-lg shadow-lg">
             <ModalStackProvider>
                 <Modal
                     show={modalExampleTemplate}
@@ -405,12 +406,10 @@ export default function ExampleTemplate() {
                                 <InputText label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
                                 <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} />
-                                {/* <Select label={t("common.text.value")} name="multipleValue" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
-                            liveSearch={true}
-                            actionBox={true}
-                            dataSize={5}
-                            onChange={onExampleTemplateFormChange}
-                            className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} /> */}
+                                <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
+                                    dataSize={5}
+                                    onChange={onExampleTemplateFormChange}
+                                    error={exampleTemplateFormError.value} />
                                 <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.amount} />
                                 <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
                                 <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} map={yesNoMap} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.activeFlag} />
@@ -440,6 +439,27 @@ export default function ExampleTemplate() {
                         label: t("button.delete"),
                         icon: "fa-solid fa-trash",
                         onClick: () => confirmDeleteExampleTemplate(),
+                    }
+                ]}
+
+                additionalButtonArray={[
+                    {
+                        label: "success",
+                        type: 'success',
+                        icon: "fa-solid fa-list",
+                        onClick: () => toast.show({ type: "done", message: "hahah" })
+                    },
+                    {
+                        label: "warning",
+                        type: 'warning',
+                        icon: "fa-solid fa-list",
+                        onClick: () => toast.show({ type: "done", message: "hahah" })
+                    },
+                    {
+                        label: "danger",
+                        type: 'danger',
+                        icon: "fa-solid fa-list",
+                        onClick: () => toast.show({ type: "done", message: "hahah" })
                     }
                 ]}
 
@@ -496,7 +516,7 @@ export default function ExampleTemplate() {
                         class: "text-nowrap",
                         render: function (data, row) {
                             return (
-                                <div className="flex flex-row justify-evenly">
+                                <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
                                         label={t("button.view")}
                                         className="btn-primary"

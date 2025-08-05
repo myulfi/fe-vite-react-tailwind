@@ -36,18 +36,20 @@ export default function Select({
     const [searchValue, setSearchValue] = useState("");
     const [labelValue, setLabelValue] = useState<string | null | undefined>("");
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [autoFocus, setAutoFocus] = useState(false);
+
 
     useEffect(() => {
         setItemList(map);
-        updateLabel(value);
-    }, [map, value]);
+        labelValueChange(value);
+    }, [map]);
 
     useEffect(() => {
         valueRef.current = value
-        updateLabel(valueRef.current)
-    }, [value])
+        labelValueChange(valueRef.current)
+    }, [value]);
 
-    const updateLabel = (val: any) => {
+    const labelValueChange = (val: any) => {
         if (multiple) {
             if (!val || val.length === 0) {
                 setLabelValue(null);
@@ -63,6 +65,24 @@ export default function Select({
         }
     };
 
+    const onSelect = (id: string | number) => {
+        if (multiple) {
+            if (value.includes(id)) {
+                value.splice(value.indexOf(id), 1)
+            } else {
+                value.push(id)
+            }
+            valueRef.current = value
+        } else {
+            value = id
+        }
+
+        if (!multiple) {
+            onChange({ target: { name, value: value } });
+        }
+        labelValueChange(value);
+    };
+
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setSearchValue(val);
@@ -73,30 +93,23 @@ export default function Select({
         );
     };
 
-    const handleSelect = (id: string | number) => {
-        let newValue: any;
-        if (multiple && Array.isArray(value)) {
-            newValue = value.includes(id)
-                ? value.filter((v: any) => v !== id)
-                : [...value, id];
-        } else {
-            newValue = id;
-            setDropdownOpen(false);
-        }
-
-        onChange({ target: { name, value: newValue } });
-        updateLabel(newValue);
-    };
-
     const selectAll = () => {
-        const allKeys = itemList.map((item) => item.key);
-        onChange({ target: { name, value: allKeys } });
-        updateLabel(allKeys);
+        for (let i = 0; i < itemList.length; i++) {
+            if (value.includes(itemList[i].key) === false) {
+                value.push(itemList[i].key)
+            }
+        }
+        labelValueChange(value);
     };
 
     const deselectAll = () => {
-        onChange({ target: { name, value: [] } });
-        updateLabel([]);
+        for (let i = itemList.length - 1; i >= 0; i--) {
+            if (value.includes(itemList[i].key)) {
+                value.splice(value.indexOf(itemList[i].key), 1)
+            }
+        }
+
+        labelValueChange(value)
     };
 
     const isSelected = (id: string | number) => {
@@ -119,6 +132,7 @@ export default function Select({
                     className={`w-full ${dropdownOpen ? "rounded-t border-x border-t" : 'rounded border'} border-light-outline dark:border-dark-outline px-3 py-2 text-sm focus:border-light-base focus:dark:border-dark-base focus:outline-none cursor-pointer`}
                     onClick={() => {
                         setDropdownOpen(!dropdownOpen);
+                        setAutoFocus(true);
                         handleSearchChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
                     }}
                 >
@@ -134,6 +148,7 @@ export default function Select({
                             <div className="p-2">
                                 <InputText
                                     name=""
+                                    autoFocus={autoFocus}
                                     value={searchValue}
                                     onChange={handleSearchChange}
                                 />
@@ -163,7 +178,7 @@ export default function Select({
                             {itemList.map((item) => (
                                 <li
                                     key={item.key}
-                                    onClick={() => handleSelect(item.key)}
+                                    onClick={() => onSelect(item.key)}
                                     className="px-6 py-2 hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer flex justify-between items-center"
                                 >
                                     <span>{item.value}</span>
