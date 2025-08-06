@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { LOCAL_STORAGE, METHOD, SIDEBAR_WIDTH } from "../../../constants/common-constants";
+import { LOCAL_STORAGE, SIDEBAR_WIDTH } from "../../../constants/common-constants";
 import { apiRequest } from "../../../api";
 import { useClickOutside } from "../../../hook/useClickOutside";
 
@@ -38,7 +38,7 @@ export default function Header({
 
     const doLogout = async () => {
         try {
-            await apiRequest(METHOD.POST, '/remove-token.json')
+            await apiRequest('post', '/remove-token.json')
         } catch (error) {
             // setToast({ type: "failed", message: error.response?.data?.message ?? error.message })
         } finally {

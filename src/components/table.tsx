@@ -1,5 +1,4 @@
 import { Fragment, useEffect, useState } from "react";
-import { DEVICE, TABLE } from "../constants/common-constants";
 import { getNestedValue, onCopy } from "../function/commonHelper";
 import { Trans, useTranslation } from "react-i18next";
 import Button from "./form/Button";
@@ -7,7 +6,7 @@ import InputText from "./form/InputText";
 
 interface TableProps {
     showFlag?: boolean;
-    type?: number;
+    type?: 'pagination' | 'load_more';
     labelNewButton?: string;
     onNewButtonClick?: () => void;
     additionalButtonArray?: {
@@ -33,7 +32,7 @@ interface TableProps {
         class?: string;
         copy?: boolean;
         width?: number;
-        minDevice?: number;
+        minDevice?: 'none' | 'mobile' | 'tablet' | 'desktop' | 'tv';
         defaultContent?: () => string;
         render?: (value: any, data: any) => React.ReactNode;
         orderable?: boolean;
@@ -57,7 +56,7 @@ interface TableProps {
 
 export default function Table({
     showFlag = true,
-    type = TABLE.PAGINATION,
+    type = 'pagination',
     labelNewButton,
     onNewButtonClick = () => { alert("Please define your function!") },
     additionalButtonArray = [],
@@ -90,9 +89,9 @@ export default function Table({
     const [sizePage, setSizePage] = useState(initialSizePage)
 
     useEffect(() => {
-        if (TABLE.PAGINATION === type) {
+        if ('pagination' === type) {
             setItemArray(dataArray)
-        } else if (TABLE.LOAD_MORE === type) {
+        } else if ('load_more' === type) {
             setItemArray([...itemArray, ...dataArray])
             setLoadMoreButtonFlag(dataArray.length == sizePage)
         }
@@ -102,15 +101,15 @@ export default function Table({
         return obj['id']
     })
 
-    const columnShow = columns.filter(column => { return column.minDevice !== DEVICE.NONE })
-    const columnHide = columns.filter(column => { return column.minDevice !== undefined && column.minDevice !== DEVICE.MOBILE })
-    const columnAlwaysHide = columns.filter(column => { return column.minDevice === DEVICE.NONE })
+    const columnShow = columns.filter(column => { return column.minDevice !== 'none' })
+    const columnHide = columns.filter(column => { return column.minDevice !== undefined && column.minDevice !== 'mobile' })
+    const columnAlwaysHide = columns.filter(column => { return column.minDevice === 'none' })
 
     const pages = Array.from({ length: Math.ceil(dataTotal / sizePage) }, (_, i) => i + 1)
     const lengthArray = [5, 10, 25, 50, 100]
 
     const onPageChange = (page: number, length: number, search: string) => {
-        if (TABLE.LOAD_MORE === type && page === 1) {
+        if ('load_more' === type && page === 1) {
             setItemArray([])
         }
         setCurrentPage(page)
@@ -267,7 +266,7 @@ export default function Table({
                     }
                     {
                         additionalButtonArray.map((additionalButton, index) => (
-                            <div className="w-full md:w-auto">
+                            <div key={index} className="w-full md:w-auto">
                                 <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" type={additionalButton.type} icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
                             </div>
                         ))
@@ -341,7 +340,7 @@ export default function Table({
                             }
                             {
                                 columnShow.map((column, index) => (
-                                    <th key={index} scope="col" className={`px-4 py-4 align-middle ${column.class} ${column.minDevice == DEVICE.DESKTOP ? "max-lg:hidden" : column.minDevice == DEVICE.TABLET ? "max-md:hidden" : ""}`} style={column.width != null ? { width: `${column.width}%` } : {}}>
+                                    <th key={index} scope="col" className={`px-4 py-4 align-middle ${column.class} ${column.minDevice == 'desktop' ? "max-lg:hidden" : column.minDevice == 'tablet' ? "max-md:hidden" : ""}`} style={column.width != null ? { width: `${column.width}%` } : {}}>
                                         <span className="flex items-center justify-between w-full">
                                             <span>{column.name}</span>
                                             {
@@ -376,7 +375,7 @@ export default function Table({
                                             {
                                                 columnShow
                                                     .map((column, index) => (
-                                                        <td key={index} className={`px-4 py-3 ${index === 0 && column.copy !== true ? "cursor-pointer" : undefined} ${column.class} ${column.minDevice == DEVICE.DESKTOP ? "max-lg:hidden" : column.minDevice == DEVICE.TABLET ? "max-md:hidden" : ""}`} onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
+                                                        <td key={index} className={`px-4 py-3 ${index === 0 && column.copy !== true ? "cursor-pointer" : undefined} ${column.class} ${column.minDevice == 'desktop' ? "max-lg:hidden" : column.minDevice == 'tablet' ? "max-md:hidden" : ""}`} onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
                                                             {
                                                                 index == 0 &&
                                                                 <span className={`cursor-pointer me-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : null}`} onClick={column.copy ? () => showDetail(indexRow) : undefined} ><i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} /></span>
@@ -411,7 +410,7 @@ export default function Table({
                                                     {
                                                         columnHide
                                                             .map((column, index) => (
-                                                                <div key={index} className={`border-b border-l ml-6 mr-2 px-2 py-2 ${column.minDevice == DEVICE.TABLET ? "md:hidden" : column.minDevice == DEVICE.DESKTOP ? "lg:hidden" : ""}`}>
+                                                                <div key={index} className={`border-b border-l ml-6 mr-2 px-2 py-2 ${column.minDevice == 'tablet' ? "md:hidden" : column.minDevice == 'desktop' ? "lg:hidden" : ""}`}>
                                                                     <label className="fw-bold me-2">{column.name}</label>
                                                                     {
                                                                         column.render != undefined
@@ -450,7 +449,7 @@ export default function Table({
                 </table>
             </div>
             {
-                TABLE.PAGINATION === type
+                'pagination' === type
                 && dataTotal > 0
                 && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-2 pb-3">
                     <div className="w-full md:w-auto max-sm:my-2">
@@ -559,7 +558,7 @@ export default function Table({
                 </div>
             }
             {
-                TABLE.LOAD_MORE === type
+                'load_more' === type
                 && itemArray.length > 0
                 && <Fragment>
                     <div className="mt-2">

@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next"
 import Button from "../../components/form/Button"
-import Table from "../../components/table"
+import Table from "../../components/Table"
 import { Fragment, useEffect, useState } from "react"
-import { DEVICE, HTTP_CODE, METHOD, MODAL } from "../../constants/common-constants"
+import { HTTP_CODE, MODAL } from "../../constants/common-constants"
 import { apiRequest } from "../../api"
 import { formatDate } from "../../function/dateHelper"
 import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext"
@@ -91,7 +91,6 @@ export default function ExampleTemplate() {
 
     const [exampleTemplateArray, setExampleTemplateArray] = useState([])
 
-
     type ModalType = {
         title: string;
         submitLabel?: string;
@@ -167,7 +166,7 @@ export default function ExampleTemplate() {
         }
         setExampleTemplateAttributeTable(options)
 
-        const response = await apiRequest(METHOD.GET, "/test/example-template.json", params)
+        const response = await apiRequest('get', "/test/example-template.json", params)
         if (HTTP_CODE.OK === response.status) {
             console.log(response)
             setExampleTemplateArray(response.data)
@@ -198,7 +197,7 @@ export default function ExampleTemplate() {
                 },
             }));
 
-            const response = await apiRequest(METHOD.GET, `/test/${id}/example-template.json`)
+            const response = await apiRequest('get', `/test/${id}/example-template.json`)
             if (HTTP_CODE.OK === response.status) {
                 const exampleTemplate = response.data
                 setExampleTemplateForm({
@@ -276,7 +275,7 @@ export default function ExampleTemplate() {
             setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
-                id === undefined ? METHOD.POST : METHOD.PATCH,
+                id === undefined ? 'post' : 'patch',
                 id === undefined ? '/test/example-template.json' : `/test/${id}/example-template.json`,
                 exampleTemplateForm,
             );
@@ -330,7 +329,7 @@ export default function ExampleTemplate() {
             setExampleTemplateBulkOptionLoadingFlag(true)
         }
 
-        const response = await apiRequest(METHOD.DELETE, `/test/${id !== undefined ? id : exampleTemplateCheckBoxTableArray.join("")}/example-template.json`)
+        const response = await apiRequest('delete', `/test/${id !== undefined ? id : exampleTemplateCheckBoxTableArray.join("")}/example-template.json`)
         if (HTTP_CODE.OK === response.status) {
             getExampleTemplate(exampleTemplateAttributeTable)
             if (id === undefined) {
@@ -470,34 +469,34 @@ export default function ExampleTemplate() {
                         name: t("text.name"),
                         class: "text-nowrap",
                         orderable: true,
-                        minDevice: DEVICE.MOBILE,
+                        minDevice: 'mobile',
                     },
                     {
                         data: "description",
                         name: t("text.description"),
                         class: "wrap text-nowrap",
-                        minDevice: DEVICE.TABLET,
+                        minDevice: 'tablet',
                     },
                     {
                         data: "value",
                         name: t("text.value"),
                         class: "text-nowrap",
                         width: 10,
-                        minDevice: DEVICE.TABLET,
+                        minDevice: 'tablet',
                     },
                     // {
                     //     data: "date",
                     //     name: t("text.date"),
                     //     class: "text-nowrap",
                     //     width: 10,
-                    //     minDevice: DEVICE.DESKTOP
+                    //     minDevice: 'desktop'
                     // },
                     {
                         data: "createdBy",
                         name: t("text.createdBy"),
                         class: "text-nowrap",
                         width: 10,
-                        minDevice: DEVICE.DESKTOP
+                        minDevice: "desktop"
                     },
                     {
                         data: "createdDate",
@@ -505,7 +504,7 @@ export default function ExampleTemplate() {
                         class: "text-nowrap",
                         width: 15,
                         orderable: true,
-                        minDevice: DEVICE.DESKTOP,
+                        minDevice: "desktop",
                         render: function (data) {
                             return formatDate(new Date(data), "dd MMM yyyy HH:mm:ss")
                         }

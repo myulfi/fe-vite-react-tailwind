@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type { AxiosError, AxiosResponse } from 'axios'
-import { HTTP_CODE, LOCAL_STORAGE, METHOD } from './constants/common-constants'
+import { HTTP_CODE, LOCAL_STORAGE } from './constants/common-constants'
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -9,7 +9,6 @@ const api = axios.create({
     }
 })
 
-type HttpMethod = number
 type ParamsType = Record<string, any> | FormData | null
 
 const getAuthHeader = (contentType: string) => ({
@@ -18,7 +17,7 @@ const getAuthHeader = (contentType: string) => ({
 })
 
 const apiRequest = async (
-    method: HttpMethod,
+    method: 'get' | 'post' | 'put' | 'patch' | 'delete',
     url: string,
     params?: ParamsType
 ): Promise<any> => {
@@ -35,7 +34,7 @@ const apiRequest = async (
             let response: AxiosResponse
 
             switch (method) {
-                case METHOD.GET:
+                case 'get':
                     response = await api.get(url, { headers, params })
                     break
 
@@ -50,19 +49,19 @@ const apiRequest = async (
                 //   })
                 //   break
 
-                case METHOD.POST:
+                case 'post':
                     response = await api.post(url, params, { headers })
                     break
 
-                case METHOD.PUT:
+                case 'put':
                     response = await api.put(url, params, { headers })
                     break
 
-                case METHOD.PATCH:
+                case 'patch':
                     response = await api.patch(url, params, { headers })
                     break
 
-                case METHOD.DELETE:
+                case 'delete':
                     response = await api.delete(url, { headers })
                     break
 

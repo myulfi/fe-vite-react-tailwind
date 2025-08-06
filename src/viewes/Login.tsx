@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { HTTP_CODE, LOCAL_STORAGE, METHOD } from "../constants/common-constants"
+import { HTTP_CODE, LOCAL_STORAGE } from "../constants/common-constants"
 import { useState } from "react"
 import { apiRequest } from "../api"
 import InputText from "../components/form/InputText"
@@ -44,7 +44,7 @@ export default function Login() {
 
             try {
                 const response = await apiRequest(
-                    METHOD.POST,
+                    'post',
                     '/generate-token.json',
                     {
                         // username: btoa(unescape(encodeURIComponent(
@@ -88,7 +88,7 @@ export default function Login() {
     return (
         <div className="h-screen flex justify-between">
             <div
-                className="flex-1 flex items-center justify-center"
+                className="flex-1 max-sm:hidden flex items-center justify-center"
                 style={{
                     inset: 0,
                     // top: 62,
@@ -101,22 +101,23 @@ export default function Login() {
                     opacity: 0.4, // ubah sesuai kebutuhan
                     color: 'white',
                     zIndex: -1
-                }}
+                }
+                }
             >
                 SAPA UMKM
-            </div>
-            <div className="w-[360px] flex flex-col items-center justify-center">
-                <h2 className="text-2xl font-bold tracking-tight text-on-primary">{import.meta.env.VITE_APP_TITLE}</h2>
+            </div >
+            <div className="bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line w-[360px] max-sm:w-screen flex flex-col items-center justify-center">
+                <h2 className="text-2xl font-bold tracking-tight">{import.meta.env.VITE_APP_TITLE}</h2>
                 <div className="px-10 w-full">
-                    <form className="mt-10">
+                    <form className="mt-10 flex flex-col gap-4">
                         <InputText name="username" label={t("text.username")} value={loginForm.username} onChange={onLoginFormChange} />
                         <InputPassword name="password" label={t("text.password")} value={loginForm.password} onChange={onLoginFormChange} />
-                        <Button label={t("button.login")} icon="fa-solid fa-right-to-bracket" className="w-full btn-primary mt-4" onClick={(e: React.MouseEvent<HTMLButtonElement>) => doLogin(e)} loadingFlag={loginLoadingFlag} />
+                        <Button label={t("button.login")} type="primary" icon="fa-solid fa-right-to-bracket" onClick={(e: React.MouseEvent<HTMLButtonElement>) => doLogin(e)} loadingFlag={loginLoadingFlag} />
                     </form>
                 </div>
                 {loginFormError && <div className="form-floating mt-3 text-danger">{loginFormError}</div>}
                 <p className="mt-5 mb-3 text-sm">&copy; {new Date().getFullYear()}</p>
             </div>
-        </div>
+        </div >
     )
 }
