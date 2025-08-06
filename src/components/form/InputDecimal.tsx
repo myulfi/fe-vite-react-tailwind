@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import ErrorForm from "./ErrorForm";
+import { decode } from "../../function/commonHelper";
 
 type UnitOption = {
     key: string | number;
@@ -94,7 +96,7 @@ export default function InputDecimal({
             )}
 
 
-            <div className="flex rounded-md shadow-sm">
+            <div className="flex shadow-sm rounded-md">
                 {positionUnit === "left" && (
                     <>
                         {valueUnitList ? (
@@ -121,8 +123,11 @@ export default function InputDecimal({
 
                 <input
                     ref={inputRef}
-                    className={`flex-1 border border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base ${positionUnit === "left" ? "rounded-l-none" : ""
-                        } ${positionUnit === "right" ? "rounded-r-none" : ""}`}
+                    className={`
+                        form-input flex-1
+                        ${decode(positionUnit!, 'left', 'rounded-r-md', 'right', 'rounded-l-md', 'rounded-md')}
+                        ${error ? 'form-input-error' : 'form-input-normal'}
+                    `}
                     name={name}
                     type="text"
                     value={valueInput}
@@ -156,9 +161,7 @@ export default function InputDecimal({
                 )}
             </div>
 
-            {error && (
-                <p className="mt-1 text-xs text-red-600 font-medium">{error}</p>
-            )}
+            {error && <ErrorForm text={error} />}
         </div>
     );
 }

@@ -452,7 +452,7 @@ export default function Table({
             {
                 TABLE.PAGINATION === type
                 && dataTotal > 0
-                && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-1 pb-3">
+                && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-2 pb-3">
                     <div className="w-full md:w-auto max-sm:my-2">
                         {/* {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`} */}
                         {t

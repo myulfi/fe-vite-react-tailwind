@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "./Button";
 import InputText from "./InputText";
+import { useClickOutside } from "../../hook/useClickOutside";
+import ErrorForm from "./ErrorForm";
 
 type Option = {
     key: string | number;
@@ -38,6 +40,7 @@ export default function Select({
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [autoFocus, setAutoFocus] = useState(false);
 
+    useClickOutside(dropdownRef, () => setDropdownOpen(false));
 
     useEffect(() => {
         setItemList(map);
@@ -79,6 +82,7 @@ export default function Select({
 
         if (!multiple) {
             onChange({ target: { name, value: value } });
+            setDropdownOpen(false);
         }
         labelValueChange(value);
     };
@@ -126,10 +130,14 @@ export default function Select({
                 </label>
             )}
 
-            <div className="relative" ref={dropdownRef}>
+            <div className={`relative shadow-sm ${dropdownOpen ? 'rounded-t-md' : 'rounded-md'}`} ref={dropdownRef}>
                 <button
                     type="button"
-                    className={`w-full ${dropdownOpen ? "rounded-t border-x border-t" : 'rounded border'} border-light-outline dark:border-dark-outline px-3 py-2 text-sm focus:border-light-base focus:dark:border-dark-base focus:outline-none cursor-pointer`}
+                    className={
+                        `form-input w-full ${dropdownOpen ? "rounded-t border-x border-t" : 'rounded border'} 
+                        cursor-pointer
+                        ${error ? 'form-input-error' : 'form-input-normal'}
+                    `}
                     onClick={() => {
                         setDropdownOpen(!dropdownOpen);
                         setAutoFocus(true);
@@ -192,9 +200,7 @@ export default function Select({
                 )}
             </div>
 
-            {error && (
-                <p className="mt-1 text-xs text-red-600 font-medium px-1">{error}</p>
-            )}
+            {error && <ErrorForm text={error} />}
         </div>
     );
 }

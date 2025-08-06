@@ -132,9 +132,9 @@ export default function ExampleTemplate() {
 
     const exampleTemplateValidate = (data: ExampleTemplateData) => {
         const error: ExampleTemplateFormError = {};
-        if (!data.name?.trim()) error.name = t("validate.text.required", { name: t("text.name") });
-        if (!data.description?.trim()) error.description = t("validate.text.required", { name: t("text.description") });
-        if (data.value <= 0) error.value = t("validate.text.required", { name: t("text.value") });
+        if (!data.name?.trim()) error.name = t("validate.required", { name: t("text.name") });
+        if (!data.description?.trim()) error.description = t("validate.required", { name: t("text.description") });
+        if (data.value <= 0) error.value = t("validate.required", { name: t("text.value") });
 
         // if (!data.email.trim()) error.email = t("validate.required", { name: t("text.email") })
         // else if (!/\S+@\S+\.\S+/.test(data.email)) error.email = t("validate.invalid", { name: t("text.email") })
@@ -405,14 +405,14 @@ export default function ExampleTemplate() {
                             && <Fragment>
                                 <InputText label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
-                                <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.value} />
+                                <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
                                 <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
                                     dataSize={5}
                                     onChange={onExampleTemplateFormChange}
                                     error={exampleTemplateFormError.value} />
-                                <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.amount} />
+                                <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
                                 <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
-                                <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} map={yesNoMap} onChange={onExampleTemplateFormChange} className="col-md-6 col-sm-6 col-xs-12" error={exampleTemplateFormError.activeFlag} />
+                                <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
                             </Fragment>
                         }
                         {

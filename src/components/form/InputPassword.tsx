@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ErrorForm from './ErrorForm';
 
 type InputPasswordProps = {
     label: string;
@@ -34,7 +35,10 @@ export default function InputPassword({
                 value={value}
                 onChange={onChange}
                 placeholder={t('common.text.inputName', { name: label })}
-                className={`w-full rounded-md border px-3 py-2 pr-10 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 ${error ? 'border-red-500' : 'border-gray-300'}`}
+                className={`
+                    form-input w-full rounded-md pr-10 
+                    ${error ? 'form-input-error' : 'form-input-normal'}
+                `}
             />
 
             <button
@@ -46,7 +50,7 @@ export default function InputPassword({
                 <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
             </button>
 
-            {error && <small className="mt-1 block text-xs text-red-600">{error}</small>}
+            {error && <ErrorForm text={error} />}
         </div>
     );
 }

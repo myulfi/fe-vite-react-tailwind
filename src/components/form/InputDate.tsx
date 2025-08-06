@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import ErrorForm from "./ErrorForm";
 
 type InputDateProps = {
     label: string;
@@ -28,10 +29,10 @@ export default function InputDate({
             )}
             <input
                 className={`
-border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base
-          ${error ? "border-red-500 focus:ring-red-500" : ""}
-          ${disabled ? "bg-gray-100 text-gray-400" : "text-gray-900"}
-        `}
+                    form-input w-full rounded-md shadow-sm cursor-pointer
+                    ${disabled ? "bg-gray-100 text-gray-400" : "text-gray-900"}
+                    ${error ? 'form-input-error' : 'form-input-normal'} 
+                `}
                 name={name}
                 type="date"
                 value={value}
@@ -39,9 +40,7 @@ border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-
                 onChange={onChange}
                 placeholder={t("text.selectName", { name: label })}
             />
-            {error && (
-                <p className="mt-1 text-xs text-red-600 font-medium">{error}</p>
-            )}
+            {error && <ErrorForm text={error} />}
         </div>
     );
 }

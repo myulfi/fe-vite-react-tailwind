@@ -8,6 +8,9 @@
     --breakpoint-xl: 1441px;
     --breakpoint-2xl: 1601px;
 
+    /* https://maketintsandshades.com/#0090E7,8F5FE8 */
+    /* https://dribbble.com/shots/25967158-Prop-Firms-Tech-Dashboard-Website-UI-UX-AdTrend */
+
     /* Light */
     --color-light-base: #0090E7;
     --color-light-base-secondary: #26A1EB;
@@ -97,6 +100,18 @@
 
     --color-dark-problem-base: rgba(255, 171, 0, 0.8);
     --color-dark-problem-base-line: #FFFFFF;
+}
+
+.form-input {
+    @apply border px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base
+}
+
+.form-input-normal {
+    @apply border-light-outline dark:border-dark-outline
+}
+
+.form-input-error {
+    @apply border-light-error-base dark:border-dark-error-base
 }
 
 /* 

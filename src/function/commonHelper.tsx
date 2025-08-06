@@ -16,6 +16,41 @@ export function format(template: string, values: any[]) {
     });
 }
 
+export function decode(key: string, ...args: (string | ((key: string) => string))[]): string {
+    let iv: string | ((key: string) => string) | undefined;
+    let inv: string | ((key: string) => string) | undefined;
+
+    for (let i = 0; i < args.length; i += 2) {
+        iv = args[i];
+        inv = args[i + 1];
+
+        if (key === iv && inv !== undefined) {
+            iv = inv;
+            break;
+        } else if ((i + 1) !== args.length) {
+            iv = "";
+        }
+    }
+
+    return typeof iv === "function" ? iv(key) : (iv ?? "");
+}
+
+export function nvl<T>(object1: T, object2: T): T {
+    if (
+        typeof object1 === "undefined" ||
+        object1 === null ||
+        object1 === "" ||
+        (Array.isArray(object1) && object1.length === 0) ||
+        (typeof object1 === "object" && !Array.isArray(object1) && Object.keys(object1).length === 0) ||
+        object1 === 0
+    ) {
+        return object2;
+    }
+
+    return object1;
+}
+
+
 export function downloadFile(name: string, data: any) {
     const url = window.URL.createObjectURL(new Blob(data))
     const link = document.createElement("a")

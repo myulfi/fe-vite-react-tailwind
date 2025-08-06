@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { LOCAL_STORAGE, METHOD, SIDEBAR_WIDTH } from "../../../constants/common-constants";
 import { apiRequest } from "../../../api";
+import { useClickOutside } from "../../../hook/useClickOutside";
 
 type HeaderProps = {
     sidebarOpenFlag: boolean;
@@ -33,23 +34,7 @@ export default function Header({
         localStorage.setItem('darkModeFlag', darkModeFlag.toString())
     }, [darkModeFlag])
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (rieghtMenuRef.current && !rieghtMenuRef.current.contains(event.target as Node)) {
-                setRightMenuOpenFlag(false)
-            }
-        }
-
-        if (rightMenuOpenFlag) {
-            document.addEventListener('mousedown', handleClickOutside)
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [rightMenuOpenFlag])
+    useClickOutside(rieghtMenuRef, () => setRightMenuOpenFlag(false));
 
     const doLogout = async () => {
         try {

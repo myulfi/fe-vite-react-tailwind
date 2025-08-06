@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import ErrorForm from './ErrorForm';
 
 type UnitOption = {
     key: string;
@@ -40,19 +41,20 @@ export default function TextArea({
             )}
 
             <textarea
-                className={`w-full flex-1 border border-light-outline dark:border-dark-outline px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base rounded-md`}
+                className={`
+                    form-input w-full rounded-md shadow-sm
+                    ${error ? 'form-input-error' : 'form-input-normal'}
+                `}
                 name={name}
                 rows={rows}
                 value={value ?? ''}
                 disabled={disabled}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
-                placeholder={placeholder ?? t('common.text.inputName', { name: label })}
+                placeholder={placeholder ?? t('text.inputName', { name: label })}
             />
 
-            {error && (
-                <small className="mt-1 block text-xs text-red-600">{error}</small>
-            )}
+            {error && <ErrorForm text={error} />}
         </div>
     );
 }
