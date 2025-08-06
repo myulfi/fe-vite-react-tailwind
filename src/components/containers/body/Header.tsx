@@ -87,14 +87,14 @@ export default function Header({
                 </button>
 
                 {rightMenuOpenFlag && (
-                    <div id="div_menu_right" className="fixed right-4 top-16 w-48 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base border border-t-0 border-light-outline dark:border-dark-outline rounded-b-md shadow-md z-20">
+                    <div id="div_menu_right" className="fixed right-4 top-20 w-48 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base border border-t-0 border-light-divider dark:border-dark-divider rounded-b-md shadow-md z-20">
                         <Link to="/profile" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
                             <i className="fa-solid fa-circle-user" /> Profile
                         </Link>
                         <Link to="/setting" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
                             <i className="fa-solid fa-gear" /> Settings
                         </Link>
-                        <hr className="my-1 border-t border-light-base dark:border-dark-base" />
+                        <hr className="my-1 border-t border-light-divider dark:border-dark-divider" />
                         <button
                             className="w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer rounded-b-md flex items-center gap-2"
                             onClick={() => doLogout()}>

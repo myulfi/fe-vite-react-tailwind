@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next"
 import Button from "../../components/form/Button"
-import Table from "../../components/Table"
 import { Fragment, useEffect, useState } from "react"
 import { HTTP_CODE, MODAL } from "../../constants/common-constants"
 import { apiRequest } from "../../api"
@@ -15,6 +14,9 @@ import InputDecimal from "../../components/form/InputDecimal"
 import InputDate from "../../components/form/InputDate"
 import Radio from "../../components/form/Radio"
 import Select from "../../components/form/Select"
+import Table from "../../components/table"
+import { HttpStatusCode } from "axios"
+import { formatMoney, yesNo } from "../../function/commonHelper"
 
 export default function ExampleTemplate() {
     const { t } = useTranslation()
@@ -23,8 +25,8 @@ export default function ExampleTemplate() {
         name: string;
         description?: string;
         value: number;
-        valueMultiple: [];
-        amount: number,
+        // valueMultiple: [];
+        amount: string,
         date?: Date,
         activeFlag: number,
         version: number,
@@ -41,12 +43,11 @@ export default function ExampleTemplate() {
     };
 
     const exampleTemplateInitial = {
-        // id: 0,
         name: "",
         description: undefined,
         value: 0,
-        valueMultiple: [],
-        amount: 0,
+        // valueMultiple: [],
+        amount: '',
         date: undefined,
         activeFlag: 0,
         version: 0,
@@ -106,8 +107,9 @@ export default function ExampleTemplate() {
         submitLoadingFlag: false,
     })
 
+    const [exampleTemplateId, setExampleTemplateId] = useState(0);
     const [exampleTemplateForm, setExampleTemplateForm] = useState<ExampleTemplateData>(exampleTemplateInitial)
-    const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError | []>([])
+    const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError>({})
 
     const onExampleTemplateFormChange = (e: { target: { name: string; value: any } }) => {
         const { name, value } = e.target
@@ -186,6 +188,7 @@ export default function ExampleTemplate() {
     }
 
     const viewExampleTemplate = async (id: number) => {
+        setExampleTemplateId(id);
         setExampleTemplateForm(exampleTemplateInitial)
         if (id !== undefined) {
             setExampleTemplateStateModal(MODAL.VIEW)
@@ -199,9 +202,10 @@ export default function ExampleTemplate() {
 
             const response = await apiRequest('get', `/test/${id}/example-template.json`)
             if (HTTP_CODE.OK === response.status) {
-                const exampleTemplate = response.data
+                const exampleTemplate = response.data;
+
+                setExampleTemplateId(exampleTemplate.id);
                 setExampleTemplateForm({
-                    // id: exampleTemplate.id,
                     name: exampleTemplate.name,
                     description: exampleTemplate.description,
                     value: exampleTemplate.value,
@@ -236,7 +240,7 @@ export default function ExampleTemplate() {
 
     const entryExampleTemplate = (haveContentFlag: boolean) => {
         setExampleTemplateStateModal(MODAL.ENTRY)
-        setExampleTemplateFormError([])
+        setExampleTemplateFormError({})
         if (haveContentFlag) {
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
@@ -246,6 +250,7 @@ export default function ExampleTemplate() {
                 submitLoadingFlag: false,
             })
         } else {
+            setExampleTemplateId(0);
             setExampleTemplateForm(exampleTemplateInitial)
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
@@ -263,26 +268,26 @@ export default function ExampleTemplate() {
         if (exampleTemplateValidate(exampleTemplateForm)) {
             confirmDialog({
                 type: 'confirmation',
-                message: exampleTemplateForm.id === undefined ? t("confirmation.create", { name: exampleTemplateForm.name }) : t("confirmation.update", { name: exampleTemplateForm.name }),
+                message: t(exampleTemplateId === 0 ? "confirmation.create" : "confirmation.update", { name: exampleTemplateForm.name }),
                 onConfirm: () => storeExampleTemplate(),
             });
         }
     }
 
-    const storeExampleTemplate = async (id?: number) => {
+    const storeExampleTemplate = async () => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
             setModalExampleTemplate(false);
             setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
-                id === undefined ? 'post' : 'patch',
-                id === undefined ? '/test/example-template.json' : `/test/${id}/example-template.json`,
+                exampleTemplateId === 0 ? 'post' : 'patch',
+                exampleTemplateId === 0 ? '/test/example-template.json' : `/test/${exampleTemplateId}/example-template.json`,
                 exampleTemplateForm,
             );
 
-            if (HTTP_CODE.OK === response.status) {
+            if (HttpStatusCode.Ok === response.status || HttpStatusCode.Created === response.status) {
                 getExampleTemplate(exampleTemplateAttributeTable);
-                toast.show({ type: "done", message: response.message });
+                toast.show({ type: "done", message: HttpStatusCode.Created === response.status ? "information.created" : "information.updated" });
                 setModalExampleTemplate(false);
             } else {
                 toast.show({ type: "error", message: response.message });
@@ -330,12 +335,12 @@ export default function ExampleTemplate() {
         }
 
         const response = await apiRequest('delete', `/test/${id !== undefined ? id : exampleTemplateCheckBoxTableArray.join("")}/example-template.json`)
-        if (HTTP_CODE.OK === response.status) {
+        if (HttpStatusCode.NoContent === response.status) {
             getExampleTemplate(exampleTemplateAttributeTable)
             if (id === undefined) {
                 setExampleTemplateCheckBoxTableArray([])
             }
-            toast.show({ type: "done", message: response.message });
+            toast.show({ type: "done", message: "information.deleted" });
         } else {
             toast.show({ type: "error", message: response.message });
         }
@@ -375,17 +380,6 @@ export default function ExampleTemplate() {
                                 loadingFlag={exampleTemplateEntryModal.submitLoadingFlag}
                             />
                         ),
-                        MODAL.ENTRY === exampleTemplateStateModal && (
-                            <Button
-                                key="view"
-                                label={"View"}
-                                type="primary"
-                                icon="fa-solid fa-list"
-                                onClick={() => setExampleTemplateStateModal(MODAL.VIEW)}
-                                loadingFlag={false}
-                            />
-                        )
-                        ,
                         MODAL.VIEW === exampleTemplateStateModal && (
                             <Button
                                 key="view"
@@ -402,13 +396,13 @@ export default function ExampleTemplate() {
                         {
                             MODAL.ENTRY === exampleTemplateStateModal
                             && <Fragment>
-                                <InputText label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
+                                <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
                                 <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
-                                <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
+                                {/* <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
                                     dataSize={5}
                                     onChange={onExampleTemplateFormChange}
-                                    error={exampleTemplateFormError.value} />
+                                    error={exampleTemplateFormError.value} /> */}
                                 <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
                                 <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
                                 <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
@@ -420,9 +414,9 @@ export default function ExampleTemplate() {
                                 <Label text={t("text.name")} value={exampleTemplateForm.name} />
                                 <Label text={t("text.description")} value={exampleTemplateForm.description} />
                                 <Label text={t("text.value")} value={exampleTemplateForm.value} />
-                                <Label text={t("text.amount")} value={exampleTemplateForm.amount} />
-                                <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "yyyy-MM-dd")} />
-                                <Label text={t("text.activeFlag")} value={exampleTemplateForm.activeFlag} />
+                                <Label text={t("text.amount")} value={formatMoney(exampleTemplateForm.amount)} />
+                                <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "dd MMM yyyy")} />
+                                <Label text={t("text.activeFlag")} value={yesNo(exampleTemplateForm.activeFlag)} />
                             </Fragment>
                         }
                     </div>

@@ -3,6 +3,7 @@ import React, {
     useState,
     createContext,
     useContext,
+    useRef,
 } from "react";
 import ReactDOM from "react-dom/client";
 import { createPortal } from "react-dom";
@@ -191,6 +192,8 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
     const [zIndex, setZIndex] = useState(5000);
     const [isVisible, setIsVisible] = useState(false);
     const [isLeaving, setIsLeaving] = useState(false);
+    const modalRef = useRef<HTMLDivElement>(null);
+    const previousActiveElement = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout>;
@@ -199,17 +202,72 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
             const z = registerModal();
             setZIndex(z);
             setIsVisible(true);
+            previousActiveElement.current = document.activeElement as HTMLElement;
+
+            setTimeout(() => {
+                const alreadyFocused = document.activeElement;
+                if (
+                    !modalRef.current?.contains(alreadyFocused) ||
+                    alreadyFocused === document.body
+                ) {
+                    const focusable = modalRef.current?.querySelector<HTMLElement>(
+                        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                    );
+                    focusable?.focus();
+                }
+            }, 50);
         } else if (isVisible) {
             setIsLeaving(true);
             timeout = setTimeout(() => {
                 setIsVisible(false);
                 setIsLeaving(false);
                 unregisterModal(zIndex);
+                previousActiveElement.current?.focus();
             }, 200);
         }
 
         return () => clearTimeout(timeout);
     }, [show]);
+
+    useEffect(() => {
+        function handleTabKey(e: KeyboardEvent) {
+            if (!modalRef.current) return;
+
+            const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const focusable = Array.from(focusableElements).filter(el => !el.hasAttribute('disabled'));
+
+            if (focusable.length === 0) return;
+
+            const firstElement = focusable[0];
+            const lastElement = focusable[focusable.length - 1];
+
+            if (e.key === "Tab") {
+                if (e.shiftKey) {
+                    // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    }
+                } else {
+                    // Tab
+                    if (document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        }
+
+        if (isVisible) {
+            document.addEventListener("keydown", handleTabKey);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", handleTabKey);
+        };
+    }, [isVisible]);
 
     if (!isVisible) return null;
 
@@ -223,6 +281,9 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
             style={{ zIndex }}
         >
             <div
+                ref={modalRef}
+                role="dialog"
+                aria-modal="true"
                 className="flex items-center justify-center min-h-screen py-4 px-4"
                 onClick={(e) => e.stopPropagation()}
             >

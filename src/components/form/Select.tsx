@@ -193,7 +193,14 @@ export default function Select({
                             {itemList.map((item) => (
                                 <li
                                     key={item.key}
+                                    tabIndex={0}
                                     onClick={() => onSelect(item.key)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter" || e.key === " ") {
+                                            e.preventDefault();
+                                            onSelect(item.key);
+                                        }
+                                    }}
                                     className="px-6 py-2 hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer flex justify-between items-center"
                                 >
                                     <span>{item.value}</span>

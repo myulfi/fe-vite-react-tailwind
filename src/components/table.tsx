@@ -410,8 +410,9 @@ export default function Table({
                                                     {
                                                         columnHide
                                                             .map((column, index) => (
-                                                                <div key={index} className={`border-b border-l ml-6 mr-2 px-2 py-2 ${column.minDevice == 'tablet' ? "md:hidden" : column.minDevice == 'desktop' ? "lg:hidden" : ""}`}>
-                                                                    <label className="fw-bold me-2">{column.name}</label>
+                                                                <div key={index} className={`border-l-1 border-light-divider dark:border-dark-divider ml-6 mr-2 px-2 py-2 ${column.minDevice == 'tablet' ? "md:hidden" : column.minDevice == 'desktop' ? "lg:hidden" : ""}`}>
+                                                                    <span className='row-hidden-bullet' />
+                                                                    <label className="fw-bold mx-2">{column.name}</label>
                                                                     {
                                                                         column.render != undefined
                                                                             ? column.render(getNestedValue(data, column.data), data)

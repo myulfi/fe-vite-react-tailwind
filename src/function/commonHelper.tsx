@@ -50,6 +50,9 @@ export function nvl<T>(object1: T, object2: T): T {
     return object1;
 }
 
+export function yesNo(value: number) {
+    return value === 1 ? "text.yes" : "text.no"
+}
 
 export function downloadFile(name: string, data: any) {
     const url = window.URL.createObjectURL(new Blob(data))

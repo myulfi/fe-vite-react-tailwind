@@ -14,7 +14,7 @@ export default function Label({
     return (
         <div className="text-dark dark:text-tertiary">
             <label className="block mb-1 text-md font-bold">{text}</label>
-            <label className="block mb-1 text-md font-normal">
+            <label className="block mt-2 mb-1 text-md font-normal">
                 {value}
                 {
                     copy && value !== undefined && new String(value).trim.length > 0

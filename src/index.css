@@ -114,6 +114,10 @@
     @apply border-light-error-base dark:border-dark-error-base
 }
 
+.row-hidden-bullet {
+    @apply absolute -translate-x-3 translate-y-2 w-2 h-2 bg-light-divider dark:bg-dark-divider rounded-full
+}
+
 /* 
 .modal-primary {
     @apply bg-white dark:bg-zinc-900 text-black dark:text-white
