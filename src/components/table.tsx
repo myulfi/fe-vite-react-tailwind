@@ -223,13 +223,13 @@ export default function Table({
     useEffect(() => {
         if (orderColumn.length === 0) {
             var array: (string | null)[] = new Array()
+
             for (var i = 0; i < columnShow.length; i++) {
                 if (order?.length === 2 && columnShow[i].data === order[0]) {
-                    if ("asc" === order[1]) {
-                        array.push("asc" === order[1] ? "fa-solid fa-arrow-down-short-wide" : "fa-solid fa-arrow-down-wide-short")
-                    }
+                    array.push("asc" === order[1] ? "fa-solid fa-arrow-down-short-wide" : "fa-solid fa-arrow-down-wide-short")
+                } else {
+                    array.push(columnShow[i].orderable ? "fa-solid fa-ellipsis-vertical" : null);
                 }
-                array.push(columnShow[i].orderable ? "fa-solid fa-ellipsis-vertical" : null)
             }
 
             if (order?.length === 2) {

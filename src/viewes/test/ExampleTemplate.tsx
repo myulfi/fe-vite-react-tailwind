@@ -143,7 +143,7 @@ export default function ExampleTemplate() {
         return Object.keys(error).length === 0
     }
 
-    useEffect(() => { getExampleTemplate({ page: 1, length: 10, search: '' }) }, [])
+    // useEffect(() => { getExampleTemplate({ page: 1, length: 10, search: '' }) }, [])
 
     type TableOptions = {
         page: number
@@ -159,8 +159,8 @@ export default function ExampleTemplate() {
             "start": (options.page - 1) * options.length,
             "length": options.length,
             "search": encodeURIComponent(options.search),
-            "orderColumn": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
-            "orderDir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
+            "sort": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
+            "dir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
 
             // "value": exampleTemplateFilterTable.value,
             // "date": exampleTemplateFilterTable.date,
@@ -170,7 +170,6 @@ export default function ExampleTemplate() {
 
         const response = await apiRequest('get', "/test/example-template.json", params)
         if (HTTP_CODE.OK === response.status) {
-            console.log(response)
             setExampleTemplateArray(response.data)
             setExampleTemplateDataTotalTable(response.total)
             setExampleTemplateOptionColumnTable(
@@ -531,7 +530,7 @@ export default function ExampleTemplate() {
                         }
                     }
                 ]}
-                order={["id", "desc"]}
+                order={["createdDate", "desc"]}
 
                 checkBoxArray={exampleTemplateCheckBoxTableArray}
                 onCheckBox={exampleTemplateCheckBoxTableArray => { setExampleTemplateCheckBoxTableArray([...exampleTemplateCheckBoxTableArray]) }}
