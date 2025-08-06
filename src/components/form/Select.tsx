@@ -143,6 +143,13 @@ export default function Select({
                         setAutoFocus(true);
                         handleSearchChange({ target: { value: "" } } as React.ChangeEvent<HTMLInputElement>);
                     }}
+                    onKeyDown={
+                        (event: React.KeyboardEvent<HTMLButtonElement>) => {
+                            if (event.key === 'ArrowDown') {
+                                setDropdownOpen(true);
+                            }
+                        }
+                    }
                 >
                     <div className="flex justify-between items-center">
                         <span className={`${labelValue ? 'text-light-base-line dark:text-dark-base-line' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { name })}</span>
