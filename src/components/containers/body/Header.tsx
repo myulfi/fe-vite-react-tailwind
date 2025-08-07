@@ -21,7 +21,7 @@ export default function Header({
         return window.matchMedia('(prefers-color-scheme: dark)').matches
     })
 
-    const rieghtMenuRef = useRef<HTMLDivElement>(null)
+    const rightMenuRef = useRef<HTMLDivElement>(null)
     const [rightMenuOpenFlag, setRightMenuOpenFlag] = useState(false)
 
     useEffect(() => {
@@ -34,7 +34,7 @@ export default function Header({
         localStorage.setItem('darkModeFlag', darkModeFlag.toString())
     }, [darkModeFlag])
 
-    useClickOutside(rieghtMenuRef, () => setRightMenuOpenFlag(false));
+    useClickOutside(rightMenuRef, () => setRightMenuOpenFlag(false));
 
     const doLogout = async () => {
         try {
@@ -78,7 +78,7 @@ export default function Header({
                 </button>
             </div>
 
-            <div className="relative" ref={rieghtMenuRef}>
+            <div className="relative" ref={rightMenuRef}>
                 <button
                     onClick={() => setRightMenuOpenFlag(!rightMenuOpenFlag)}
                     className="text-light-base dark:text-dark-base hover:text-light-base-secondary hover:dark:hover:text-dark-base-secondary cursor-pointer focus:outline-none flex items-center"

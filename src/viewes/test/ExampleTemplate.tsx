@@ -14,7 +14,7 @@ import InputDecimal from "../../components/form/InputDecimal"
 import InputDate from "../../components/form/InputDate"
 import Radio from "../../components/form/Radio"
 import Select from "../../components/form/Select"
-import Table from "../../components/table"
+import Table from "../../components/Table"
 import { HttpStatusCode } from "axios"
 import { formatMoney, yesNo } from "../../function/commonHelper"
 
@@ -358,7 +358,6 @@ export default function ExampleTemplate() {
     }
 
     const [modalExampleTemplate, setModalExampleTemplate] = useState(false);
-
 
     return (
         <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 rounded-lg shadow-lg">

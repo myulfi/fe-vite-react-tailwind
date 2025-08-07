@@ -1,3 +1,6 @@
+import { useRef, useState } from "react";
+import { useClickOutside } from "../../hook/useClickOutside";
+
 interface ButtonProps {
     label?: string;
     className?: string;
@@ -5,6 +8,11 @@ interface ButtonProps {
     type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
     icon?: string;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
+    menuArray?: {
+        label?: string;
+        icon?: string;
+        onClick: () => void;
+    }[];
     loadingFlag?: boolean;
 }
 
@@ -28,18 +36,49 @@ export default function Button({
     size = 'sm',
     type,
     icon = '',
-    onClick = () => alert('Please define your function!'),
+    onClick = () => { menuArray.length === 0 ? alert('Please define your function!') : "" },
+    menuArray = [],
     loadingFlag = false,
 }: ButtonProps) {
+    const menuRef = useRef<HTMLDivElement>(null)
+    const [menuOpenFlag, setMenuOpenFlag] = useState(false);
+
+    if (menuArray.length > 0) {
+        useClickOutside(menuRef, () => setMenuOpenFlag(false));
+    }
+
     return (
-        <button
-            className={`rounded-sm shadow border-0 disabled:opacity-60 ${loadingFlag ? "cursor-not-allowed" : "cursor-pointer"} ${sizeClasses[size]} ${typeClasses[type]} ${className}`}
-            disabled={loadingFlag}
-            onClick={onClick}
-        >
-            {icon && <i className={`${icon} mr-2`}></i>}
-            <span>{label}</span>
-            {loadingFlag && <i className='fa-solid fa-spinner fa-spin ml-2'></i>}
-        </button>
+        <div ref={menuRef} className="relative">
+            <button
+                className={`
+                    rounded-t-sm
+                    ${menuOpenFlag ? 'rounded-b-none' : 'rounded-b-sm'}
+                    shadow border-0 disabled:opacity-60
+                    ${loadingFlag ? "cursor-not-allowed" : "cursor-pointer"}
+                    ${sizeClasses[size]} ${typeClasses[type]} ${className}
+                `}
+                disabled={loadingFlag}
+                onClick={(e) => menuArray.length > 0 ? setMenuOpenFlag((prev) => !prev) : onClick?.(e)}
+            >
+                {icon && <i className={`${icon} mr-2`} />}
+                <span>{label}</span>
+                {loadingFlag && <i className='fa-solid fa-spinner fa-spin ml-2' />}
+            </button>
+            {
+                menuOpenFlag
+                && menuArray.length > 0
+                && <div className="absolute w-48 right-0 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base border border-t-0 border-light-divider dark:border-dark-divider rounded-tl-md rounded-b-md shadow-md z-20">
+                    {
+                        menuArray.map((menu) => (
+                            <button
+                                className="w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer first:rounded-tl-md last:rounded-b-md flex items-center gap-2"
+                                onClick={menu.onClick}>
+                                <i className={menu.icon}></i> {menu.label}
+                            </button>
+                        ))
+                    }
+                </div>
+            }
+        </div >
     );
 }

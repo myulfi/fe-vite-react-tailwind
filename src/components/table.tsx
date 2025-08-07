@@ -38,7 +38,7 @@ interface TableProps {
         orderable?: boolean;
     }[];
     order?: [string, 'asc' | 'desc'];
-    checkBoxArray?: number[];
+    checkBoxArray?: number[] | undefined;
     onCheckBox?: (ids: number[]) => void;
     dataTotal?: number;
     initialSizePage?: number;
@@ -67,7 +67,7 @@ export default function Table({
     dataArray = [],
     columns,
     order = undefined,
-    checkBoxArray = [],
+    checkBoxArray = undefined,
     onCheckBox = () => { alert("Please define your function!") },
     dataTotal = 0,
     initialSizePage = 10,
@@ -147,33 +147,37 @@ export default function Table({
     }
 
     const onCheckBoxAll = () => {
-        const currentCheckBoxStateArray = checkBoxStateArray.length
-        const currentCheckBoxArray = itemArray.filter(datum => checkBoxArray.includes(datum.id)).length
-        itemArray.forEach(function (itemArray) {
-            if (itemArray.id !== undefined) {
-                if (currentCheckBoxStateArray !== currentCheckBoxArray) {
-                    if (checkBoxArray.includes(itemArray.id) === false) {
-                        checkBoxArray.push(itemArray.id)
-                    }
-                } else {
-                    if (checkBoxArray.includes(itemArray.id)) {
-                        checkBoxArray.splice(checkBoxArray.indexOf(itemArray.id), 1)
+        if (checkBoxArray !== undefined) {
+            const currentCheckBoxStateArray = checkBoxStateArray.length
+            const currentCheckBoxArray = itemArray.filter(datum => checkBoxArray.includes(datum.id)).length
+            itemArray.forEach(function (itemArray) {
+                if (itemArray.id !== undefined) {
+                    if (currentCheckBoxStateArray !== currentCheckBoxArray) {
+                        if (checkBoxArray.includes(itemArray.id) === false) {
+                            checkBoxArray.push(itemArray.id)
+                        }
+                    } else {
+                        if (checkBoxArray.includes(itemArray.id)) {
+                            checkBoxArray.splice(checkBoxArray.indexOf(itemArray.id), 1)
+                        }
                     }
                 }
-            }
-        })
+            })
 
-        onCheckBox(checkBoxArray)
+            onCheckBox(checkBoxArray)
+        }
     }
 
     const onCheckBoxSingle = (id: number) => {
-        if (checkBoxArray.includes(id)) {
-            checkBoxArray.splice(checkBoxArray.indexOf(id), 1)
-        } else {
-            checkBoxArray.push(id)
-        }
+        if (checkBoxArray !== undefined) {
+            if (checkBoxArray.includes(id)) {
+                checkBoxArray.splice(checkBoxArray.indexOf(id), 1)
+            } else {
+                checkBoxArray.push(id)
+            }
 
-        onCheckBox(checkBoxArray)
+            onCheckBox(checkBoxArray)
+        }
     }
 
     const showDetail = (index: number) => {
@@ -274,23 +278,16 @@ export default function Table({
                     {
                         bulkOptionArray.length > 0
                         && <div className="w-full md:w-auto md:ml-auto">
-                            <Button label={t("button.bulkOption")} className="w-full text-nowrap btn-primary" size="md" type="secondary" icon="fa-solid fa-boxes-stacked" onClick={() => onNewButtonClick()} />
+                            <Button
+                                label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("button.bulkOption")}`}
+                                className="w-full text-nowrap btn-primary"
+                                size="md"
+                                type="secondary"
+                                icon="fa-solid fa-boxes-stacked"
+                                menuArray={bulkOptionArray}
+                                loadingFlag={bulkOptionLoadingFlag}
+                            />
                         </div>
-                        // && <div className="w-full md:w-auto md:ml-auto pb-4">
-                        //     <div className="btn-group">
-                        //         <button className="btn btn-outline-dark shadow-sm dropdown-toggle" disabled={bulkOptionLoadingFlag} data-bs-toggle="dropdown">
-                        //             <span className={bulkOptionLoadingFlag ? "spinner-border spinner-border-sm mx-2" : undefined} role="status" aria-hidden="true" />
-                        //             <span className="bi-stack">&nbsp;{checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : null}{t("button.bulkOption")}</span>
-                        //         </button>
-                        //         <div className="dropdown-menu">
-                        //             {
-                        //                 bulkOptionArray.map((bulkOption, index) => (
-                        //                     <Dropdown key={index} label={bulkOption.label} icon={bulkOption.icon} onClick={() => bulkOption.onClick()}></Dropdown>
-                        //                 ))
-                        //             }
-                        //         </div>
-                        //     </div>
-                        // </div>
                     }
                 </div>
                 <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5">
@@ -331,10 +328,10 @@ export default function Table({
                     <thead className='text-light-base-line-secondary dark:text-dark-base-line-secondary border-y-1 border-light-divider dark:border-dark-divider'>
                         <tr>
                             {
-                                checkBoxArray.length > 0
-                                && <th scope="col" className="text-center">
+                                checkBoxArray !== undefined
+                                && <th scope="col" className="text-center px-3">
                                     <span
-                                        className={`cursor-pointer ${itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === 0 ? 'fa-regular fa-square' : itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === checkBoxStateArray.length ? 'fa-solid fa-square-plus' : 'fa-solid fa-square-minus'}`}
+                                        className={`text-light-base dark:text-dark-base cursor-pointer ${itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === 0 ? 'fa-regular fa-square' : itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === checkBoxStateArray.length ? 'fa-solid fa-square-plus' : 'fa-solid fa-square-minus'}`}
                                         role="button" onClick={() => onCheckBoxAll()}></span>
                                 </th>
                             }
@@ -360,15 +357,15 @@ export default function Table({
                                     <Fragment key={indexRow}>
                                         <tr className="border-b-1 border-light-divider dark:border-dark-divider">
                                             {
-                                                checkBoxArray.length > 0
+                                                checkBoxArray !== undefined
                                                 && data.id !== undefined
                                                 && <td className="text-center">
-                                                    <span className={`cursor-pointer ${checkBoxArray.indexOf(data.id) >= 0 ? 'fa-solid fa-square-check' : 'fa-regular fa-square'}`}
+                                                    <span className={`text-light-base dark:text-dark-base cursor-pointer ${checkBoxArray.indexOf(data.id) >= 0 ? 'fa-solid fa-square-check' : 'fa-regular fa-square'}`}
                                                         role="button" onClick={() => onCheckBoxSingle(data.id)}></span>
                                                 </td>
                                             }
                                             {
-                                                checkBoxArray.length > 0
+                                                checkBoxArray !== undefined
                                                 && data.id === undefined
                                                 && <td className="text-center"></td>
                                             }
@@ -454,7 +451,6 @@ export default function Table({
                 && dataTotal > 0
                 && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-2 pb-3">
                     <div className="w-full md:w-auto max-sm:my-2">
-                        {/* {`Showing ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1)} to ${((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage))} of ${dataTotal} entries`} */}
                         {t
                             (
                                 "table.info",
