@@ -510,7 +510,7 @@ export default function ExampleTemplate() {
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
                                         label={t("button.view")}
-                                        className="btn-primary"
+                                        className="btn-primary max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewExampleTemplate(data)}
@@ -518,7 +518,7 @@ export default function ExampleTemplate() {
                                     />
                                     <Button
                                         label={t("button.delete")}
-                                        className="btn-danger"
+                                        className="btn-danger max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteExampleTemplate(data, row.name)}

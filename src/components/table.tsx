@@ -261,23 +261,23 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5">
+                <div className="flex flex-col sm:flex-row md:justify-between gap-5 pb-5">
                     {
                         labelNewButton != undefined
-                        && <div className="w-full md:w-auto">
+                        && <div className="w-full sm:w-auto">
                             <Button label={labelNewButton} className="w-full text-nowrap" size="md" type="primary" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
                         </div>
                     }
                     {
                         additionalButtonArray.map((additionalButton, index) => (
-                            <div key={index} className="w-full md:w-auto">
+                            <div key={index} className="w-full sm:w-auto">
                                 <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" type={additionalButton.type} icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
                             </div>
                         ))
                     }
                     {
                         bulkOptionArray.length > 0
-                        && <div className="w-full md:w-auto md:ml-auto">
+                        && <div className="w-full sm:w-auto sm:ml-auto">
                             <Button
                                 label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("button.bulkOption")}`}
                                 className="w-full text-nowrap btn-primary"
@@ -449,8 +449,8 @@ export default function Table({
             {
                 'pagination' === type
                 && dataTotal > 0
-                && <div className="flex flex-col md:flex-row items-center md:justify-between gap-5 pb-5">
-                    <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                && <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-5 pb-5">
+                    <div className="w-full sm:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
                         {t
                             (
                                 "table.info",
@@ -463,7 +463,7 @@ export default function Table({
                             )
                         }
                     </div>
-                    <div className="w-full md:w-auto md:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                    <div className="w-full sm:w-auto sm:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
                         {
                             pages.length > 1
                             && <div className="inline-flex items-center -space-x-px text-sm">
