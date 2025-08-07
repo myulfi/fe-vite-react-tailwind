@@ -360,7 +360,7 @@ export default function ExampleTemplate() {
     const [modalExampleTemplate, setModalExampleTemplate] = useState(false);
 
     return (
-        <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 rounded-lg shadow-lg">
+        <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
             <ModalStackProvider>
                 <Modal
                     show={modalExampleTemplate}

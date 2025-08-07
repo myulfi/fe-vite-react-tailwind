@@ -261,7 +261,7 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5 max-sm:pb-2">
+                <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5">
                     {
                         labelNewButton != undefined
                         && <div className="w-full md:w-auto">
@@ -290,10 +290,10 @@ export default function Table({
                         </div>
                     }
                 </div>
-                <div className="flex flex-col md:flex-row md:justify-between gap-5 pb-5">
+                <div className="flex flex-col md:flex-row items-center md:justify-between gap-5 pb-5">
                     {
                         lengthFlag
-                        && <div className="w-full md:w-auto mt-1.5 max-sm:my-0">
+                        && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
                             <Trans
                                 i18nKey="table.lengthMenu"
                                 components={{
@@ -449,8 +449,8 @@ export default function Table({
             {
                 'pagination' === type
                 && dataTotal > 0
-                && <div className="flex flex-col md:flex-row md:justify-between gap-2 md:mt-2 pb-3">
-                    <div className="w-full md:w-auto max-sm:my-2">
+                && <div className="flex flex-col md:flex-row items-center md:justify-between gap-5 pb-5">
+                    <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
                         {t
                             (
                                 "table.info",
@@ -463,93 +463,103 @@ export default function Table({
                             )
                         }
                     </div>
-                    <div className="w-full md:w-auto md:ml-auto">
+                    <div className="w-full md:w-auto md:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
                         {
                             pages.length > 1
-                            && <ul className="inline-flex items-center -space-x-px text-sm">
-                                <li className="max-md:hidden">
-                                    {
-                                        currentPage === 1
-                                            ? <a className="px-3 py-2 ml-0 leading-tight rounded-l-md border
-                                            text-gray-400 dark:text-gray-500
-                                            bg-gray-200 dark:bg-gray-700
-                                            border-gray-300 dark:border-gray-600
-                                            cursor-default pointer-events-none"
-                                                aria-disabled="true">{t("table.previous")}</a>
-                                            : <a className="px-3 py-2 ml-0 leading-tight rounded-l-md border
-                                            text-gray-500 dark:text-gray-400
-                                            bg-white dark:bg-gray-800
-                                            border-gray-300 dark:border-gray-700
-                                            hover:text-gray-700 dark:hover:text-white
-                                            hover:bg-gray-100 dark:hover:bg-gray-700
-                                            cursor-pointer"
-                                                onClick={() => onPageChange(currentPage - 1, sizePage, search)} role="button">
-                                                {t("table.previous")}
-                                            </a>
-                                    }
-                                </li>
+                            && <div className="inline-flex items-center -space-x-px text-sm">
+                                <button
+                                    className={`
+                                            max-md:hidden rounded-l-md
+                                            px-3 py-2 ml-0 leading-tight border
+                                            ${currentPage === 1
+                                            ? `
+                                                        text-light-disabled-base-line dark:text-dark-disabled-base-line
+                                                        bg-light-disabled-base dark:bg-dark-disabled-base
+                                                        border-light-disabled-base dark:border-dark-disabled-base
+                                                        cursor-none pointer-events-none
+                                                        `
+                                            : `
+                                                        text-light-default-base-line dark:text-dark-default-base-line
+                                                        bg-light-default-base dark:bg-dark-default-base
+                                                        border-light-default-base-outline dark:border-dark-default-base-outline
+                                                        hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
+                                                        cursor-pointer
+                                                        `
+                                        }
+                                                
+                                        `}
+                                    onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
+                                >
+                                    {t("table.previous")}
+                                </button>
                                 {
                                     paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
-                                        <li
-                                            key={index}
-                                        >
+                                        <Fragment key={index}>
                                             {
                                                 page === currentPage || page === 0
-                                                    ? (
-                                                        page === 0
-                                                            ? <a className="px-3 py-2 ml-0 leading-tight border
-                                                                text-gray-400 dark:text-gray-500
-                                                                bg-gray-200 dark:bg-gray-700
-                                                                border-gray-300 dark:border-gray-600
-                                                                cursor-default pointer-events-none"
-                                                                aria-disabled="true">...</a>
-                                                            : <a
-                                                                aria-current="page"
-                                                                className="px-3 py-2 leading-tight border
-                                                                text-white
-                                                                bg-blue-600 dark:bg-blue-500
-                                                                border-blue-600 dark:border-blue-500
-                                                                cursor-default pointer-events-none"
-                                                            >
-                                                                {page}
-                                                            </a>
-                                                    )
-                                                    : <a className="px-3 py-2 leading-tight
-                                                     text-gray-500 dark:text-gray-400
-                                                     bg-white border dark:bg-gray-800
-                                                     border-gray-300 dark:border-gray-700
-                                                     hover:text-gray-700 dark:hover:text-white
-                                                     hover:bg-gray-100 dark:hover:bg-gray-700
-                                                     cursor-pointer"
-                                                        onClick={() => onPageChange(page, sizePage, search)} role="button">
+                                                    ? <button
+                                                        className={`
+                                                                    px-3 py-2 ml-0 leading-tight border
+                                                                    cursor-none pointer-events-none
+                                                                    ${page === 0
+                                                                ? `
+                                                                        text-light-default-base-line dark:text-dark-default-base-line
+                                                                        bg-light-default-base dark:bg-dark-default-base
+                                                                        border-light-default-base-outline dark:border-dark-default-base-outline
+                                                                         `
+                                                                : `
+                                                                        text-light-primary-base-line dark:text-dark-primary-base-line
+                                                                        bg-light-primary-base dark:bg-dark-primary-base
+                                                                        border-light-primary-base dark:border-dark-primary-base
+                                                                         `
+                                                            }
+                                                            `}
+                                                    >{page === 0 ? '...' : page}</button>
+                                                    : <button
+                                                        className={`
+                                                        max-md:first:rounded-l-md max-md:last:rounded-r-md
+                                                        px-3 py-2 leading-tight border
+                                                        text-light-default-base-line dark:text-dark-default-base-line
+                                                        bg-light-default-base dark:bg-dark-default-base
+                                                        border-light-default-base-outline dark:border-dark-default-base-outline
+                                                        hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
+                                                        cursor-pointer
+                                        `}
+                                                        onClick={() => onPageChange(page, sizePage, search)}
+                                                    >
                                                         {page}
-                                                    </a>
+                                                    </button>
                                             }
-                                        </li>
+                                        </Fragment>
                                     ))
                                 }
-                                <li className="max-md:hidden">
-                                    {
-                                        currentPage === pages.length
-                                            ? <a className="px-3 py-2 ml-0 leading-tight rounded-r-md border
-                                            text-gray-400 dark:text-gray-500
-                                            bg-gray-200 dark:bg-gray-700
-                                            border-gray-300 dark:border-gray-600
-                                            cursor-default pointer-events-none"
-                                                aria-disabled="true">{t("table.next")}</a>
-                                            : <a className="px-3 py-2 ml-0 leading-tight rounded-r-md border
-                                            text-gray-500 dark:text-gray-400
-                                            bg-white dark:bg-gray-800
-                                            border-gray-300 dark:border-gray-700
-                                            hover:text-gray-700 dark:hover:text-white
-                                            hover:bg-gray-100 dark:hover:bg-gray-700
-                                            cursor-pointer"
-                                                onClick={() => onPageChange(currentPage + 1, sizePage, search)} role="button">
-                                                {t("table.next")}
-                                            </a>
-                                    }
-                                </li>
-                            </ul>
+                                <button
+                                    className={`
+                                            max-md:hidden
+                                            rounded-r-md
+                                            px-3 py-2 ml-0 leading-tight border
+                                            ${currentPage === pages.length
+                                            ? `
+                                                text-light-disabled-base-line dark:text-dark-disabled-base-line
+                                                bg-light-disabled-base dark:bg-dark-disabled-base
+                                                border-light-disabled-base dark:border-dark-disabled-base
+                                                cursor-none pointer-events-none
+                                            `
+                                            : `
+                                                text-light-default-base-line dark:text-dark-default-base-line
+                                                bg-light-default-base dark:bg-dark-default-base
+                                                border-light-default-base-outline dark:border-dark-default-base-outline
+                                                hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
+                                                cursor-pointer
+                                            `
+                                        }
+                                                
+                                        `}
+                                    onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
+                                >
+                                    {t("table.next")}
+                                </button>
+                            </div>
                         }
                     </div>
                 </div>

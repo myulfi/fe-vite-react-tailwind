@@ -7,7 +7,7 @@ import Dashboard from './viewes/Dashboard';
 
 function App() {
   return (
-    <React.Fragment>
+    <div className='custom-scrollbar'>
       {
         localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN) !== null
         && <Dashboard />
@@ -16,7 +16,7 @@ function App() {
         localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN) === null
         && <Login />
       }
-    </React.Fragment>
+    </div>
   )
 }
 

@@ -38,9 +38,17 @@
     --color-light-warning-base-hover: #FFB826;
     --color-light-warning-base-line: #FFFFFF;
 
-    --color-light-secondary-base: #6c757d;
-    --color-light-secondary-base-hover: #5c636a;
+    --color-light-secondary-base: #6C757D;
+    --color-light-secondary-base-hover: #5C636A;
     --color-light-secondary-base-line: #FFFFFF;
+
+    --color-light-default-base: #FFFFFF;
+    --color-light-default-base-outline: #d1d5dc;
+    --color-light-default-base-hover: #f3f4f6;
+    --color-light-default-base-line: #6A7282;
+
+    --color-light-disabled-base: #e5e7eb;
+    --color-light-disabled-base-line: #99A1AF;
 
     --color-light-info-base: rgb(0, 144, 231);
     --color-light-info-base-line: #FFFFFF;
@@ -89,6 +97,14 @@
     --color-dark-secondary-base-hover: rgba(228, 234, 236, 0.5);
     --color-dark-secondary-base-line: #FFFFFF;
 
+    --color-dark-default-base: #1E2939;
+    --color-dark-default-base-outline: #364153;
+    --color-dark-default-base-hover: #364153;
+    --color-dark-default-base-line: #99A1AF;
+
+    --color-dark-disabled-base: #364153;
+    --color-dark-disabled-base-line: #6a7282;
+
     --color-dark-info-base: rgba(143, 95, 232, 0.8);
     --color-dark-info-base-line: #FFFFFF;
 
@@ -126,3 +142,33 @@
 .icon-primary {
     @apply text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white;
 } */
+
+@layer utilities {
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #9ca3af transparent;
+        /* light: gray-400 */
+
+        /* WebKit (Chrome, Safari) */
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #9ca3af;
+        /* light mode: gray-400 */
+        border-radius: 4px;
+    }
+
+    .dark .custom-scrollbar {
+        scrollbar-color: #374151 transparent;
+        /* dark: gray-700 */
+    }
+
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #374151;
+        /* dark: gray-700 */
+    }
+}

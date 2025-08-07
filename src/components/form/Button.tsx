@@ -5,7 +5,7 @@ interface ButtonProps {
     label?: string;
     className?: string;
     size?: 'sm' | 'md' | 'lg';
-    type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
+    type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary' | 'default';
     icon?: string;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
     menuArray?: {
@@ -28,6 +28,7 @@ const typeClasses = {
     danger: 'bg-light-danger-base dark:bg-dark-danger-base hover:bg-light-danger-base-hover hover:dark:bg-dark-danger-base border-2 border-light-danger-base dark:border-dark-danger-base hover:border-dark-danger-base hover:dark:border-dark-danger-base-hover text-light-danger-base-line dark:text-dark-danger-base-line',
     warning: 'bg-light-warning-base dark:bg-dark-warning-base hover:bg-light-warning-base-hover hover:dark:bg-dark-warning-base border-2 border-light-warning-base dark:border-dark-warning-base hover:border-dark-warning-base hover:dark:border-dark-warning-base-hover text-light-warning-base-line dark:text-dark-warning-base-line',
     secondary: 'bg-light-secondary-base dark:bg-dark-secondary-base hover:bg-light-secondary-base-hover hover:dark:bg-dark-secondary-base border-2 border-light-secondary-base dark:border-dark-secondary-base hover:bg-light-secondary-base-hover hover:dark:border-dark-secondary-base-hover text-light-secondary-base-line dark:text-dark-secondary-base-line',
+    default: 'bg-light-default-base dark:bg-dark-default-base hover:bg-light-default-base-hover hover:dark:bg-dark-default-base border-2 border-light-default-base dark:border-dark-default-base hover:bg-light-default-base-hover hover:dark:border-dark-default-base-hover text-light-default-base-line dark:text-dark-default-base-line',
 };
 
 export default function Button({
