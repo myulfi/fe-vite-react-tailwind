@@ -116,7 +116,8 @@ export default function SideBar({
     return (
         <div
             className={`
-                fixed top-0 left-0 h-full overflow-y-auto
+                flex flex-col
+                fixed top-0 left-0 h-full
                 bg-light-clear dark:bg-dark-clear
                 text-light-base-line dark:text-dark-base-line
                 z-20 sm:w-[256px] max-sm:w-screen
@@ -124,7 +125,7 @@ export default function SideBar({
                 ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}
             `}
         >
-            <div className='relative border-b border-light-clear dark:border-dark-clear pb-4 m-4'>
+            <div className='relative border-b border-light-clear dark:border-dark-clear pb-4 m-4 shrink-0'>
                 <span className='block text-center font-bold text-3xl text-light-base dark:text-dark-base'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span>
                 <button
                     onClick={() => setSidebarOpenFlag(false)}
@@ -135,8 +136,7 @@ export default function SideBar({
                 </button>
             </div>
 
-            <nav className='pl-4'>
-
+            <nav className='pl-4 overflow-y-auto flex-1'>
                 {menuList.map((item, idx) => (
                     <SidebarItem
                         key={idx}
