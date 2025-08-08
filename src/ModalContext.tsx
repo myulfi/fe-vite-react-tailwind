@@ -36,6 +36,7 @@ function ConfirmDialog({
                 'alert' === type && (
                     <Button
                         label={t("button.understood")}
+                        className="max-sm:w-full"
                         type="warning"
                         icon="fa-solid fa-lightbulb"
                         onClick={onClose}
@@ -44,6 +45,7 @@ function ConfirmDialog({
                 'confirmation' === type && (
                     <Button
                         label={t("button.ok")}
+                        className="max-sm:w-full"
                         type="primary"
                         icon="fa-solid fa-circle-check"
                         onClick={() => onConfirm()}
@@ -52,6 +54,7 @@ function ConfirmDialog({
                 'warning' === type && (
                     <Button
                         label={t("button.ofCourse")}
+                        className="max-sm:w-full"
                         type="danger"
                         icon="fa-solid fa-circle-check"
                         onClick={() => onConfirm()}
@@ -314,10 +317,11 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
                     <div className="py-4 px-8 border-y-1 border-light-divider dark:border-dark-divider">
                         {children}
                     </div>
-                    <div className="flex md:justify-end flex-col md:flex-row gap-4 p-4">
+                    <div className="flex max-sm:flex-col justify-end md:flex-row gap-4 p-4">
                         {buttonArray}
                         <Button
                             label={t("button.close")}
+                            className="max-sm:w-full"
                             type="secondary"
                             icon="fa-solid fa-xmark"
                             onClick={() => onClose()}
