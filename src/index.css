@@ -43,12 +43,10 @@
     --color-light-secondary-base-line: #FFFFFF;
 
     --color-light-default-base: #FFFFFF;
-    --color-light-default-base-outline: #d1d5dc;
-    --color-light-default-base-hover: #f3f4f6;
+    --color-light-default-base-outline: #6c757d;
+    --color-light-default-base-hover: #e9ecef;
     --color-light-default-base-line: #6A7282;
-
-    --color-light-disabled-base: #e5e7eb;
-    --color-light-disabled-base-line: #99A1AF;
+    --color-light-default-base-disabled: #dee2e6;
 
     --color-light-info-base: rgb(0, 144, 231);
     --color-light-info-base-line: #FFFFFF;
@@ -101,9 +99,6 @@
     --color-dark-default-base-outline: #364153;
     --color-dark-default-base-hover: #364153;
     --color-dark-default-base-line: #99A1AF;
-
-    --color-dark-disabled-base: #364153;
-    --color-dark-disabled-base-line: #6a7282;
 
     --color-dark-info-base: rgba(143, 95, 232, 0.8);
     --color-dark-info-base-line: #FFFFFF;

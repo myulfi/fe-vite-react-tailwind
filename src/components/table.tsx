@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { getNestedValue, onCopy } from "../function/commonHelper";
+import { decode, getNestedValue, onCopy } from "../function/commonHelper";
 import { Trans, useTranslation } from "react-i18next";
 import Button from "./form/Button";
 import InputText from "./form/InputText";
@@ -282,7 +282,7 @@ export default function Table({
                                 label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("button.bulkOption")}`}
                                 className="w-full text-nowrap btn-primary"
                                 size="md"
-                                type="secondary"
+                                type="primary"
                                 icon="fa-solid fa-boxes-stacked"
                                 menuArray={bulkOptionArray}
                                 loadingFlag={bulkOptionLoadingFlag}
@@ -468,26 +468,19 @@ export default function Table({
                             pages.length > 1
                             && <div className="inline-flex items-center -space-x-px text-sm">
                                 <button
+                                    disabled={currentPage === 1}
                                     className={`
                                             max-md:hidden rounded-l-md
                                             px-3 py-2 ml-0 leading-tight border
-                                            ${currentPage === 1
-                                            ? `
-                                                        text-light-disabled-base-line dark:text-dark-disabled-base-line
-                                                        bg-light-disabled-base dark:bg-dark-disabled-base
-                                                        border-light-disabled-base dark:border-dark-disabled-base
-                                                        cursor-none pointer-events-none
-                                                        `
-                                            : `
-                                                        text-light-default-base-line dark:text-dark-default-base-line
-                                                        bg-light-default-base dark:bg-dark-default-base
-                                                        border-light-default-base-outline dark:border-dark-default-base-outline
-                                                        hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
-                                                        cursor-pointer
-                                                        `
-                                        }
-                                                
-                                        `}
+                                            text-light-default-base-line dark:text-dark-default-base-line
+                                            bg-light-default-base dark:bg-dark-default-base
+                                            border-light-default-base-outline dark:border-dark-default-base-outline
+                                            hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
+                                            cursor-pointer
+                                            
+                                            disabled:bg-light-default-base-disabled disabled:dark:bg-dark-default-base/10
+                                            disabled:cursor-not-allowed
+                                            `}
                                     onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
                                 >
                                     {t("table.previous")}
@@ -495,74 +488,54 @@ export default function Table({
                                 {
                                     paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
                                         <Fragment key={index}>
-                                            {
-                                                page === currentPage || page === 0
-                                                    ? <button
-                                                        className={`
-                                                                    px-3 py-2 ml-0 leading-tight border
-                                                                    cursor-none pointer-events-none
-                                                                    ${page === 0
-                                                                ? `
-                                                                        text-light-default-base-line dark:text-dark-default-base-line
-                                                                        bg-light-default-base dark:bg-dark-default-base
-                                                                        border-light-default-base-outline dark:border-dark-default-base-outline
-                                                                         `
-                                                                : `
-                                                                        text-light-primary-base-line dark:text-dark-primary-base-line
-                                                                        bg-light-primary-base dark:bg-dark-primary-base
-                                                                        border-light-primary-base dark:border-dark-primary-base
-                                                                         `
-                                                            }
-                                                            `}
-                                                    >{page === 0 ? '...' : page}</button>
-                                                    : <button
-                                                        className={`
+                                            <button
+                                                className={`
                                                         max-md:first:rounded-l-md max-md:last:rounded-r-md
                                                         px-3 py-2 leading-tight border
-                                                        text-light-default-base-line dark:text-dark-default-base-line
-                                                        bg-light-default-base dark:bg-dark-default-base
-                                                        border-light-default-base-outline dark:border-dark-default-base-outline
-                                                        hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
-                                                        cursor-pointer
+                                                        ${page === currentPage
+                                                        ? `
+                                                            text-light-primary-base-line dark:text-dark-primary-base-line
+                                                            bg-light-primary-base dark:bg-dark-primary-base
+                                                            border-light-primary-base dark:border-dark-primary-base
+                                                            `
+                                                        : `
+                                                            text-light-default-base-line dark:text-dark-default-base-line
+                                                            bg-light-default-base dark:bg-dark-default-base
+                                                            border-light-default-base-outline dark:border-dark-default-base-outline
+                                                            
+                                                            ${page === 0 ? 'cursor-default' : 'cursor-pointer hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover'}
+                                                        `
+                                                    }
                                         `}
-                                                        onClick={() => onPageChange(page, sizePage, search)}
-                                                    >
-                                                        {page}
-                                                    </button>
-                                            }
+                                                onClick={() => onPageChange(page, sizePage, search)}
+                                            >
+                                                {page === 0 ? "..." : page}
+                                            </button>
                                         </Fragment>
                                     ))
                                 }
                                 <button
+                                    disabled={currentPage === pages.length}
                                     className={`
-                                            max-md:hidden
-                                            rounded-r-md
+                                            max-md:hidden rounded-r-md
                                             px-3 py-2 ml-0 leading-tight border
-                                            ${currentPage === pages.length
-                                            ? `
-                                                text-light-disabled-base-line dark:text-dark-disabled-base-line
-                                                bg-light-disabled-base dark:bg-dark-disabled-base
-                                                border-light-disabled-base dark:border-dark-disabled-base
-                                                cursor-none pointer-events-none
-                                            `
-                                            : `
-                                                text-light-default-base-line dark:text-dark-default-base-line
-                                                bg-light-default-base dark:bg-dark-default-base
-                                                border-light-default-base-outline dark:border-dark-default-base-outline
-                                                hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
-                                                cursor-pointer
-                                            `
-                                        }
-                                                
-                                        `}
+                                            text-light-default-base-line dark:text-dark-default-base-line
+                                            bg-light-default-base dark:bg-dark-default-base
+                                            border-light-default-base-outline dark:border-dark-default-base-outline
+                                            hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
+                                            cursor-pointer
+                                            
+                                            disabled:bg-light-default-base-disabled disabled:dark:bg-dark-default-base/10
+                                            disabled:cursor-not-allowed
+                                            `}
                                     onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
                                 >
                                     {t("table.next")}
                                 </button>
                             </div>
                         }
-                    </div>
-                </div>
+                    </div >
+                </div >
             }
             {
                 'load_more' === type

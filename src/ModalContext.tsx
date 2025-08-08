@@ -292,8 +292,7 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
                         bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line
                      ${sizeClasses[size]}
                         rounded-lg shadow-xl h-fit
-                        transition-all duration-200
-                        transform
+                        transition-all duration-200 ease-out
                         ${show && !isLeaving ? "scale-100 opacity-100" : "scale-95 opacity-0"}
                         flex flex-col
                     `}
