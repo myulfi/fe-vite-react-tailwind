@@ -66,7 +66,11 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
             </div>
 
             <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${openFlag ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+                className={`
+                    overflow-hidden
+                    transition-all duration-500 ease-in-out
+                    ${openFlag ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
+                `}
             >
                 {openFlag && hasChildrenFlag && (
                     <div className="ml-4 pl-4 border-l border-light-clear dark:border-dark-clear">
@@ -111,7 +115,14 @@ export default function SideBar({
 
     return (
         <div
-            className={`fixed top-0 left-0 h-full overflow-y-auto bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line z-20 transition-transform duration-500 ease-in-out sm:w-[256px] max-sm:w-screen ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}`}
+            className={`
+                fixed top-0 left-0 h-full overflow-y-auto
+                bg-light-clear dark:bg-dark-clear
+                text-light-base-line dark:text-dark-base-line
+                z-20 sm:w-[256px] max-sm:w-screen
+                transition-transform duration-500 ease-in-out
+                ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}
+            `}
         >
             <div className='relative border-b border-light-clear dark:border-dark-clear pb-4 m-4'>
                 <span className='block text-center font-bold text-3xl text-light-base dark:text-dark-base'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span>

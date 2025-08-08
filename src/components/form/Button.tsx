@@ -88,7 +88,6 @@ export default function Button({
                     shadow border-0 disabled:opacity-60 w-auto
                     ${loadingFlag ? "cursor-not-allowed" : "cursor-pointer"}
                     ${sizeClasses[size]} ${typeClasses[type]} ${className}
-                    transition-colors duration-300 ease-in-out
                 `}
                 disabled={loadingFlag}
                 onClick={(e) => menuArray.length > 0 ? setMenuOpenFlag((prev) => !prev) : onClick?.(e)}

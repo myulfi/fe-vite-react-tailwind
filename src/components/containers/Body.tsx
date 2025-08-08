@@ -36,7 +36,7 @@ export default function Body({
         <div className={`
             flex flex-col flex-1 min-h-screen relative 
             bg-light-clear-secondary dark:bg-dark-clear-secondary
-            transition-transform duration-500 ${sidebarOpenFlag ? `max-sm:hidden md:ml-[256px] max-md:ml-0` : 'ml-0'}
+            transition-all duration-500 ease-out ${sidebarOpenFlag ? `max-sm:hidden md:ml-[256px] max-md:ml-0` : 'ml-0'}
         `}>
             <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
 
