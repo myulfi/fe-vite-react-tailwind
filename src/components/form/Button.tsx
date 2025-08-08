@@ -25,31 +25,31 @@ const sizeClasses = {
 const typeClasses = {
     primary: `
         bg-light-primary-base dark:bg-dark-primary-base
-        hover:bg-light-primary-base-hover hover:dark:bg-dark-primary-base
+        hover:bg-light-primary-base-hover hover:dark:bg-dark-primary-base/60
         border-2 border-light-primary-base dark:border-dark-primary-base
         hover:border-dark-primary-base hover:dark:border-dark-primary-base-hover
         text-light-primary-base-line dark:text-dark-primary-base-line`,
     success: `
-        bg-light-success-base dark:bg-dark-success-base hover:bg-light-success-base-hover
-        hover:dark:bg-dark-success-base
+        bg-light-success-base dark:bg-dark-success-base
+        hover:bg-light-success-base-hover hover:dark:bg-dark-success-base/60
         border-2 border-light-success-base dark:border-dark-success-base
         hover:border-dark-success-base hover:dark:border-dark-success-base-hover
         text-light-success-base-line dark:text-dark-success-base-line`,
     danger: `
         bg-light-danger-base dark:bg-dark-danger-base
-        hover:bg-light-danger-base-hover hover:dark:bg-dark-danger-base
+        hover:bg-light-danger-base-hover hover:dark:bg-dark-danger-base/60
         border-2 border-light-danger-base dark:border-dark-danger-base
         hover:border-dark-danger-base hover:dark:border-dark-danger-base-hover
         text-light-danger-base-line dark:text-dark-danger-base-line`,
     warning: `
         bg-light-warning-base dark:bg-dark-warning-base
-        hover:bg-light-warning-base-hover hover:dark:bg-dark-warning-base
+        hover:bg-light-warning-base-hover hover:dark:bg-dark-warning-base/60
         border-2 border-light-warning-base dark:border-dark-warning-base
         hover:border-dark-warning-base hover:dark:border-dark-warning-base-hover
         text-light-warning-base-line dark:text-dark-warning-base-line`,
     secondary: `
         bg-light-secondary-base dark:bg-dark-secondary-base
-        hover:bg-light-secondary-base-hover hover:dark:bg-dark-secondary-base
+        hover:bg-light-secondary-base-hover hover:dark:bg-dark-secondary-base/60
         border-2 border-light-secondary-base dark:border-dark-secondary-base
         hover:bg-light-secondary-base-hover hover:dark:border-dark-secondary-base-hover
         text-light-secondary-base-line dark:text-dark-secondary-base-line`,
@@ -88,6 +88,7 @@ export default function Button({
                     shadow border-0 disabled:opacity-60 w-auto
                     ${loadingFlag ? "cursor-not-allowed" : "cursor-pointer"}
                     ${sizeClasses[size]} ${typeClasses[type]} ${className}
+                    transition-colors duration-300 ease-in-out
                 `}
                 disabled={loadingFlag}
                 onClick={(e) => menuArray.length > 0 ? setMenuOpenFlag((prev) => !prev) : onClick?.(e)}

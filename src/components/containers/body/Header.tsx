@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { LOCAL_STORAGE, SIDEBAR_WIDTH } from "../../../constants/common-constants";
+import { LOCAL_STORAGE } from "../../../constants/common-constants";
 import { apiRequest } from "../../../api";
 import { useClickOutside } from "../../../hook/useClickOutside";
 
@@ -52,7 +52,14 @@ export default function Header({
 
     return (
         <div
-            className={`sticky top-0 z-10 transition-all duration-500 shadow-inner text-sm py-6 px-4 bg-light-clear dark:bg-dark-clear text-light-base dark:text-dark-base flex items-center justify-between ${sidebarOpenFlag ? `md:ml-[256px] max-md:ml-0` : 'ml-0'} ${scrollDownFlag ? 'max-sm:-translate-y-full' : 'translate-y-0'}`}
+            className={`
+                sticky top-0 z-10 shadow-inner text-sm py-6 px-4
+                bg-light-clear dark:bg-dark-clear
+                text-light-base dark:text-dark-base
+                flex items-center justify-between
+                transition-transform duration-500 ease-out
+                ${scrollDownFlag ? 'max-sm:-translate-y-full' : 'translate-y-0'}
+            `}
         >
             <div className="flex items-center gap-3 flex-1">
                 <button

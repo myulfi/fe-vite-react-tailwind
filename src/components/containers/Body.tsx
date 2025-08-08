@@ -33,14 +33,18 @@ export default function Body({
     }, [])
 
     return (
-        <div className={`flex flex-col min-h-screen relative flex-1 transition-all duration-500 bg-light-clear-secondary dark:bg-dark-clear-secondary ${sidebarOpenFlag ? 'max-sm:hidden' : ''}`}>
+        <div className={`
+            flex flex-col flex-1 min-h-screen relative 
+            bg-light-clear-secondary dark:bg-dark-clear-secondary
+            transition-transform duration-500 ${sidebarOpenFlag ? `max-sm:hidden md:ml-[256px] max-md:ml-0` : 'ml-0'}
+        `}>
             <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
 
-            <main className={`text-light-base-line dark:text-dark-base-line z-0 transition-all duration-500 ${sidebarOpenFlag ? `md:ml-[256px] max-md:ml-0` : 'ml-0'}`}>
+            <main className={`text-light-base-line dark:text-dark-base-line z-0`}>
                 <Routes />
             </main>
 
-            <Footer sidebarOpenFlag={sidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
+            <Footer scrollDownFlag={scrollDownFlag} />
         </div>
     )
 }
