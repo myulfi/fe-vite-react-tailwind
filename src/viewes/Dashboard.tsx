@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Body from "../components/containers/Body";
 import SideBar from "../components/containers/SideBar";
 
@@ -20,9 +20,9 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <React.Fragment>
+        <div className="bg-light-clear dark:bg-dark-clear">
             <SideBar tabletFlag={tabletFlag} sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
             <Body sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
-        </React.Fragment>
+        </div>
     )
 }

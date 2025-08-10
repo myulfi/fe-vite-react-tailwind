@@ -9,6 +9,7 @@ import ReactDOM from "react-dom/client";
 import { createPortal } from "react-dom";
 import Button from "./components/form/Button";
 import { useTranslation } from "react-i18next";
+import type { ButtonArray } from "./constants/common-constants";
 
 type ConfirmDialogProps = {
     show: boolean;
@@ -33,34 +34,25 @@ function ConfirmDialog({
             icon={'alert' === type ? "fa-solid fa-triangle-exclamation" : 'confirmation' === type ? "fa-solid fa-circle-question" : 'warning' === type ? "fa-solid fa-circle-exclamation" : ""}
             title={t(`text.${type}`)}
             buttonArray={[
-                'alert' === type && (
-                    <Button
-                        label={t("button.understood")}
-                        className="max-sm:w-full"
-                        type="warning"
-                        icon="fa-solid fa-lightbulb"
-                        onClick={onClose}
-                    />
-                ),
-                'confirmation' === type && (
-                    <Button
-                        label={t("button.ok")}
-                        className="max-sm:w-full"
-                        type="primary"
-                        icon="fa-solid fa-circle-check"
-                        onClick={() => onConfirm()}
-                    />
-                ),
-                'warning' === type && (
-                    <Button
-                        label={t("button.ofCourse")}
-                        className="max-sm:w-full"
-                        type="danger"
-                        icon="fa-solid fa-circle-check"
-                        onClick={() => onConfirm()}
-                    />
-                ),
-            ].filter(Boolean) as React.ReactElement[]}
+                'alert' === type && ({
+                    label: t("button.understood"),
+                    type: "warning",
+                    icon: "fa-solid fa-lightbulb",
+                    onClick: onClose,
+                }),
+                'confirmation' === type && ({
+                    label: t("button.ok"),
+                    type: "primary",
+                    icon: "fa-solid fa-circle-check",
+                    onClick: onConfirm,
+                }),
+                'warning' === type && ({
+                    label: t("button.ofCourse"),
+                    type: "danger",
+                    icon: "fa-solid fa-circle-check",
+                    onClick: onConfirm,
+                }),
+            ].filter(Boolean) as ButtonArray}
             onClose={onClose}>
             <div className="text-center space-y-4">
                 <p>{message}</p>
@@ -176,7 +168,7 @@ type ModalProps = {
     size?: 'sm' | 'md' | 'lg' | 'xl';
     title: string;
     icon?: string;
-    buttonArray?: React.ReactElement[]
+    buttonArray?: ButtonArray;
     onClose: () => void;
     children: React.ReactNode;
 };
@@ -319,7 +311,19 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
                         {children}
                     </div>
                     <div className="flex max-sm:flex-col justify-end md:flex-row gap-4 p-4">
-                        {buttonArray}
+                        {
+                            buttonArray.map((button, index) => (
+                                <Button
+                                    key={index}
+                                    label={button.label}
+                                    className="max-sm:w-full"
+                                    type={button.type}
+                                    icon={button.icon}
+                                    onClick={button.onClick}
+                                    loadingFlag={button.loadingFlag}
+                                />
+                            ))
+                        }
                         <Button
                             label={t("button.close")}
                             className="max-sm:w-full"

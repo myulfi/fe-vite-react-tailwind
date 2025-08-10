@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Button from "../../components/form/Button";
 import { Fragment, useState } from "react";
-import { HTTP_CODE, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
+import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
 import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
@@ -337,29 +337,21 @@ export default function ExampleTemplate() {
                     title={exampleTemplateEntryModal.title}
                     onClose={() => setModalExampleTemplate(false)}
                     buttonArray={[
-                        "entry" === exampleTemplateStateModal && (
-                            <Button
-                                key="entry"
-                                label={exampleTemplateEntryModal.submitLabel}
-                                className="max-sm:w-full"
-                                type="primary"
-                                icon={exampleTemplateEntryModal.submitIcon}
-                                onClick={() => confirmStoreExampleTemplate()}
-                                loadingFlag={exampleTemplateEntryModal.submitLoadingFlag}
-                            />
-                        ),
-                        "view" === exampleTemplateStateModal && (
-                            <Button
-                                key="view"
-                                label={exampleTemplateEntryModal.submitLabel}
-                                className="max-sm:w-full"
-                                type="primary"
-                                icon={exampleTemplateEntryModal.submitIcon}
-                                onClick={() => entryExampleTemplate(true)}
-                                loadingFlag={false}
-                            />
-                        )
-                    ].filter(Boolean) as React.ReactElement[]}
+                        "entry" === exampleTemplateStateModal && ({
+                            label: exampleTemplateEntryModal.submitLabel,
+                            type: "primary",
+                            icon: exampleTemplateEntryModal.submitIcon,
+                            onClick: () => confirmStoreExampleTemplate(),
+                            loadingFlag: exampleTemplateEntryModal.submitLoadingFlag
+                        }),
+                        "view" === exampleTemplateStateModal && ({
+                            label: exampleTemplateEntryModal.submitLabel,
+                            type: "primary",
+                            icon: exampleTemplateEntryModal.submitIcon,
+                            onClick: () => entryExampleTemplate(true),
+                            loadingFlag: false
+                        })
+                    ].filter(Boolean) as ButtonArray}
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {
@@ -486,7 +478,7 @@ export default function ExampleTemplate() {
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
                                         label={t("button.view")}
-                                        className="btn-primary max-sm:w-full"
+                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewExampleTemplate(data)}
@@ -494,7 +486,7 @@ export default function ExampleTemplate() {
                                     />
                                     <Button
                                         label={t("button.delete")}
-                                        className="btn-danger max-sm:w-full"
+                                        className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteExampleTemplate(data, row.name)}

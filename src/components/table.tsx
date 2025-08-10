@@ -1,22 +1,16 @@
 import { Fragment, useEffect, useState } from "react";
-import { decode, getNestedValue, onCopy } from "../function/commonHelper";
+import { getNestedValue, onCopy } from "../function/commonHelper";
 import { Trans, useTranslation } from "react-i18next";
 import Button from "./form/Button";
 import InputText from "./form/InputText";
+import type { ButtonArray } from "../constants/common-constants";
 
 interface TableProps {
     showFlag?: boolean;
     type?: 'pagination' | 'load_more';
     labelNewButton?: string;
     onNewButtonClick?: () => void;
-    additionalButtonArray?: {
-        label?: string;
-        className?: string;
-        type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
-        icon?: string;
-        onClick: () => void;
-        loadingFlag?: boolean;
-    }[];
+    additionalButtonArray?: ButtonArray;
     bulkOptionLoadingFlag?: boolean;
     bulkOptionArray?: {
         label: string;
@@ -261,7 +255,7 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="flex flex-col sm:flex-row md:justify-between gap-5 pb-5">
+                <div className="flex flex-col flex-wrap sm:flex-row md:justify-between gap-5 pb-5">
                     {
                         labelNewButton != undefined
                         && <div className="w-full sm:w-auto">
@@ -323,8 +317,20 @@ export default function Table({
                 </div>
             </div>
             <div className="overflow-x-auto w-full pb-5">
+                {
+                    loadingFlag
+                    && (
+                        "pagination" === type
+                        || ("load_more" === type && itemArray.length === 0)
+                    )
+                    && <div className={`
+                        text-light-base dark:text-dark-base
+                        absolute top-8/12 left-1/2
+                        transform -translate-x-1/2 -translate-y-1/2
+                        fa-solid fa-spinner fa-spin text-9xl
+                    `}></div>
+                }
                 <table className="min-w-full table-auto">
-                    {/* bg-slate-300 dark:bg-gray-700 */}
                     <thead className='text-light-base-line-secondary dark:text-dark-base-line-secondary border-y-1 border-light-divider dark:border-dark-divider'>
                         <tr>
                             {
@@ -437,9 +443,21 @@ export default function Table({
                                         }
                                     </Fragment>
                                 ))
-                                : <tr>
+                                : <tr className="border-b-1 border-light-divider dark:border-dark-divider">
                                     <td colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)} className="text-center">
-                                        {t("table.emptyTable")}
+                                        {
+                                            !loadingFlag && (
+                                                <Fragment>
+                                                    <i className={`
+                                                        my-3
+                                                        text-light-base dark:text-dark-base
+                                                        fa-solid fa-inbox text-9xl
+                                                    `} /><br />
+                                                    <span>{t("table.emptyTable")}</span>
+                                                    <br /><br />
+                                                </Fragment>
+                                            )
+                                        }
                                     </td>
                                 </tr>
                         }

@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react"
-import { Link, useLocation } from "react-router-dom"
-import { LOCAL_STORAGE, SIDEBAR_WIDTH } from "../../constants/common-constants"
-import { apiRequest } from "../../api"
-import { useTranslation } from "react-i18next"
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { LOCAL_STORAGE } from "../../constants/common-constants";
+import { apiRequest } from "../../api";
+import { useTranslation } from "react-i18next";
 
 type MenuItem = {
     name: string
     icon?: React.ReactNode
     path?: string
     children?: MenuItem[]
-}
+};
 
 const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () => void }> = ({ item, level = 0, onNavigate }) => {
     const { t } = useTranslation();

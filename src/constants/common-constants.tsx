@@ -17,6 +17,15 @@ export type TableOptions = {
     order?: [string, 'asc' | 'desc'] | []
 };
 
+export type ButtonArray = {
+    label?: string;
+    className?: string;
+    type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
+    icon?: string;
+    onClick: () => void;
+    loadingFlag?: boolean;
+}[];
+
 export const FLAG = {
     YES: 1,
     NO: 0,
