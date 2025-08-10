@@ -1,10 +1,25 @@
+export type ModalCategory = 'entry' | 'view';
+export type ModalType = {
+    title: string;
+    submitLabel?: string;
+    submitClass?: string;
+    submitIcon?: string,
+    submitLoadingFlag?: boolean,
+};
+export interface OptionColumn {
+    viewedButtonFlag: boolean;
+    deletedButtonFlag: boolean;
+};
+export type TableOptions = {
+    page: number
+    length: number
+    search: string
+    order?: [string, 'asc' | 'desc'] | []
+};
+
 export const FLAG = {
     YES: 1,
     NO: 0,
-}
-export const MODAL = {
-    ENTRY: 1,
-    VIEW: 2,
 }
 export const LOCAL_STORAGE = {
     ACCESS_TOKEN: "accessToken",

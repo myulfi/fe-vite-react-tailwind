@@ -1,25 +1,24 @@
-import { useTranslation } from "react-i18next"
-import Button from "../../components/form/Button"
-import { Fragment, useEffect, useState } from "react"
-import { HTTP_CODE, MODAL } from "../../constants/common-constants"
-import { apiRequest } from "../../api"
-import { formatDate } from "../../function/dateHelper"
-import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext"
-import Label from "../../components/form/Label"
-// import toast from "../../Toast"
-import { toast } from "../../ToastContext"
-import InputText from "../../components/form/InputText"
-import TextArea from "../../components/form/TextArea"
-import InputDecimal from "../../components/form/InputDecimal"
-import InputDate from "../../components/form/InputDate"
-import Radio from "../../components/form/Radio"
-import Select from "../../components/form/Select"
-import Table from "../../components/Table"
-import { HttpStatusCode } from "axios"
-import { formatMoney, yesNo } from "../../function/commonHelper"
+import { useTranslation } from "react-i18next";
+import Button from "../../components/form/Button";
+import { Fragment, useState } from "react";
+import { HTTP_CODE, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
+import { apiRequest } from "../../api";
+import { formatDate } from "../../function/dateHelper";
+import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
+import Label from "../../components/form/Label";
+import { toast } from "../../ToastContext";
+import InputText from "../../components/form/InputText";
+import TextArea from "../../components/form/TextArea";
+import InputDecimal from "../../components/form/InputDecimal";
+import InputDate from "../../components/form/InputDate";
+import Radio from "../../components/form/Radio";
+import Select from "../../components/form/Select";
+import Table from "../../components/Table";
+import { HttpStatusCode } from "axios";
+import { formatMoney, yesNo } from "../../function/commonHelper";
 
 export default function ExampleTemplate() {
-    const { t } = useTranslation()
+    const { t } = useTranslation();
 
     type ExampleTemplateData = {
         name: string;
@@ -32,17 +31,9 @@ export default function ExampleTemplate() {
         version: number,
     }
 
-    type ExampleTemplateFormError = {
-        name?: string;
-        description?: string;
-        value?: string;
-        amount?: string,
-        date?: string,
-        activeFlag?: string,
-        version?: string,
-    };
+    type ExampleTemplateFormError = Partial<Record<keyof ExampleTemplateData, string>>;
 
-    const exampleTemplateInitial = {
+    const exampleTemplateInitial: ExampleTemplateData = {
         name: "",
         description: undefined,
         value: 0,
@@ -53,15 +44,15 @@ export default function ExampleTemplate() {
         version: 0,
     }
 
-    const [exampleTemplateStateModal, setExampleTemplateStateModal] = useState(MODAL.ENTRY)
+    const [exampleTemplateStateModal, setExampleTemplateStateModal] = useState<ModalCategory>("entry");
 
     const exampleTemplateFilterTableTableInitial = {
         value: 0,
         date: "",
         range: 0,
-    }
+    };
 
-    const [exampleTemplateFilterTable, setExampleTemplateFilterTable] = useState(exampleTemplateFilterTableTableInitial)
+    const [exampleTemplateFilterTable, setExampleTemplateFilterTable] = useState(exampleTemplateFilterTableTableInitial);
 
     const onExampleTemplateFilterTableChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -71,51 +62,37 @@ export default function ExampleTemplate() {
         }));
     };
 
-    interface OptionColumn {
-        viewedButtonFlag: boolean;
-        deletedButtonFlag: boolean;
-    }
-
-    const [exampleTemplateBulkOptionLoadingFlag, setExampleTemplateBulkOptionLoadingFlag] = useState(false)
-    const [exampleTemplateCheckBoxTableArray, setExampleTemplateCheckBoxTableArray] = useState<number[]>([])
-    const [exampleTemplateOptionColumnTable, setExampleTemplateOptionColumnTable] = useState<{
-        [id: number]: OptionColumn;
-    }>({});
+    const [exampleTemplateBulkOptionLoadingFlag, setExampleTemplateBulkOptionLoadingFlag] = useState(false);
+    const [exampleTemplateCheckBoxTableArray, setExampleTemplateCheckBoxTableArray] = useState<number[]>([]);
+    const [exampleTemplateOptionColumnTable, setExampleTemplateOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
     const [exampleTemplateAttributeTable, setExampleTemplateAttributeTable] = useState<TableOptions>({
         page: 1,
         length: 10,
         search: '',
         order: []
-    })
-    const [exampleTemplateDataTotalTable, setExampleTemplateDataTotalTable] = useState(0)
-    const [exampleTemplateTableLoadingFlag, setExampleTemplateTableLoadingFlag] = useState(false)
+    });
+    const [exampleTemplateDataTotalTable, setExampleTemplateDataTotalTable] = useState(0);
+    const [exampleTemplateTableLoadingFlag, setExampleTemplateTableLoadingFlag] = useState(false);
 
-    const [exampleTemplateArray, setExampleTemplateArray] = useState([])
+    const [exampleTemplateArray, setExampleTemplateArray] = useState([]);
 
-    type ModalType = {
-        title: string;
-        submitLabel?: string;
-        submitClass?: string;
-        submitIcon?: string,
-        submitLoadingFlag?: boolean,
-    };
     const [exampleTemplateEntryModal, setExampleTemplateEntryModal] = useState<ModalType>({
         title: "",
         submitLabel: "",
         submitClass: "",
         submitIcon: "",
         submitLoadingFlag: false,
-    })
+    });
 
     const [exampleTemplateId, setExampleTemplateId] = useState(0);
-    const [exampleTemplateForm, setExampleTemplateForm] = useState<ExampleTemplateData>(exampleTemplateInitial)
-    const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError>({})
+    const [exampleTemplateForm, setExampleTemplateForm] = useState<ExampleTemplateData>(exampleTemplateInitial);
+    const [exampleTemplateFormError, setExampleTemplateFormError] = useState<ExampleTemplateFormError>({});
 
     const onExampleTemplateFormChange = (e: { target: { name: string; value: any } }) => {
-        const { name, value } = e.target
-        setExampleTemplateForm({ ...exampleTemplateForm, [name]: value })
-        setExampleTemplateFormError({ ...exampleTemplateFormError, [name]: undefined })
-    }
+        const { name, value } = e.target;
+        setExampleTemplateForm({ ...exampleTemplateForm, [name]: value });
+        setExampleTemplateFormError({ ...exampleTemplateFormError, [name]: undefined });
+    };
 
     const selectValueMap = [
         { "key": 1, "value": "Satu" },
@@ -128,8 +105,7 @@ export default function ExampleTemplate() {
         { "key": 8, "value": "Delapan" },
         { "key": 9, "value": "Sembilan" },
         { "key": 10, "value": "Sepuluh" },
-    ]
-    const yesNoMap = [{ "key": 1, "value": "Yes" }, { "key": 0, "value": "No" }]
+    ];
 
     const exampleTemplateValidate = (data: ExampleTemplateData) => {
         const error: ExampleTemplateFormError = {};
@@ -139,18 +115,11 @@ export default function ExampleTemplate() {
 
         // if (!data.email.trim()) error.email = t("validate.required", { name: t("text.email") })
         // else if (!/\S+@\S+\.\S+/.test(data.email)) error.email = t("validate.invalid", { name: t("text.email") })
-        setExampleTemplateFormError(error)
-        return Object.keys(error).length === 0
-    }
+        setExampleTemplateFormError(error);
+        return Object.keys(error).length === 0;
+    };
 
-    // useEffect(() => { getExampleTemplate({ page: 1, length: 10, search: '' }) }, [])
-
-    type TableOptions = {
-        page: number
-        length: number
-        search: string
-        order?: [string, 'asc' | 'desc'] | []
-    }
+    // useEffect(() => { getExampleTemplate({ page: 1, length: 10, search: '' }) }, []);
 
     const getExampleTemplate = async (options: TableOptions) => {
         setExampleTemplateTableLoadingFlag(true)
@@ -165,32 +134,32 @@ export default function ExampleTemplate() {
             // "value": exampleTemplateFilterTable.value,
             // "date": exampleTemplateFilterTable.date,
             // "range": exampleTemplateFilterTable.range,
-        }
-        setExampleTemplateAttributeTable(options)
+        };
+        setExampleTemplateAttributeTable(options);
 
-        const response = await apiRequest('get', "/test/example-template.json", params)
+        const response = await apiRequest('get', "/test/example-template.json", params);
         if (HTTP_CODE.OK === response.status) {
-            setExampleTemplateArray(response.data)
-            setExampleTemplateDataTotalTable(response.total)
+            setExampleTemplateArray(response.data);
+            setExampleTemplateDataTotalTable(response.total);
             setExampleTemplateOptionColumnTable(
                 response.data.reduce(function (map: Record<string, any>, obj: any) {
                     //map[obj.id] = obj.name
                     map[obj.id] = { "viewedButtonFlag": false, "deletedButtonFlag": false }
                     return map
                 }, {})
-            )
+            );
         } else {
             toast.show({ type: 'error', message: response.message });
         }
 
-        setExampleTemplateTableLoadingFlag(false)
-    }
+        setExampleTemplateTableLoadingFlag(false);
+    };
 
     const viewExampleTemplate = async (id: number) => {
         setExampleTemplateId(id);
-        setExampleTemplateForm(exampleTemplateInitial)
+        setExampleTemplateForm(exampleTemplateInitial);
         if (id !== undefined) {
-            setExampleTemplateStateModal(MODAL.VIEW)
+            setExampleTemplateStateModal("view");
             setExampleTemplateOptionColumnTable(prev => ({
                 ...prev,
                 [id]: {
@@ -199,7 +168,7 @@ export default function ExampleTemplate() {
                 },
             }));
 
-            const response = await apiRequest('get', `/test/${id}/example-template.json`)
+            const response = await apiRequest('get', `/test/${id}/example-template.json`);
             if (HTTP_CODE.OK === response.status) {
                 const exampleTemplate = response.data;
 
@@ -212,7 +181,7 @@ export default function ExampleTemplate() {
                     date: exampleTemplate.date,
                     activeFlag: exampleTemplate.activeFlag,
                     version: exampleTemplate.version,
-                })
+                });
 
                 setExampleTemplateEntryModal({
                     ...exampleTemplateEntryModal,
@@ -220,7 +189,7 @@ export default function ExampleTemplate() {
                     submitLabel: t("button.edit"),
                     submitIcon: "fa-solid fa-pen",
                     submitLoadingFlag: false,
-                })
+                });
 
                 setModalExampleTemplate(true);
             } else {
@@ -235,11 +204,11 @@ export default function ExampleTemplate() {
                 },
             }));
         }
-    }
+    };
 
     const entryExampleTemplate = (haveContentFlag: boolean) => {
-        setExampleTemplateStateModal(MODAL.ENTRY)
-        setExampleTemplateFormError({})
+        setExampleTemplateStateModal("entry");
+        setExampleTemplateFormError({});
         if (haveContentFlag) {
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
@@ -247,10 +216,10 @@ export default function ExampleTemplate() {
                 submitLabel: t("button.update"),
                 submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
-            })
+            });
         } else {
             setExampleTemplateId(0);
-            setExampleTemplateForm(exampleTemplateInitial)
+            setExampleTemplateForm(exampleTemplateInitial);
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
                 title: t("button.createNew"),
@@ -261,7 +230,7 @@ export default function ExampleTemplate() {
 
             setModalExampleTemplate(true);
         }
-    }
+    };
 
     const confirmStoreExampleTemplate = async () => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
@@ -271,7 +240,7 @@ export default function ExampleTemplate() {
                 onConfirm: () => storeExampleTemplate(),
             });
         }
-    }
+    };
 
     const storeExampleTemplate = async () => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
@@ -292,7 +261,7 @@ export default function ExampleTemplate() {
                 toast.show({ type: "error", message: response.message });
             }
 
-            setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: false })
+            setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: false });
         }
     }
 
@@ -317,7 +286,7 @@ export default function ExampleTemplate() {
                 });
             }
         }
-    }
+    };
 
     const deleteExampleTemplate = async (id?: number) => {
         setModalExampleTemplate(false);
@@ -330,14 +299,14 @@ export default function ExampleTemplate() {
                 },
             }));
         } else {
-            setExampleTemplateBulkOptionLoadingFlag(true)
+            setExampleTemplateBulkOptionLoadingFlag(true);
         }
 
         const response = await apiRequest('delete', `/test/${id !== undefined ? id : exampleTemplateCheckBoxTableArray.join("")}/example-template.json`)
         if (HttpStatusCode.NoContent === response.status) {
-            getExampleTemplate(exampleTemplateAttributeTable)
+            getExampleTemplate(exampleTemplateAttributeTable);
             if (id === undefined) {
-                setExampleTemplateCheckBoxTableArray([])
+                setExampleTemplateCheckBoxTableArray([]);
             }
             toast.show({ type: "done", message: "information.deleted" });
         } else {
@@ -353,9 +322,9 @@ export default function ExampleTemplate() {
                 },
             }));
         } else {
-            setExampleTemplateBulkOptionLoadingFlag(false)
+            setExampleTemplateBulkOptionLoadingFlag(false);
         }
-    }
+    };
 
     const [modalExampleTemplate, setModalExampleTemplate] = useState(false);
 
@@ -368,20 +337,22 @@ export default function ExampleTemplate() {
                     title={exampleTemplateEntryModal.title}
                     onClose={() => setModalExampleTemplate(false)}
                     buttonArray={[
-                        MODAL.ENTRY === exampleTemplateStateModal && (
+                        "entry" === exampleTemplateStateModal && (
                             <Button
                                 key="entry"
                                 label={exampleTemplateEntryModal.submitLabel}
+                                className="max-sm:w-full"
                                 type="primary"
                                 icon={exampleTemplateEntryModal.submitIcon}
                                 onClick={() => confirmStoreExampleTemplate()}
                                 loadingFlag={exampleTemplateEntryModal.submitLoadingFlag}
                             />
                         ),
-                        MODAL.VIEW === exampleTemplateStateModal && (
+                        "view" === exampleTemplateStateModal && (
                             <Button
                                 key="view"
                                 label={exampleTemplateEntryModal.submitLabel}
+                                className="max-sm:w-full"
                                 type="primary"
                                 icon={exampleTemplateEntryModal.submitIcon}
                                 onClick={() => entryExampleTemplate(true)}
@@ -392,7 +363,7 @@ export default function ExampleTemplate() {
                 >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {
-                            MODAL.ENTRY === exampleTemplateStateModal
+                            "entry" === exampleTemplateStateModal
                             && <Fragment>
                                 <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
@@ -407,7 +378,7 @@ export default function ExampleTemplate() {
                             </Fragment>
                         }
                         {
-                            MODAL.VIEW === exampleTemplateStateModal
+                            "view" === exampleTemplateStateModal
                             && <Fragment>
                                 <Label text={t("text.name")} value={exampleTemplateForm.name} />
                                 <Label text={t("text.description")} value={exampleTemplateForm.description} />
@@ -426,6 +397,11 @@ export default function ExampleTemplate() {
 
                 bulkOptionLoadingFlag={exampleTemplateBulkOptionLoadingFlag}
                 bulkOptionArray={[
+                    {
+                        label: t("button.delete"),
+                        icon: "fa-solid fa-trash",
+                        onClick: () => confirmDeleteExampleTemplate(),
+                    },
                     {
                         label: t("button.delete"),
                         icon: "fa-solid fa-trash",
