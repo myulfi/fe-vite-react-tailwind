@@ -94,7 +94,13 @@ export default function Button({
             >
                 {icon && <i className={`${icon} mr-2`} />}
                 <span>{label}</span>
-                {loadingFlag && <i className="fa-solid fa-spinner fa-spin ml-2" />}
+                <i
+                    className={`
+                        fa-solid fa-spinner fa-spin
+                        transition-[opacity, transform] duration-300 ease-in-out
+                        ${loadingFlag ? "opacity-100 max-w-[20px] ml-2" : "opacity-0 max-w-0 overflow-hidden"}
+                    `}
+                />
                 {!loadingFlag && menuArray.length > 0 && <i className='fa-solid fa-chevron-down ml-2' />}
             </button>
             {menuArray.length > 0 && (
@@ -105,7 +111,7 @@ export default function Button({
                         text-light-base dark:text-dark-base
                         border border-t-0 border-light-divider dark:border-dark-divider
                         rounded-tl-md rounded-b-md shadow-md z-20
-                        transition-all duration-300 ease-out origin-top
+                        transition-[opacity, transform] duration-300 ease-out origin-top
                         ${menuOpenFlag ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible pointer-events-none"}
                     `}
                 >

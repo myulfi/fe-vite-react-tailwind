@@ -164,7 +164,7 @@ export default function Select({
                         text-light-base-line dark:text-dark-base-line
                         border border-t-0 border-light-outline dark:border-dark-outline
                         rounded-b-md shadow-lg
-                        transition-all duration-400 ease-out origin-top
+                        transition-[opacity, transform] duration-400 ease-out origin-top
                         ${dropdownOpen ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible pointer-events-none"}
                     `}>
                     {map.length > dataSize && (

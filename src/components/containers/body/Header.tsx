@@ -57,7 +57,7 @@ export default function Header({
                 bg-light-clear dark:bg-dark-clear
                 text-light-base dark:text-dark-base
                 flex items-center justify-between
-                transition-transform duration-500 ease-out
+                transition-[translate] duration-500 ease-out
                 ${scrollDownFlag ? 'max-sm:-translate-y-full' : 'translate-y-0'}
             `}
         >
@@ -79,7 +79,7 @@ export default function Header({
                 >
                     <span className="text-xs px-1">{darkModeFlag ? '☀️' : ''}</span>
                     <div
-                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-300 ${darkModeFlag ? 'translate-x-1' : 'translate-x-0'}`}
+                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-[translate] duration-300 ${darkModeFlag ? 'translate-x-1' : 'translate-x-0'}`}
                     />
                     <span className="text-xs px-1">{!darkModeFlag ? '🌙' : ''}</span>
                 </button>
@@ -99,7 +99,7 @@ export default function Header({
                         text-light-base dark:text-dark-base
                         border border-t-0 border-light-divider dark:border-dark-divider
                         rounded-b-md shadow-md z-20
-                        transition-all duration-300 ease-in-out
+                        transition-[opacity, transform] duration-300 ease-in-out
                         ${rightMenuOpenFlag ? "translate-y-0 opacity-100 visible" : "-translate-y-5 opacity-0 invisible pointer-events-none"}
                     `}>
                     <Link to="/profile" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
