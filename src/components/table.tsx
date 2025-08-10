@@ -316,7 +316,11 @@ export default function Table({
                     }
                 </div>
             </div>
-            <div className="overflow-x-auto w-full pb-5">
+            <div
+                className={`
+                    overflow-x-auto w-full pb-5
+                    ${loadingFlag ? 'min-h-64' : ''}
+            `}>
                 {
                     loadingFlag
                     && (
@@ -444,19 +448,16 @@ export default function Table({
                                     </Fragment>
                                 ))
                                 : <tr className="border-b-1 border-light-divider dark:border-dark-divider">
-                                    <td colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)} className="text-center">
+                                    <td colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)} className="px-4 py-3">
                                         {
-                                            !loadingFlag && (
-                                                <Fragment>
-                                                    <i className={`
-                                                        my-3
-                                                        text-light-base dark:text-dark-base
-                                                        fa-solid fa-inbox text-9xl
-                                                    `} /><br />
-                                                    <span>{t("table.emptyTable")}</span>
-                                                    <br /><br />
-                                                </Fragment>
-                                            )
+                                            !loadingFlag &&
+                                            <div className="flex flex-col items-center">
+                                                <i className={`
+                                                    text-light-base dark:text-dark-base
+                                                    fa-solid fa-inbox text-9xl
+                                                `} />
+                                                <label>{t("table.emptyTable")}</label>
+                                            </div>
                                         }
                                     </td>
                                 </tr>

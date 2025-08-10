@@ -119,3 +119,7 @@ export function onCopy(e: React.MouseEvent<HTMLElement>, value: string) {
         document.body.removeChild(tooltip);
     }, 1000);
 };
+
+export function delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
