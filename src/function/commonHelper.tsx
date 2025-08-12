@@ -16,7 +16,9 @@ export function format(template: string, values: any[]) {
     });
 }
 
-export function decode(key: string, ...args: (string | ((key: string) => string))[]): string {
+export function decode(key?: string, ...args: (string | ((key: string) => string))[]): string {
+    if (typeof key !== "string") return "";
+
     let iv: string | ((key: string) => string) | undefined;
     let inv: string | ((key: string) => string) | undefined;
 

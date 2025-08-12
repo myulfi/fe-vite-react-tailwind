@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { getNestedValue, onCopy } from "../function/commonHelper";
+import { decode, getNestedValue, onCopy } from "../function/commonHelper";
 import { Trans, useTranslation } from "react-i18next";
 import Button from "./form/Button";
 import InputText from "./form/InputText";
@@ -411,13 +411,24 @@ export default function Table({
                                             }
                                         </tr>
                                         {
-                                            columnHide.length > 0 && detailRow[indexRow] &&
-                                            <tr className={columnAlwaysHide.length === 0 ? "lg:hidden" : undefined}>
-                                                <td colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)}>
+                                            <tr>
+                                                <td
+                                                    className={columnAlwaysHide.length === 0 ? "lg:hidden" : ''}
+                                                    colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
+                                                >
                                                     {
                                                         columnHide
                                                             .map((column, index) => (
-                                                                <div key={index} className={`border-l-1 border-light-divider dark:border-dark-divider ml-6 mr-2 px-2 py-2 ${column.minDevice == 'tablet' ? "md:hidden" : column.minDevice == 'desktop' ? "lg:hidden" : ""}`}>
+                                                                <div
+                                                                    key={index}
+                                                                    className={`
+                                                                        overflow-hidden
+                                                                        ml-6 mr-2 px-2
+                                                                        border-l-1 border-light-divider dark:border-dark-divider
+                                                                        transition-[max-height, opacity, padding] duration-300 ease-in-out
+                                                                        ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-2" : "max-h-0 opacity-0 py-0"}
+                                                                        ${decode(column.minDevice, 'tablet', 'md:hidden', 'desktop', 'lg:hidden')}
+                                                                    `}>
                                                                     <span className='row-hidden-bullet' />
                                                                     <label className="fw-bold mx-2">{column.name}</label>
                                                                     {
