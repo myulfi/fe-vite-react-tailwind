@@ -1,8 +1,8 @@
 import { Routes as ReactRoutes, Route } from "react-router-dom";
-import Home from "./viewes/Home";
-import Profile from "./viewes/Profile";
-import Database from "./viewes/external/Database";
-import ExampleTemplate from "./viewes/test/ExampleTemplate";
+import Home from "./views/Home";
+import Profile from "./views/Profile";
+import Database from "./views/external/Database";
+import ExampleTemplate from "./views/test/ExampleTemplate";
 function Routes() {
     return (
         <ReactRoutes>

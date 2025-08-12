@@ -255,66 +255,71 @@ export default function Table({
     return (
         <div>
             <div>
-                <div className="flex flex-col flex-wrap sm:flex-row md:justify-between gap-5 pb-5">
-                    {
-                        labelNewButton != undefined
-                        && <div className="w-full sm:w-auto">
-                            <Button label={labelNewButton} className="w-full text-nowrap" size="md" type="primary" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
-                        </div>
-                    }
-                    {
-                        additionalButtonArray.map((additionalButton, index) => (
-                            <div key={index} className="w-full sm:w-auto">
-                                <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" type={additionalButton.type} icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
+                {
+                    (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
+                    <div className="flex flex-col flex-wrap sm:flex-row md:justify-between gap-5 pb-5">
+                        {
+                            labelNewButton != undefined
+                            && <div className="w-full sm:w-auto">
+                                <Button label={labelNewButton} className="w-full text-nowrap" size="md" type="primary" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
                             </div>
-                        ))
-                    }
-                    {
-                        bulkOptionArray.length > 0
-                        && <div className="w-full sm:w-auto sm:ml-auto">
-                            <Button
-                                label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("button.bulkOption")}`}
-                                className="w-full text-nowrap btn-primary"
-                                size="md"
-                                type="primary"
-                                icon="fa-solid fa-boxes-stacked"
-                                menuArray={bulkOptionArray}
-                                loadingFlag={bulkOptionLoadingFlag}
-                            />
-                        </div>
-                    }
-                </div>
-                <div className="flex flex-col md:flex-row items-center md:justify-between gap-5 pb-5">
-                    {
-                        lengthFlag
-                        && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
-                            <Trans
-                                i18nKey="table.lengthMenu"
-                                components={{
-                                    menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, Number(e.target.value), search)}>
-                                        {
-                                            lengthArray.map((length) => (
-                                                <option value={length} key={length}>{length}</option>
-                                            ))
-                                        }
-                                    </select>
-                                }}
-                            />
-                        </div>
-                    }
-                    {
-                        searchFlag
-                        && <div className="w-full md:w-auto md:ml-auto">
-                            <InputText
-                                autoFocus={true}
-                                autoComplete="off"
-                                name="name"
-                                value={search}
-                                onChange={event => setSearch(event.target.value)}
-                                onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
-                        </div>
-                    }
-                </div>
+                        }
+                        {
+                            additionalButtonArray.map((additionalButton, index) => (
+                                <div key={index} className="w-full sm:w-auto">
+                                    <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" type={additionalButton.type} icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
+                                </div>
+                            ))
+                        }
+                        {
+                            bulkOptionArray.length > 0
+                            && <div className="w-full sm:w-auto sm:ml-auto">
+                                <Button
+                                    label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("button.bulkOption")}`}
+                                    className="w-full text-nowrap btn-primary"
+                                    size="md"
+                                    type="primary"
+                                    icon="fa-solid fa-boxes-stacked"
+                                    menuArray={bulkOptionArray}
+                                    loadingFlag={bulkOptionLoadingFlag}
+                                />
+                            </div>
+                        }
+                    </div>
+                }
+                {(lengthFlag || searchFlag) &&
+                    <div className="flex flex-col md:flex-row items-center md:justify-between gap-5 pb-5">
+                        {
+                            lengthFlag
+                            && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                                <Trans
+                                    i18nKey="table.lengthMenu"
+                                    components={{
+                                        menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, Number(e.target.value), search)}>
+                                            {
+                                                lengthArray.map((length) => (
+                                                    <option value={length} key={length}>{length}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    }}
+                                />
+                            </div>
+                        }
+                        {
+                            searchFlag
+                            && <div className="w-full md:w-auto md:ml-auto">
+                                <InputText
+                                    autoFocus={true}
+                                    autoComplete="off"
+                                    name="name"
+                                    value={search}
+                                    onChange={event => setSearch(event.target.value)}
+                                    onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
+                            </div>
+                        }
+                    </div>
+                }
             </div>
             <div
                 className={`
