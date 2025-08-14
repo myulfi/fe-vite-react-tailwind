@@ -4,7 +4,7 @@ import { useClickOutside } from "../../hook/useClickOutside";
 interface ButtonProps {
     label?: string;
     className?: string;
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg';
     type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
     icon?: string;
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
@@ -17,6 +17,7 @@ interface ButtonProps {
 }
 
 const sizeClasses = {
+    xs: 'text-xs px-1 py-1',
     sm: 'text-sm px-2 py-1.5',
     md: 'text-base px-3 py-2',
     lg: 'text-lg px-4 py-2',

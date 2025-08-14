@@ -16,26 +16,37 @@ export function format(template: string, values: any[]) {
     });
 }
 
-export function decode(key?: string, ...args: (string | ((key: string) => string))[]): string {
-    if (typeof key !== "string") return "";
+export function decode(key?: string | number, ...args: (string | number | ((key: string | number) => string))[]): string {
+    if (key === undefined || key === null) return "";
 
-    let iv: string | ((key: string) => string) | undefined;
-    let inv: string | ((key: string) => string) | undefined;
+    const len = args.length;
+    const hasDefault = len % 2 === 1;
+    const defaultValue = hasDefault ? args[len - 1] : undefined;
 
-    for (let i = 0; i < args.length; i += 2) {
-        iv = args[i];
-        inv = args[i + 1];
+    for (let i = 0; i < len - (hasDefault ? 1 : 0); i += 2) {
+        const match = args[i];
+        const value = args[i + 1];
 
-        if (key === iv && inv !== undefined) {
-            iv = inv;
-            break;
-        } else if ((i + 1) !== args.length) {
-            iv = "";
+        if (key === match) {
+            if (typeof value === "function") {
+                return value(key);
+            } else {
+                return String(value);
+            }
         }
     }
 
-    return typeof iv === "function" ? iv(key) : (iv ?? "");
+    // console.log(key)
+    console.log(args)
+    if (defaultValue !== undefined) {
+        return typeof defaultValue === "function"
+            ? defaultValue(key)
+            : String(defaultValue);
+    }
+
+    return "";
 }
+
 
 export function nvl<T>(object1: T, object2: T): T {
     if (

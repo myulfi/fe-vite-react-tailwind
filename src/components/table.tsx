@@ -505,17 +505,17 @@ export default function Table({
                                 <button
                                     disabled={currentPage === 1}
                                     className={`
-                                            max-md:hidden rounded-l-md
-                                            px-3 py-2 ml-0 leading-tight border
-                                            text-light-default-base-line dark:text-dark-default-base-line
-                                            bg-light-default-base dark:bg-dark-default-base
-                                            border-light-default-base-outline dark:border-dark-default-base-outline
-                                            hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
-                                            cursor-pointer
-                                            
-                                            disabled:bg-light-default-base-disabled disabled:dark:bg-dark-default-base/10
-                                            disabled:cursor-not-allowed
-                                            `}
+                                        max-md:hidden rounded-l-md
+                                        px-3 py-2 ml-0 leading-tight border
+                                        text-light-base dark:text-dark-base
+                                        hover:text-light-base-secondary dark:hover:text-dark-base-secondary
+                                        bg-light-outline dark:bg-dark-outline/30
+                                        border-light-outline dark:border-dark-outline/30
+                                        cursor-pointer
+                                        
+                                        disabled:text-light-base-line disabled:dark:text-dark-base-line
+                                        disabled:cursor-not-allowed
+                                    `}
                                     onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
                                 >
                                     {t("table.previous")}
@@ -525,23 +525,25 @@ export default function Table({
                                         <Fragment key={index}>
                                             <button
                                                 className={`
-                                                        max-md:first:rounded-l-md max-md:last:rounded-r-md
-                                                        px-3 py-2 leading-tight border
-                                                        ${page === currentPage
+                                                    max-md:first:rounded-l-md max-md:last:rounded-r-md
+                                                    px-3 py-2 leading-tight border
+                                                        
+                                                        
+                                                    ${page === currentPage
                                                         ? `
-                                                            text-light-primary-base-line dark:text-dark-primary-base-line
-                                                            bg-light-primary-base dark:bg-dark-primary-base
-                                                            border-light-primary-base dark:border-dark-primary-base
-                                                            `
-                                                        : `
-                                                            text-light-default-base-line dark:text-dark-default-base-line
-                                                            bg-light-default-base dark:bg-dark-default-base
-                                                            border-light-default-base-outline dark:border-dark-default-base-outline
-                                                            
-                                                            ${page === 0 ? 'cursor-default' : 'cursor-pointer hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover'}
+                                                        text-light-base-line dark:text-dark-base-line
                                                         `
-                                                    }
-                                        `}
+                                                        : `
+                                                        text-light-base dark:text-dark-base
+                                                        hover:text-light-base-secondary dark:hover:text-dark-base-secondary
+                                                        
+                                                        
+                                                        ${page === 0 ? 'cursor-default' : 'cursor-pointer hover:text-light-base-secondary dark:hover:text-dark-base-secondary'}
+                                                    `}
+                                                    
+                                                    bg-light-outline dark:bg-dark-outline/30
+                                                    border-light-outline dark:border-dark-outline/30
+                                                `}
                                                 onClick={() => onPageChange(page, sizePage, search)}
                                             >
                                                 {page === 0 ? "..." : page}
@@ -552,17 +554,17 @@ export default function Table({
                                 <button
                                     disabled={currentPage === pages.length}
                                     className={`
-                                            max-md:hidden rounded-r-md
-                                            px-3 py-2 ml-0 leading-tight border
-                                            text-light-default-base-line dark:text-dark-default-base-line
-                                            bg-light-default-base dark:bg-dark-default-base
-                                            border-light-default-base-outline dark:border-dark-default-base-outline
-                                            hover:bg-light-default-base-hover dark:hover:bg-dark-default-base-hover
-                                            cursor-pointer
-                                            
-                                            disabled:bg-light-default-base-disabled disabled:dark:bg-dark-default-base/10
-                                            disabled:cursor-not-allowed
-                                            `}
+                                        max-md:hidden rounded-r-md
+                                        px-3 py-2 ml-0 leading-tight border
+                                        text-light-base dark:text-dark-base
+                                        hover:text-light-base-secondary dark:hover:text-dark-base-secondary
+                                        bg-light-outline dark:bg-dark-outline/30
+                                        border-light-outline dark:border-dark-outline/30
+                                        cursor-pointer
+                                        
+                                        disabled:text-light-base-line disabled:dark:text-dark-base-line
+                                        disabled:cursor-not-allowed
+                                    `}
                                     onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
                                 >
                                     {t("table.next")}

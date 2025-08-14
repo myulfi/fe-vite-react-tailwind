@@ -7,7 +7,6 @@ type InputPasswordProps = {
     name: string;
     value: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    className?: string;
     error?: string;
 };
 
@@ -16,17 +15,18 @@ export default function InputPassword({
     name,
     value,
     onChange,
-    className = '',
     error,
 }: InputPasswordProps) {
     const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className={`mb-4 relative ${className}`}>
-            <label htmlFor={name} className="mb-1 block text-sm font-medium text-gray-700">
-                {label}
-            </label>
+        <div className="relative text-light-base-line dark:text-dark-base-line">
+            {label && (
+                <label className="block mb-1 text-md font-bold">
+                    {label}
+                </label>
+            )}
 
             <input
                 id={name}
@@ -44,7 +44,7 @@ export default function InputPassword({
             <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-7.5 text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
+                className="absolute right-3 top-8.5 text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer"
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
                 <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>

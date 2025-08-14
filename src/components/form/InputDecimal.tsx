@@ -95,7 +95,6 @@ export default function InputDecimal({
                 </label>
             )}
 
-
             <div className="flex shadow-sm rounded-md">
                 {positionUnit === "left" && (
                     <>

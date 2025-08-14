@@ -15,6 +15,7 @@ import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
 import { yesNo } from "../../function/commonHelper";
 import InputPassword from "../../components/form/InputPassword";
+import Navtab from "../../components/containers/Navtab";
 
 export default function Database() {
     const { t } = useTranslation();
@@ -44,6 +45,11 @@ export default function Database() {
         version: 0,
     }
 
+    type DatabaseQueryManualData = {
+        query: string;
+    }
+    type DatabaseQueryManualFormError = Partial<Record<keyof DatabaseQueryManualData, string>>;
+
     const [databaseStateModal, setDatabaseStateModal] = useState<ModalCategory>("entry");
 
     const [databaseOptionColumnTable, setDatabaseOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
@@ -56,7 +62,13 @@ export default function Database() {
     const [databaseDataTotalTable, setDatabaseDataTotalTable] = useState(0);
     const [databaseTableLoadingFlag, setDatabaseTableLoadingFlag] = useState(false);
 
+    const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
+    const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
+    const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
+
     const [databaseArray, setDatabaseArray] = useState([]);
+    const [databaseQueryManualArray, setDatabaseQueryManualArray] = useState([]);
+    const [databaseQueryManualColumn, setDatabaseQueryManualColumn] = useState([]);
 
     const [databaseEntryModal, setDatabaseEntryModal] = useState<ModalType>({
         title: "",
@@ -65,6 +77,8 @@ export default function Database() {
         submitIcon: "",
         submitLoadingFlag: false,
     });
+
+    const [databaseTestingModalTitle, setDatabaseTestingModalTitle] = useState("");
 
     const [databaseId, setDatabaseId] = useState(0);
     const [databaseForm, setDatabaseForm] = useState<DatabaseData>(databaseInitial);
@@ -88,6 +102,32 @@ export default function Database() {
         return Object.keys(error).length === 0;
     };
 
+    const [databaseQueryManualId, setDatabaseQueryManualId] = useState(0);
+    const [databaseQueryManualForm, setDatabaseQueryManualForm] = useState<DatabaseQueryManualData>({ query: "" });
+    const [databaseQueryManualFormError, setDatabaseQueryManualFormError] = useState<DatabaseQueryManualFormError>({});
+
+
+    const onDatabaseQueryManualFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setDatabaseQueryManualForm({ ...databaseQueryManualForm, [name]: value });
+    };
+
+    const onDatabaseQueryManualValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const isEnter = e.key === 'Enter';
+
+        if (e.ctrlKey && isEnter && !databaseQueryManualLoadingFlag) {
+            e.preventDefault(); // opsional
+            runDatabaseQueryManual();
+        }
+    }
+
+    const databaseQueryManualValidate = (data: DatabaseQueryManualData) => {
+        const error: DatabaseQueryManualFormError = {};
+        if (!data.query?.trim()) error.query = t("validate.required", { name: t("text.query") });
+        setDatabaseQueryManualFormError(error);
+        return Object.keys(error).length === 0;
+    };
+
     const getDatabase = async (options: TableOptions) => {
         setDatabaseTableLoadingFlag(true)
 
@@ -106,7 +146,7 @@ export default function Database() {
             setDatabaseDataTotalTable(response.total);
             setDatabaseOptionColumnTable(
                 response.data.reduce(function (map: Record<string, any>, obj: any) {
-                    map[obj.id] = { "viewedButtonFlag": false, "deletedButtonFlag": false }
+                    map[obj.id] = { "viewedButtonFlag": false, "connectedButtonFlag": false, "deletedButtonFlag": false }
                     return map
                 }, {})
             );
@@ -263,7 +303,99 @@ export default function Database() {
         }));
     };
 
+    const testConnectionDatabase = async (id: number) => {
+        setDatabaseId(id);
+
+        setDatabaseOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                connectedButtonFlag: true,
+            },
+        }));
+
+        /////
+        setDatabaseTestingModalTitle(String(id));
+        setModalDatabaseTesting(true);
+        // const response = await apiRequest('get', `/external/${id}/database-test-connection.json`);
+        // if (HTTP_CODE.OK === response.status) {
+        //     const database = response.data;
+
+        //     setDatabaseTestingModalTitle(String(id));
+        //     setModalDatabaseTesting(true);
+        // } else {
+        //     toast.show({ type: 'error', message: response.message });
+        // }
+
+        setDatabaseOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                connectedButtonFlag: false,
+            },
+        }));
+    };
+
+    const [databaseQueryManualTableFlag, setDatabaseQueryManualTableFlag] = useState(false);
+    const runDatabaseQueryManual = async () => {
+        if (databaseQueryManualValidate(databaseQueryManualForm)) {
+            setModalDatabase(false);
+            setDatabaseQueryManualLoadingFlag(true);
+
+            const response = await apiRequest('post', `/external/${databaseId}/database-query-manual.json`, databaseQueryManualForm);
+
+            if (HttpStatusCode.Ok === response.status) {
+                setDatabaseQueryManualTableFlag(true);
+                setDatabaseQueryManualColumn(
+                    response.header.map((element: any) => {
+                        return {
+                            data: element.name,
+                            name: `${element.name} (${element.type})`,
+                            class: "text-nowrap",
+                            defaultContent: () => { return <i>NULL</i> }
+                        }
+                    })
+                );
+
+                if (response.id !== undefined) {
+                    setDatabaseQueryManualId(response.id)
+                    getDatabaseQueryManual({ id: response.id, page: 1, length: 10 })
+                } else {
+                    // setDatabaseQueryManualDataArray(response.data.result)
+                }
+            } else {
+                toast.show({ type: "error", message: response.message });
+            }
+
+            setDatabaseQueryManualLoadingFlag(false);
+        }
+    }
+
+    const getDatabaseQueryManual = async (options: {
+        id: number;
+        page: number;
+        length: number;
+    }) => {
+        setDatabaseQueryManualTableLoadingFlag(true)
+
+        const params = {
+            "start": (options.page - 1) * options.length,
+            "length": options.length,
+        };
+
+        const response = await apiRequest('get', `/external/${options.id}/database-query-manual-list.json`, params);
+        if (HTTP_CODE.OK === response.status) {
+            setDatabaseQueryManualArray(response.data);
+            setDatabaseQueryManualDataTotalTable(response.total);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setDatabaseQueryManualTableLoadingFlag(false);
+    };
+
     const [modalDatabase, setModalDatabase] = useState(false);
+    const [modalDatabaseTesting, setModalDatabaseTesting] = useState(false);
 
     return (
         <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
@@ -296,7 +428,6 @@ export default function Database() {
                             && <Fragment>
                                 <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
-                                {/* <Select label={t("text.value")} name="value" map={selectValueMap} value={databaseForm.value} onChange={onDatabaseFormChange} error={databaseFormError.value} /> */}
                                 <Select label={t("text.type")} name="value" map={[]} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
                                 <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
                                 <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
@@ -311,12 +442,84 @@ export default function Database() {
                                 <Label text={t("text.description")} value={databaseForm.description} />
                                 <Label text={t("text.type")} value={databaseForm.databaseTypeId} />
                                 <Label text={t("text.username")} value={databaseForm.username} />
-                                <Label text={t("text.password")} value={databaseForm.password} />
+                                <Label text={t("text.password")} value={databaseForm.password} password={true} />
                                 <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} />
                                 <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
                             </Fragment>
                         }
                     </div>
+                </Modal>
+                <Modal
+                    show={modalDatabaseTesting}
+                    size="xl"
+                    title={databaseTestingModalTitle}
+                    onClose={() => setModalDatabaseTesting(false)}
+                >
+                    <Navtab
+                        tabs={[
+                            {
+                                label: t("text.object"),
+                                icon: "fa-solid fa-table",
+                                content: function () {
+                                    return (<div>Object</div>);
+                                },
+                            },
+                            {
+                                label: t("text.manual"),
+                                icon: "fa-solid fa-wrench",
+                                content: function () {
+                                    return (
+                                        <div className="flex flex-col gap-5">
+                                            <Button
+                                                label={t("button.run")}
+                                                size="xs"
+                                                type="primary"
+                                                icon="fa-solid fa-play"
+                                                onClick={runDatabaseQueryManual}
+                                                loadingFlag={databaseQueryManualLoadingFlag}
+                                            />
+                                            <div className="font-semibold font-mono">
+                                                <TextArea
+                                                    name="query"
+                                                    rows={5}
+                                                    value={databaseQueryManualForm.query}
+                                                    onChange={onDatabaseQueryManualFormChange}
+                                                    onKeyDown={onDatabaseQueryManualValueKeyDown}
+                                                    placeholder={t("text.queryOnHere")}
+                                                    error={databaseQueryManualFormError.query}
+                                                />
+                                            </div>
+                                            {
+                                                databaseQueryManualTableFlag &&
+                                                <div className="text-sm font-mono">
+                                                    <Table
+                                                        searchFlag={false}
+                                                        dataArray={databaseQueryManualArray}
+                                                        columns={databaseQueryManualColumn}
+
+                                                        dataTotal={databaseQueryManualDataTotalTable}
+                                                        onRender={(page, length) => {
+                                                            if (databaseQueryManualId > 0) {
+                                                                getDatabaseQueryManual({ id: databaseQueryManualId, page: page, length: length })
+                                                            }
+                                                        }}
+                                                        loadingFlag={databaseQueryManualTableLoadingFlag}
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+                                    );
+                                },
+                            },
+                            {
+                                label: t("text.whitelist"),
+                                icon: "fa-solid fa-file-circle-check",
+                                content: function () {
+                                    return (<div>Whitelist</div>);
+                                },
+                            }
+                        ]}
+                    />
                 </Modal>
             </ModalStackProvider>
             <Table
@@ -377,6 +580,14 @@ export default function Database() {
                                         icon="fa-solid fa-list"
                                         onClick={() => viewDatabase(data)}
                                         loadingFlag={databaseOptionColumnTable[data]?.viewedButtonFlag}
+                                    />
+                                    <Button
+                                        label={t("button.connect")}
+                                        className="max-sm:w-full"
+                                        type='primary'
+                                        icon="fa-solid fa-plug"
+                                        onClick={() => testConnectionDatabase(data)}
+                                        loadingFlag={databaseOptionColumnTable[data]?.connectedButtonFlag}
                                     />
                                     <Button
                                         label={t("button.delete")}

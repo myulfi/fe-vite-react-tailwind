@@ -158,52 +158,50 @@ export default function ExampleTemplate() {
     const viewExampleTemplate = async (id: number) => {
         setExampleTemplateId(id);
         setExampleTemplateForm(exampleTemplateInitial);
-        if (id !== undefined) {
-            setExampleTemplateStateModal("view");
-            setExampleTemplateOptionColumnTable(prev => ({
-                ...prev,
-                [id]: {
-                    ...prev[id],
-                    viewedButtonFlag: true,
-                },
-            }));
+        setExampleTemplateStateModal("view");
+        setExampleTemplateOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                viewedButtonFlag: true,
+            },
+        }));
 
-            const response = await apiRequest('get', `/test/${id}/example-template.json`);
-            if (HTTP_CODE.OK === response.status) {
-                const exampleTemplate = response.data;
+        const response = await apiRequest('get', `/test/${id}/example-template.json`);
+        if (HTTP_CODE.OK === response.status) {
+            const exampleTemplate = response.data;
 
-                setExampleTemplateId(exampleTemplate.id);
-                setExampleTemplateForm({
-                    name: exampleTemplate.name,
-                    description: exampleTemplate.description,
-                    value: exampleTemplate.value,
-                    amount: exampleTemplate.amount,
-                    date: exampleTemplate.date,
-                    activeFlag: exampleTemplate.activeFlag,
-                    version: exampleTemplate.version,
-                });
+            setExampleTemplateId(exampleTemplate.id);
+            setExampleTemplateForm({
+                name: exampleTemplate.name,
+                description: exampleTemplate.description,
+                value: exampleTemplate.value,
+                amount: exampleTemplate.amount,
+                date: exampleTemplate.date,
+                activeFlag: exampleTemplate.activeFlag,
+                version: exampleTemplate.version,
+            });
 
-                setExampleTemplateEntryModal({
-                    ...exampleTemplateEntryModal,
-                    title: exampleTemplate.name,
-                    submitLabel: t("button.edit"),
-                    submitIcon: "fa-solid fa-pen",
-                    submitLoadingFlag: false,
-                });
+            setExampleTemplateEntryModal({
+                ...exampleTemplateEntryModal,
+                title: exampleTemplate.name,
+                submitLabel: t("button.edit"),
+                submitIcon: "fa-solid fa-pen",
+                submitLoadingFlag: false,
+            });
 
-                setModalExampleTemplate(true);
-            } else {
-                toast.show({ type: 'error', message: response.message });
-            }
-
-            setExampleTemplateOptionColumnTable(prev => ({
-                ...prev,
-                [id]: {
-                    ...prev[id],
-                    viewedButtonFlag: false,
-                },
-            }));
+            setModalExampleTemplate(true);
+        } else {
+            toast.show({ type: 'error', message: response.message });
         }
+
+        setExampleTemplateOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                viewedButtonFlag: false,
+            },
+        }));
     };
 
     const entryExampleTemplate = (haveContentFlag: boolean) => {

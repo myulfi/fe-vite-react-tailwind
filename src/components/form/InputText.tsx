@@ -18,7 +18,7 @@ type InputTextProps = {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-    positionUnit?: 'left' | 'right';
+    positionUnit?: 'left' | 'right' | 'none';
     nameUnit?: string;
     valueUnit?: string;
     valueUnitList?: UnitOption[];
@@ -37,7 +37,7 @@ export default function InputText({
     onChange,
     onKeyDown,
     onBlur,
-    positionUnit,
+    positionUnit = 'none',
     nameUnit,
     valueUnit,
     valueUnitList,
@@ -112,7 +112,7 @@ export default function InputText({
                     autoComplete={autoComplete}
                     className={`
                         form-input flex-1                        
-                        ${decode(positionUnit!, 'left', 'rounded-r-md', 'right', 'rounded-l-md', 'rounded-md')}
+                        ${decode(positionUnit, 'left', 'rounded-r-md', 'right', 'rounded-l-md', 'rounded-md')}
                         ${error ? 'form-input-error' : 'form-input-normal'}
                     `}
                     name={name}
