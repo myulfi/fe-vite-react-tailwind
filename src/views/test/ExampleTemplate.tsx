@@ -11,7 +11,7 @@ import InputText from "../../components/form/InputText";
 import TextArea from "../../components/form/TextArea";
 import InputDecimal from "../../components/form/InputDecimal";
 import InputDate from "../../components/form/InputDate";
-import Radio from "../../components/form/Radio";
+import Switch from "../../components/form/Switch";
 import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
@@ -127,7 +127,7 @@ export default function ExampleTemplate() {
         const params = {
             "start": (options.page - 1) * options.length,
             "length": options.length,
-            "search": encodeURIComponent(options.search),
+            "search": encodeURIComponent(options.search!),
             "sort": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
             "dir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
 
@@ -364,7 +364,7 @@ export default function ExampleTemplate() {
                                     error={exampleTemplateFormError.value} /> */}
                                 <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
                                 <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
-                                <Radio label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
+                                <Switch label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
                             </Fragment>
                         }
                         {

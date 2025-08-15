@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
 import Button from "../../components/form/Button";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState, type ReactNode } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
 import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
 import Label from "../../components/form/Label";
+import { Chart } from "react-chartjs-2"
+import 'chart.js/auto'
 import { toast } from "../../ToastContext";
 import InputText from "../../components/form/InputText";
 import TextArea from "../../components/form/TextArea";
@@ -16,9 +18,26 @@ import { HttpStatusCode } from "axios";
 import { yesNo } from "../../function/commonHelper";
 import InputPassword from "../../components/form/InputPassword";
 import Navtab from "../../components/containers/Navtab";
+import Switch from "../../components/form/Switch";
+import InputDecimal from "../../components/form/InputDecimal";
+import type { ChartOptions } from "chart.js/auto";
 
 export default function Database() {
     const { t } = useTranslation();
+
+    type ChartType = 'line' | 'bar' | 'bubble' | 'doughnut' | 'pie' | 'polarArea' | 'radar' | 'scatter';
+    type ChartTypeMap = {
+        key: ChartType,
+        icon: string,
+        value: string,
+    };
+    type DatabaseQueryManualColumData = {
+        data: string
+        type: string
+        name: string
+        class: string
+        defaultContent: () => ReactNode
+    };
 
     type DatabaseData = {
         code: string;
@@ -50,6 +69,34 @@ export default function Database() {
     }
     type DatabaseQueryManualFormError = Partial<Record<keyof DatabaseQueryManualData, string>>;
 
+    type DatabaseExportData = {
+        format: 'sql' | 'xls' | 'csv' | 'json' | 'xml';
+        header: number;
+        delimiter: string;
+        insertFlag: number;
+        includeColumnNameFlag: number;
+        multipleLineFlag: number;
+        firstAmountConditioned: number;
+        firstAmountCombined: number;
+        saveAs: 'clipboard' | 'file';
+    }
+
+    type DatabaseExportFormError = Partial<Record<keyof DatabaseExportData, string>>;
+
+    const databaseExportInitial: DatabaseExportData = {
+        format: 'sql',
+        header: 0,
+        delimiter: '',
+        insertFlag: 1,
+        includeColumnNameFlag: 0,
+        multipleLineFlag: 0,
+        firstAmountConditioned: 0,
+        firstAmountCombined: 0,
+        saveAs: 'clipboard',
+    }
+
+    type DatabaseQueryType = 'manual' | 'exact';
+
     const [databaseStateModal, setDatabaseStateModal] = useState<ModalCategory>("entry");
 
     const [databaseOptionColumnTable, setDatabaseOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
@@ -65,10 +112,17 @@ export default function Database() {
     const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
     const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
     const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
+    const [databaseQueryManualChartLoadingFlag, setDatabaseQueryManualChartLoadingFlag] = useState(false);
+
+    const [databaseQueryExactChartLoadingFlag, setDatabaseQueryExactChartLoadingFlag] = useState(false);
 
     const [databaseArray, setDatabaseArray] = useState([]);
     const [databaseQueryManualArray, setDatabaseQueryManualArray] = useState([]);
-    const [databaseQueryManualColumn, setDatabaseQueryManualColumn] = useState([]);
+    const [databaseQueryManualColumn, setDatabaseQueryManualColumn] = useState<DatabaseQueryManualColumData[]>([]);
+
+    const [databaseQueryManualTableFlag, setDatabaseQueryManualTableFlag] = useState(false);
+
+    const [databaseQueryExactColumn, setDatabaseQueryExactColumn] = useState([]);
 
     const [databaseEntryModal, setDatabaseEntryModal] = useState<ModalType>({
         title: "",
@@ -106,7 +160,6 @@ export default function Database() {
     const [databaseQueryManualForm, setDatabaseQueryManualForm] = useState<DatabaseQueryManualData>({ query: "" });
     const [databaseQueryManualFormError, setDatabaseQueryManualFormError] = useState<DatabaseQueryManualFormError>({});
 
-
     const onDatabaseQueryManualFormChange = (e: { target: { name: string; value: any } }) => {
         const { name, value } = e.target;
         setDatabaseQueryManualForm({ ...databaseQueryManualForm, [name]: value });
@@ -128,13 +181,57 @@ export default function Database() {
         return Object.keys(error).length === 0;
     };
 
+    const [queryExactIdentity, setQueryExactIdentity] = useState("");
+
+
+    const [databaseExportForm, setDatabaseExportForm] = useState<DatabaseExportData>(databaseExportInitial);
+    const [databaseExportFormError, setDatabaseExportFormError] = useState<DatabaseExportFormError>({});
+
+    const onDatabaseExportFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setDatabaseExportForm({ ...databaseExportForm, [name]: value });
+        setDatabaseExportFormError({ ...databaseExportFormError, [name]: undefined });
+    };
+
+    const databaseExportValidate = (data: DatabaseData) => {
+        const error: DatabaseExportFormError = {};
+        // if (!data.code?.trim()) error.code = t("validate.required", { name: t("text.name") });
+        // if (data.databaseTypeId <= 0) error.databaseTypeId = t("validate.required", { name: t("text.type") });
+        // if (!data.username?.trim()) error.username = t("validate.required", { name: t("text.username") });
+        // if (!data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
+        // if (!data.databaseConnection?.trim()) error.databaseConnection = t("validate.required", { name: t("text.databaseConnection") });
+
+        setDatabaseExportFormError(error);
+        return Object.keys(error).length === 0;
+    };
+
+    const [chartTypeValue, setChartTypeValue] = useState<ChartType>("line")
+    const [chartTypeMap, setChartTypeMap] = useState<ChartTypeMap[]>([])
+    // const chartTypeMap = [
+    //     { "key": "line", "value": "Line" },
+    //     { "key": "bar", "value": "Bar" },
+    //     { "key": "bubble", "value": "Bubble" },
+    //     { "key": "doughnut", "value": "Doughnut" },
+    //     { "key": "pie", "value": "Pie" },
+    //     { "key": "polarArea", "value": "Polar" },
+    //     { "key": "radar", "value": "Radar" },
+    //     { "key": "scatter", "value": "Scatter" },
+    // ]
+
+    const chartRef = useRef(null);
+    const [canvasLabelArray, setCanvasLabelArray] = useState<string[]>([])
+    const [canvasDatasetCommonArray, setCanvasDatasetCommonArray] = useState<{ hidden: boolean, label: string, data: string }[]>([])
+    const [canvasDatasetBubbleArray, setCanvasDatasetBubbleArray] = useState([])
+    const [canvasOptionArray, setCanvasOptionArray] = useState<ChartOptions>()
+    const [databaseQueryType, setDatabaseQueryType] = useState<DatabaseQueryType>()
+
     const getDatabase = async (options: TableOptions) => {
         setDatabaseTableLoadingFlag(true)
 
         const params = {
             "start": (options.page - 1) * options.length,
             "length": options.length,
-            "search": encodeURIComponent(options.search),
+            "search": encodeURIComponent(options.search!),
             "sort": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
             "dir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
         };
@@ -303,7 +400,7 @@ export default function Database() {
         }));
     };
 
-    const testConnectionDatabase = async (id: number) => {
+    const connectDatabase = async (id: number, name: string) => {
         setDatabaseId(id);
 
         setDatabaseOptionColumnTable(prev => ({
@@ -314,18 +411,13 @@ export default function Database() {
             },
         }));
 
-        /////
-        setDatabaseTestingModalTitle(String(id));
-        setModalDatabaseTesting(true);
-        // const response = await apiRequest('get', `/external/${id}/database-test-connection.json`);
-        // if (HTTP_CODE.OK === response.status) {
-        //     const database = response.data;
-
-        //     setDatabaseTestingModalTitle(String(id));
-        //     setModalDatabaseTesting(true);
-        // } else {
-        //     toast.show({ type: 'error', message: response.message });
-        // }
+        const response = await apiRequest('get', `/external/${id}/database-connect.json`);
+        if (HttpStatusCode.NoContent === response.status) {
+            setDatabaseTestingModalTitle(name);
+            setModalDatabaseTesting(true);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
 
         setDatabaseOptionColumnTable(prev => ({
             ...prev,
@@ -336,20 +428,20 @@ export default function Database() {
         }));
     };
 
-    const [databaseQueryManualTableFlag, setDatabaseQueryManualTableFlag] = useState(false);
     const runDatabaseQueryManual = async () => {
         if (databaseQueryManualValidate(databaseQueryManualForm)) {
             setModalDatabase(false);
             setDatabaseQueryManualLoadingFlag(true);
 
-            const response = await apiRequest('post', `/external/${databaseId}/database-query-manual.json`, databaseQueryManualForm);
+            const response = await apiRequest('post', `/external/${databaseId}/database-query-manual-run.json`, databaseQueryManualForm);
 
             if (HttpStatusCode.Ok === response.status) {
                 setDatabaseQueryManualTableFlag(true);
                 setDatabaseQueryManualColumn(
-                    response.header.map((element: any) => {
+                    response.header.map((element: DatabaseQueryManualColumData) => {
                         return {
                             data: element.name,
+                            type: element.type,
                             name: `${element.name} (${element.type})`,
                             class: "text-nowrap",
                             defaultContent: () => { return <i>NULL</i> }
@@ -369,6 +461,352 @@ export default function Database() {
 
             setDatabaseQueryManualLoadingFlag(false);
         }
+    }
+
+    const runDatabaseQueryChart = async (databaseQueryType: DatabaseQueryType) => {
+        setDatabaseQueryType(databaseQueryType)
+        setChartTypeValue("line")
+        if ("manual" === databaseQueryType) {
+            setDatabaseQueryManualChartLoadingFlag(true);
+        } else {
+            setDatabaseQueryExactChartLoadingFlag(true);
+        }
+        const response = await apiRequest(
+            'get',
+            "manual" === databaseQueryType
+                ? `/external/${databaseQueryManualId}/database-query-manual-all-list.json`
+                : `/external/${databaseId}/${queryExactIdentity}/query-exact-data-database.json`
+        );
+        if (HTTP_CODE.OK === response.status) {
+            const databaseQueryColumn = "manual" === databaseQueryType ? databaseQueryManualColumn : databaseQueryExactColumn;
+            const labelArray = [...new Set(
+                response.data.map((item: any) =>
+                    String(item[databaseQueryColumn[0].data] ?? "NULL")
+                )
+            )] as string[];
+            let datasetCommonArray = new Array();
+            let datasetBubbleArray = new Array();
+
+            let chartTypeArray: ChartTypeMap[] = []
+            chartTypeArray.push({ key: "line", icon: "fa-solid fa-chart-line", value: "Line" });
+            chartTypeArray.push({ key: "bar", icon: "fa-solid fa-chart-column", value: "Bar" });
+
+            for (let i = 1; i < databaseQueryColumn.length; i++) {
+                if (/.*(int|number|numeric).*$/.test(databaseQueryColumn[i].type.toLowerCase())) {
+                    datasetCommonArray.push({
+                        "hidden": false,
+                        "label": databaseQueryColumn[i].data,
+                        // "tension" : 0.4,
+                        "data": labelArray.map(label => {
+                            return response.data.reduce(function (sum: number, item: any) {
+                                if (String(item[databaseQueryColumn[0].data] ?? "NULL") === label) {
+                                    return sum + item[databaseQueryColumn[i].data]
+                                } else {
+                                    return sum
+                                }
+                            }, 0)
+                        })
+                    })
+                }
+            }
+
+            if (datasetCommonArray.length > 0) {
+                if (/.*(int|number|numeric).*$/.test(databaseQueryColumn[0].type.toLowerCase())) {
+                    if (databaseQueryColumn.length === 2) {
+                        chartTypeArray.push({ key: "scatter", icon: "fa-solid fa-soap", value: "Scatter" });
+                    } else {
+                        chartTypeArray.push({ key: "bubble", icon: "fa-solid fa-soap", value: "Bubble" })
+                        chartTypeArray.push({ key: "radar", icon: "fa-solid fa-hexagon-nodes", value: "Radar" })
+
+                        datasetBubbleArray.push({
+                            label: datasetCommonArray[0].label,
+                            data: labelArray.map((label, index) => {
+                                return {
+                                    x: label,
+                                    y: datasetCommonArray[0].data[index],
+                                    r: datasetCommonArray[1].data[index],
+                                }
+                            })
+                        })
+                    }
+                } else {
+                    if (databaseQueryColumn.length === 2) {
+                        chartTypeArray.push({ key: "doughnut", icon: "fa-solid fa-circle-half-stroke", value: "Doughnut" })
+                        chartTypeArray.push({ key: "pie", icon: "fa-solid fa-chart-pie", value: "Pie" })
+                        chartTypeArray.push({ key: "polarArea", icon: "fa-solid fa-hexagon-nodes", value: "Polar" })
+                    }
+                    chartTypeArray.push({ key: "radar", icon: "fa-solid fa-hexagon-nodes", value: "Radar" })
+                }
+            }
+
+            if (datasetCommonArray.length === 0) {
+                if (
+                    databaseQueryColumn.length > 1
+                    && /.*(int|number|numeric).*$/.test(databaseQueryColumn[1].type.toLowerCase()) === false
+                ) {
+                    const secondLabelArray = [...new Set(response.data.map((item: any) => item[databaseQueryColumn[1].data] ?? "NULL"))]
+                    secondLabelArray.forEach(secondLabel => {
+                        datasetCommonArray.push({
+                            hidden: false,
+                            label: secondLabel,
+                            data: labelArray.map(label => {
+                                return response.data.reduce(function (sum: number, item: any) {
+                                    if (
+                                        String(item[databaseQueryColumn[0].data] ?? "NULL") === label
+                                        && String(item[databaseQueryColumn[1].data] ?? "NULL") === secondLabel
+                                    ) {
+                                        return sum + 1
+                                    } else {
+                                        return sum
+                                    }
+                                }, 0)
+                            })
+                        })
+                    })
+                } else {
+                    datasetCommonArray.push({
+                        hidden: false,
+                        label: t("common.text.amount"),
+                        // tension : 0.4,
+                        data: labelArray.map(label => {
+                            return response.data.reduce(function (sum: number, item: any) {
+                                if (String(item[databaseQueryColumn[0].data] ?? "NULL") === label) {
+                                    return sum + 1
+                                } else {
+                                    return sum
+                                }
+                            }, 0)
+                        })
+                    })
+                }
+            }
+
+            setChartTypeMap(chartTypeArray)
+            setCanvasLabelArray(labelArray)
+            setCanvasDatasetCommonArray(datasetCommonArray)
+            setCanvasDatasetBubbleArray(datasetBubbleArray)
+            console.log(datasetCommonArray)
+
+            let optionArray: ChartOptions = {
+                maintainAspectRatio: false,
+                responsive: true
+            }
+
+            if (datasetCommonArray.length === 1) {
+                optionArray = {
+                    ...optionArray,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            // type: 'linear',
+                            // beginAtZero: true,
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: databaseQueryColumn[0].name,
+                                font: {
+                                    size: 20,
+                                },
+                            }
+                        },
+                        y: {
+                            // beginAtZero: true,
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: datasetCommonArray[0].label,
+                                font: {
+                                    size: 20,
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                optionArray = {
+                    ...optionArray,
+                    scales: {
+                        x: {
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: databaseQueryColumn[0].name,
+                                font: {
+                                    size: 20,
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+
+            setCanvasOptionArray(optionArray);
+            setModalDatabaseChart(true);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        if ("manual" === databaseQueryType) {
+            setDatabaseQueryManualChartLoadingFlag(false);
+        } else {
+            setDatabaseQueryExactChartLoadingFlag(false);
+        }
+    }
+
+    const onChartTypeChange = (e) => {
+        setChartTypeValue(e.target.value)
+        let optionArray: ChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true
+        }
+
+        if (/(bar|line|scatter)$/.test(e.target.value)) {
+            if (canvasDatasetCommonArray.length === 1) {
+                optionArray = {
+                    ...optionArray,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            // type: 'linear',
+                            beginAtZero: true,
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: "manual" === databaseQueryType ? databaseQueryManualColumn[0].data : databaseQueryExactColumn[0].data,
+                                font: {
+                                    size: 20,
+                                },
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: canvasDatasetCommonArray[0].label,
+                                font: {
+                                    size: 20,
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                optionArray = {
+                    ...optionArray,
+                    scales: {
+                        x: {
+                            stacked: false,
+                            title: {
+                                display: true,
+                                text: "manual" === databaseQueryType ? databaseQueryManualColumn[0].data : databaseQueryExactColumn[0].data,
+                                font: {
+                                    size: 20,
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (/(polarArea)$/.test(e.target.value)) {
+            optionArray = {
+                ...optionArray,
+                scales: {
+                    r: {
+                        pointLabels: {
+                            display: true,
+                            centerPointLabels: true,
+                            font: {
+                                size: 18
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (/(bubble)$/.test(e.target.value)) {
+            optionArray = {
+                ...optionArray,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: false,
+                        title: {
+                            display: true,
+                            text: "manual" === databaseQueryType ? databaseQueryManualColumn[0].data : databaseQueryExactColumn[0].data,
+                            font: {
+                                size: 20,
+                            },
+                        }
+                    },
+                    y: {
+                        ticks: { beginAtZero: true },
+                        stacked: false,
+                        title: {
+                            display: true,
+                            text: canvasDatasetCommonArray[0].label,
+                            font: {
+                                size: 20,
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (/(pie)$/.test(e.target.value)) {
+            // optionArray = {
+            //     ...optionArray,
+            //     plugins: {
+            //         tooltip: {
+            //             callbacks: {
+            //                 label: function (tooltipItem) {
+            //                     console.log(tooltipItem)
+            //                     const label = tooltipItem.label || '';
+            //                     const value = tooltipItem.raw;
+            //                     return `${label}: ${value}%`; // Custom label for tooltip
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+        } else if (/(radar)$/.test(e.target.value)) {
+            if (canvasDatasetCommonArray.length === 1) {
+                optionArray = {
+                    ...optionArray,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                    },
+                }
+            }
+
+            optionArray = {
+                ...optionArray,
+                scales: {
+                    r: {
+                        pointLabels: {
+                            callback: function (value, index) {
+                                return value
+                            }
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+
+        setCanvasOptionArray(optionArray)
     }
 
     const getDatabaseQueryManual = async (options: {
@@ -396,6 +834,8 @@ export default function Database() {
 
     const [modalDatabase, setModalDatabase] = useState(false);
     const [modalDatabaseTesting, setModalDatabaseTesting] = useState(false);
+    const [modalDatabaseExport, setModalDatabaseExport] = useState(false);
+    const [modalDatabaseChart, setModalDatabaseChart] = useState(false);
 
     return (
         <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
@@ -432,7 +872,7 @@ export default function Database() {
                                 <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
                                 <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
                                 <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} />
-                                <Radio label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
+                                <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
                             </Fragment>
                         }
                         {
@@ -469,45 +909,64 @@ export default function Database() {
                                 icon: "fa-solid fa-wrench",
                                 content: function () {
                                     return (
-                                        <div className="flex flex-col gap-5">
-                                            <Button
-                                                label={t("button.run")}
-                                                size="xs"
-                                                type="primary"
-                                                icon="fa-solid fa-play"
-                                                onClick={runDatabaseQueryManual}
-                                                loadingFlag={databaseQueryManualLoadingFlag}
-                                            />
-                                            <div className="font-semibold font-mono">
-                                                <TextArea
-                                                    name="query"
-                                                    rows={5}
-                                                    value={databaseQueryManualForm.query}
-                                                    onChange={onDatabaseQueryManualFormChange}
-                                                    onKeyDown={onDatabaseQueryManualValueKeyDown}
-                                                    placeholder={t("text.queryOnHere")}
-                                                    error={databaseQueryManualFormError.query}
+                                        <Fragment>
+                                            <div className="flex flex-col gap-5">
+                                                <Button
+                                                    label={t("button.run")}
+                                                    size="xs"
+                                                    type="primary"
+                                                    icon="fa-solid fa-play"
+                                                    onClick={runDatabaseQueryManual}
+                                                    loadingFlag={databaseQueryManualLoadingFlag}
                                                 />
-                                            </div>
-                                            {
-                                                databaseQueryManualTableFlag &&
-                                                <div className="text-sm font-mono">
-                                                    <Table
-                                                        searchFlag={false}
-                                                        dataArray={databaseQueryManualArray}
-                                                        columns={databaseQueryManualColumn}
-
-                                                        dataTotal={databaseQueryManualDataTotalTable}
-                                                        onRender={(page, length) => {
-                                                            if (databaseQueryManualId > 0) {
-                                                                getDatabaseQueryManual({ id: databaseQueryManualId, page: page, length: length })
-                                                            }
-                                                        }}
-                                                        loadingFlag={databaseQueryManualTableLoadingFlag}
+                                                <div className="font-semibold font-mono">
+                                                    <TextArea
+                                                        name="query"
+                                                        rows={5}
+                                                        value={databaseQueryManualForm.query}
+                                                        onChange={onDatabaseQueryManualFormChange}
+                                                        onKeyDown={onDatabaseQueryManualValueKeyDown}
+                                                        placeholder={t("text.queryOnHere")}
+                                                        error={databaseQueryManualFormError.query}
                                                     />
                                                 </div>
-                                            }
-                                        </div>
+                                                {
+                                                    databaseQueryManualTableFlag &&
+                                                    <div className="text-sm font-mono">
+                                                        <Table
+                                                            searchFlag={false}
+                                                            dataArray={databaseQueryManualArray}
+                                                            columns={databaseQueryManualColumn}
+
+                                                            dataTotal={databaseQueryManualDataTotalTable}
+                                                            onRender={(page, length) => {
+                                                                if (databaseQueryManualId > 0) {
+                                                                    getDatabaseQueryManual({ id: databaseQueryManualId, page: page, length: length })
+                                                                }
+                                                            }}
+                                                            loadingFlag={databaseQueryManualTableLoadingFlag}
+                                                        />
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div className="flex flex-row gap-4">
+                                                <Button
+                                                    label={t("button.export")}
+                                                    size="xs"
+                                                    type="primary"
+                                                    icon="fa-solid fa-download"
+                                                    onClick={() => setModalDatabaseExport(true)}
+                                                />
+                                                <Button
+                                                    label={t("button.chart")}
+                                                    size="xs"
+                                                    type="primary"
+                                                    icon="fa-solid fa-chart-line"
+                                                    onClick={() => runDatabaseQueryChart("manual")}
+                                                    loadingFlag={databaseQueryManualChartLoadingFlag}
+                                                />
+                                            </div>
+                                        </Fragment>
                                     );
                                 },
                             },
@@ -520,6 +979,95 @@ export default function Database() {
                             }
                         ]}
                     />
+                </Modal>
+                <Modal
+                    show={modalDatabaseExport}
+                    size="md"
+                    title={t("text.export")}
+                    onClose={() => setModalDatabaseExport(false)}
+                    buttonArray={[
+                        {
+                            label: t("button.export"),
+                            type: "primary",
+                            icon: "fa-solid fa-download",
+                            onClick: () => { },
+                            loadingFlag: false
+                        }
+                    ]}
+                >
+                    <div className="grid grid-cols-2 gap-4">
+                        <Radio
+                            label={t("text.format")}
+                            columnSpan={2}
+                            name="format"
+                            value={databaseExportForm.format}
+                            map={[
+                                { key: "sql", icon: "fa-solid fa-database", value: "SQL" },
+                                { key: "xls", icon: "fa-solid fa-file-excel", value: "XLS" },
+                                { key: "csv", icon: "fa-solid fa-file-csv", value: "CSV" },
+                                { key: "json", icon: "fa-solid fa-code", value: "JSON" },
+                                { key: "xml", icon: "fa-solid fa-code", value: "XML" },
+                            ]}
+                            onChange={onDatabaseExportFormChange}
+                            error={databaseExportFormError.format}
+                        />
+                        <Switch label={t("text.header")} name="header" value={databaseExportForm.header} onChange={onDatabaseExportFormChange} />
+                        <InputText label={t("text.delimiter")} name="delimiter" value={databaseExportForm.delimiter} onChange={onDatabaseExportFormChange} error={databaseExportFormError.delimiter} />
+                        <Radio
+                            label={t("text.statement")}
+                            name="insertFlag"
+                            value={databaseExportForm.insertFlag}
+                            map={[
+                                { key: 1, icon: "fa-solid fa-add", value: t("text.insert") },
+                                { key: 0, icon: "fa-solid fa-pen", value: t("text.update") },
+                            ]}
+                            onChange={onDatabaseExportFormChange}
+                            error={databaseExportFormError.insertFlag}
+                        />
+                        <Switch label={t("text.includeColumnName")} name="includeColumnNameFlag" value={databaseExportForm.includeColumnNameFlag} onChange={onDatabaseExportFormChange} />
+                        <Switch label={t("text.multipleLine")} name="multipleLineFlag" value={databaseExportForm.multipleLineFlag} onChange={onDatabaseExportFormChange} />
+                        <InputDecimal label={t("text.firstAmountConditioned")} name="firstAmountConditioned" value={databaseExportForm.firstAmountConditioned} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
+                        <InputDecimal label={t("text.firstAmountCombined")} name="firstAmountCombined" value={databaseExportForm.firstAmountCombined} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
+                        <Radio
+                            label={t("text.saveAs")}
+                            name="saveAs"
+                            value={databaseExportForm.saveAs}
+                            map={[
+                                { key: 1, icon: "fa-solid fa-clipboard", value: t("text.clipboard") },
+                                { key: 0, icon: "fa-solid fa-file", value: t("text.file") },
+                            ]}
+                            onChange={onDatabaseExportFormChange}
+                            error={databaseExportFormError.saveAs}
+                        />
+                    </div>
+                </Modal>
+                <Modal
+                    show={modalDatabaseChart}
+                    size="lg"
+                    title={t("text.chart")}
+                    onClose={() => setModalDatabaseChart(false)}
+                >
+                    <div className="flex flex-col">
+                        <Radio
+                            label={t("text.format")}
+                            name="chartTypeValue"
+                            value={chartTypeValue}
+                            map={chartTypeMap}
+                            onChange={onChartTypeChange}
+                            error={databaseExportFormError.format}
+                        />
+                        <div className="min-h-64 max-h-96">
+                            <Chart
+                                ref={chartRef}
+                                type={chartTypeValue}
+                                data={{
+                                    labels: canvasLabelArray,
+                                    datasets: "bubble" === chartTypeValue ? canvasDatasetBubbleArray : canvasDatasetCommonArray
+                                }}
+                                options={canvasOptionArray}
+                            />
+                        </div>
+                    </div>
                 </Modal>
             </ModalStackProvider>
             <Table
@@ -586,7 +1134,7 @@ export default function Database() {
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-plug"
-                                        onClick={() => testConnectionDatabase(data)}
+                                        onClick={() => connectDatabase(data, row.code)}
                                         loadingFlag={databaseOptionColumnTable[data]?.connectedButtonFlag}
                                     />
                                     <Button

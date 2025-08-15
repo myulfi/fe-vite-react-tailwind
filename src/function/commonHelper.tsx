@@ -36,8 +36,6 @@ export function decode(key?: string | number, ...args: (string | number | ((key:
         }
     }
 
-    // console.log(key)
-    console.log(args)
     if (defaultValue !== undefined) {
         return typeof defaultValue === "function"
             ? defaultValue(key)
