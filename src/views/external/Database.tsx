@@ -25,20 +25,6 @@ import type { ChartOptions } from "chart.js/auto";
 export default function Database() {
     const { t } = useTranslation();
 
-    type ChartType = 'line' | 'bar' | 'bubble' | 'doughnut' | 'pie' | 'polarArea' | 'radar' | 'scatter';
-    type ChartTypeMap = {
-        key: ChartType,
-        icon: string,
-        value: string,
-    };
-    type DatabaseQueryManualColumData = {
-        data: string
-        type: string
-        name: string
-        class: string
-        defaultContent: () => ReactNode
-    };
-
     type DatabaseData = {
         code: string;
         description?: string;
@@ -64,39 +50,6 @@ export default function Database() {
         version: 0,
     }
 
-    type DatabaseQueryManualData = {
-        query: string;
-    }
-    type DatabaseQueryManualFormError = Partial<Record<keyof DatabaseQueryManualData, string>>;
-
-    type DatabaseExportData = {
-        format: 'sql' | 'xls' | 'csv' | 'json' | 'xml';
-        header: number;
-        delimiter: string;
-        insertFlag: number;
-        includeColumnNameFlag: number;
-        multipleLineFlag: number;
-        firstAmountConditioned: number;
-        firstAmountCombined: number;
-        saveAs: 'clipboard' | 'file';
-    }
-
-    type DatabaseExportFormError = Partial<Record<keyof DatabaseExportData, string>>;
-
-    const databaseExportInitial: DatabaseExportData = {
-        format: 'sql',
-        header: 0,
-        delimiter: '',
-        insertFlag: 1,
-        includeColumnNameFlag: 0,
-        multipleLineFlag: 0,
-        firstAmountConditioned: 0,
-        firstAmountCombined: 0,
-        saveAs: 'clipboard',
-    }
-
-    type DatabaseQueryType = 'manual' | 'exact';
-
     const [databaseStateModal, setDatabaseStateModal] = useState<ModalCategory>("entry");
 
     const [databaseOptionColumnTable, setDatabaseOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
@@ -109,20 +62,11 @@ export default function Database() {
     const [databaseDataTotalTable, setDatabaseDataTotalTable] = useState(0);
     const [databaseTableLoadingFlag, setDatabaseTableLoadingFlag] = useState(false);
 
-    const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
-    const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
-    const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
-    const [databaseQueryManualChartLoadingFlag, setDatabaseQueryManualChartLoadingFlag] = useState(false);
-
-    const [databaseQueryExactChartLoadingFlag, setDatabaseQueryExactChartLoadingFlag] = useState(false);
-
     const [databaseArray, setDatabaseArray] = useState([]);
-    const [databaseQueryManualArray, setDatabaseQueryManualArray] = useState([]);
-    const [databaseQueryManualColumn, setDatabaseQueryManualColumn] = useState<DatabaseQueryManualColumData[]>([]);
 
-    const [databaseQueryManualTableFlag, setDatabaseQueryManualTableFlag] = useState(false);
-
-    const [databaseQueryExactColumn, setDatabaseQueryExactColumn] = useState([]);
+    const [databaseId, setDatabaseId] = useState(0);
+    const [databaseForm, setDatabaseForm] = useState<DatabaseData>(databaseInitial);
+    const [databaseFormError, setDatabaseFormError] = useState<DatabaseFormError>({});
 
     const [databaseEntryModal, setDatabaseEntryModal] = useState<ModalType>({
         title: "",
@@ -131,12 +75,6 @@ export default function Database() {
         submitIcon: "",
         submitLoadingFlag: false,
     });
-
-    const [databaseTestingModalTitle, setDatabaseTestingModalTitle] = useState("");
-
-    const [databaseId, setDatabaseId] = useState(0);
-    const [databaseForm, setDatabaseForm] = useState<DatabaseData>(databaseInitial);
-    const [databaseFormError, setDatabaseFormError] = useState<DatabaseFormError>({});
 
     const onDatabaseFormChange = (e: { target: { name: string; value: any } }) => {
         const { name, value } = e.target;
@@ -155,75 +93,6 @@ export default function Database() {
         setDatabaseFormError(error);
         return Object.keys(error).length === 0;
     };
-
-    const [databaseQueryManualId, setDatabaseQueryManualId] = useState(0);
-    const [databaseQueryManualForm, setDatabaseQueryManualForm] = useState<DatabaseQueryManualData>({ query: "" });
-    const [databaseQueryManualFormError, setDatabaseQueryManualFormError] = useState<DatabaseQueryManualFormError>({});
-
-    const onDatabaseQueryManualFormChange = (e: { target: { name: string; value: any } }) => {
-        const { name, value } = e.target;
-        setDatabaseQueryManualForm({ ...databaseQueryManualForm, [name]: value });
-    };
-
-    const onDatabaseQueryManualValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const isEnter = e.key === 'Enter';
-
-        if (e.ctrlKey && isEnter && !databaseQueryManualLoadingFlag) {
-            e.preventDefault(); // opsional
-            runDatabaseQueryManual();
-        }
-    }
-
-    const databaseQueryManualValidate = (data: DatabaseQueryManualData) => {
-        const error: DatabaseQueryManualFormError = {};
-        if (!data.query?.trim()) error.query = t("validate.required", { name: t("text.query") });
-        setDatabaseQueryManualFormError(error);
-        return Object.keys(error).length === 0;
-    };
-
-    const [queryExactIdentity, setQueryExactIdentity] = useState("");
-
-
-    const [databaseExportForm, setDatabaseExportForm] = useState<DatabaseExportData>(databaseExportInitial);
-    const [databaseExportFormError, setDatabaseExportFormError] = useState<DatabaseExportFormError>({});
-
-    const onDatabaseExportFormChange = (e: { target: { name: string; value: any } }) => {
-        const { name, value } = e.target;
-        setDatabaseExportForm({ ...databaseExportForm, [name]: value });
-        setDatabaseExportFormError({ ...databaseExportFormError, [name]: undefined });
-    };
-
-    const databaseExportValidate = (data: DatabaseData) => {
-        const error: DatabaseExportFormError = {};
-        // if (!data.code?.trim()) error.code = t("validate.required", { name: t("text.name") });
-        // if (data.databaseTypeId <= 0) error.databaseTypeId = t("validate.required", { name: t("text.type") });
-        // if (!data.username?.trim()) error.username = t("validate.required", { name: t("text.username") });
-        // if (!data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
-        // if (!data.databaseConnection?.trim()) error.databaseConnection = t("validate.required", { name: t("text.databaseConnection") });
-
-        setDatabaseExportFormError(error);
-        return Object.keys(error).length === 0;
-    };
-
-    const [chartTypeValue, setChartTypeValue] = useState<ChartType>("line")
-    const [chartTypeMap, setChartTypeMap] = useState<ChartTypeMap[]>([])
-    // const chartTypeMap = [
-    //     { "key": "line", "value": "Line" },
-    //     { "key": "bar", "value": "Bar" },
-    //     { "key": "bubble", "value": "Bubble" },
-    //     { "key": "doughnut", "value": "Doughnut" },
-    //     { "key": "pie", "value": "Pie" },
-    //     { "key": "polarArea", "value": "Polar" },
-    //     { "key": "radar", "value": "Radar" },
-    //     { "key": "scatter", "value": "Scatter" },
-    // ]
-
-    const chartRef = useRef(null);
-    const [canvasLabelArray, setCanvasLabelArray] = useState<string[]>([])
-    const [canvasDatasetCommonArray, setCanvasDatasetCommonArray] = useState<{ hidden: boolean, label: string, data: string }[]>([])
-    const [canvasDatasetBubbleArray, setCanvasDatasetBubbleArray] = useState([])
-    const [canvasOptionArray, setCanvasOptionArray] = useState<ChartOptions>()
-    const [databaseQueryType, setDatabaseQueryType] = useState<DatabaseQueryType>()
 
     const getDatabase = async (options: TableOptions) => {
         setDatabaseTableLoadingFlag(true)
@@ -400,6 +269,8 @@ export default function Database() {
         }));
     };
 
+    const [databaseConnectModalTitle, setDatabaseConnectModalTitle] = useState("");
+
     const connectDatabase = async (id: number, name: string) => {
         setDatabaseId(id);
 
@@ -413,8 +284,10 @@ export default function Database() {
 
         const response = await apiRequest('get', `/external/${id}/database-connect.json`);
         if (HttpStatusCode.NoContent === response.status) {
-            setDatabaseTestingModalTitle(name);
-            setModalDatabaseTesting(true);
+            setDatabaseConnectModalTitle(name);
+            getDatabaseQueryObject(databaseQueryObjectAttributeTable);
+            getDatabaseQueryWhitelist(databaseQueryWhitelistAttributeTable);
+            setModalDatabaseConnect(true);
         } else {
             toast.show({ type: 'error', message: response.message });
         }
@@ -426,6 +299,136 @@ export default function Database() {
                 connectedButtonFlag: false,
             },
         }));
+    };
+
+    const [databaseQueryObjectOptionColumnTable, setDatabaseQueryObjectOptionColumnTable] = useState<{ [id: string]: OptionColumn; }>({});
+    const [databaseQueryObjectAttributeTable, setDatabaseQueryObjectAttributeTable] = useState<TableOptions>({
+        page: 1,
+        length: 10,
+        search: '',
+        order: []
+    });
+    const [databaseQueryObjectDataTotalTable, setDatabaseQueryObjectDataTotalTable] = useState(0);
+    const [databaseQueryObjectTableLoadingFlag, setDatabaseQueryObjectTableLoadingFlag] = useState(false);
+
+    const [databaseQueryObjectArray, setDatabaseQueryObjectArray] = useState([]);
+
+    const getDatabaseQueryObject = async (options: TableOptions) => {
+        setDatabaseQueryObjectTableLoadingFlag(true)
+
+        const params = {
+            "start": (options.page - 1) * options.length,
+            "length": options.length,
+            "search": encodeURIComponent(options.search!),
+            "sort": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
+            "dir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
+        };
+        setDatabaseQueryObjectAttributeTable(options);
+
+        const response = await apiRequest('get', `/external/${databaseId}/database-query-object-list.json`, params);
+        if (HTTP_CODE.OK === response.status) {
+            setDatabaseQueryObjectArray(response.data);
+            setDatabaseQueryObjectDataTotalTable(response.total);
+            setDatabaseQueryObjectOptionColumnTable(
+                response.data.reduce(function (map: Record<string, any>, obj: any) {
+                    map[obj.id] = { "viewedButtonFlag": false }
+                    return map
+                }, {})
+            );
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setDatabaseQueryObjectTableLoadingFlag(false);
+    };
+
+    const [databaseQueryWhitelistOptionColumnTable, setDatabaseQueryWhitelistOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
+    const [databaseQueryWhitelistAttributeTable, setDatabaseQueryWhitelistAttributeTable] = useState<TableOptions>({
+        page: 1,
+        length: 10,
+        search: '',
+        order: []
+    });
+    const [databaseQueryWhitelistDataTotalTable, setDatabaseQueryWhitelistDataTotalTable] = useState(0);
+    const [databaseQueryWhitelistTableLoadingFlag, setDatabaseQueryWhitelistTableLoadingFlag] = useState(false);
+
+    const [databaseQueryWhitelistArray, setDatabaseQueryWhitelistArray] = useState([]);
+
+    const getDatabaseQueryWhitelist = async (options: TableOptions) => {
+        setDatabaseQueryWhitelistTableLoadingFlag(true)
+
+        const params = {
+            "start": (options.page - 1) * options.length,
+            "length": options.length,
+            "search": encodeURIComponent(options.search!),
+            "sort": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
+            "dir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
+        };
+        setDatabaseQueryWhitelistAttributeTable(options);
+
+        const response = await apiRequest('get', `/external/${databaseId}/database-query-whitelist-list.json`, params);
+        if (HTTP_CODE.OK === response.status) {
+            setDatabaseQueryWhitelistArray(response.data);
+            setDatabaseQueryWhitelistDataTotalTable(response.total);
+            setDatabaseQueryWhitelistOptionColumnTable(
+                response.data.reduce(function (map: Record<string, any>, obj: any) {
+                    map[obj.id] = { "viewedButtonFlag": false }
+                    return map
+                }, {})
+            );
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setDatabaseQueryWhitelistTableLoadingFlag(false);
+    };
+
+    type DatabaseQueryManualColumData = {
+        data: string
+        type: string
+        name: string
+        class: string
+        defaultContent: () => ReactNode
+    };
+
+    type DatabaseQueryManualData = {
+        query: string;
+    }
+    type DatabaseQueryManualFormError = Partial<Record<keyof DatabaseQueryManualData, string>>;
+
+    const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
+    const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
+    const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
+    const [databaseQueryManualChartLoadingFlag, setDatabaseQueryManualChartLoadingFlag] = useState(false);
+
+    const [databaseQueryManualArray, setDatabaseQueryManualArray] = useState([]);
+    const [databaseQueryManualColumn, setDatabaseQueryManualColumn] = useState<DatabaseQueryManualColumData[]>([]);
+
+    const [databaseQueryManualTableFlag, setDatabaseQueryManualTableFlag] = useState(false);
+
+    const [databaseQueryManualId, setDatabaseQueryManualId] = useState(0);
+    const [databaseQueryManualForm, setDatabaseQueryManualForm] = useState<DatabaseQueryManualData>({ query: "" });
+    const [databaseQueryManualFormError, setDatabaseQueryManualFormError] = useState<DatabaseQueryManualFormError>({});
+
+    const onDatabaseQueryManualFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setDatabaseQueryManualForm({ ...databaseQueryManualForm, [name]: value });
+    };
+
+    const onDatabaseQueryManualValueKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const isEnter = e.key === 'Enter';
+
+        if (e.ctrlKey && isEnter && !databaseQueryManualLoadingFlag) {
+            e.preventDefault(); // opsional
+            runDatabaseQueryManual();
+        }
+    }
+
+    const databaseQueryManualValidate = (data: DatabaseQueryManualData) => {
+        const error: DatabaseQueryManualFormError = {};
+        if (!data.query?.trim()) error.query = t("validate.required", { name: t("text.query") });
+        setDatabaseQueryManualFormError(error);
+        return Object.keys(error).length === 0;
     };
 
     const runDatabaseQueryManual = async () => {
@@ -463,6 +466,203 @@ export default function Database() {
         }
     }
 
+    const getDatabaseQueryManual = async (options: {
+        id: number;
+        page: number;
+        length: number;
+    }) => {
+        setDatabaseQueryManualTableLoadingFlag(true)
+
+        const params = {
+            "start": (options.page - 1) * options.length,
+            "length": options.length,
+        };
+
+        const response = await apiRequest('get', `/external/${options.id}/database-query-manual-list.json`, params);
+        if (HTTP_CODE.OK === response.status) {
+            setDatabaseQueryManualArray(response.data);
+            setDatabaseQueryManualDataTotalTable(response.total);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setDatabaseQueryManualTableLoadingFlag(false);
+    };
+
+    const [databaseQueryExactDataTotalTable, setDatabaseQueryExactDataTotalTable] = useState(0);
+    const [databaseQueryExactTableLoadingFlag, setDatabaseQueryExactTableLoadingFlag] = useState(false);
+    const [databaseQueryExactChartLoadingFlag, setDatabaseQueryExactChartLoadingFlag] = useState(false);
+
+    const [databaseQueryExactArray, setDatabaseQueryExactArray] = useState([]);
+    const [databaseQueryExactColumn, setDatabaseQueryExactColumn] = useState<DatabaseQueryManualColumData[]>([]);
+
+    const [databaseQueryExactIdentify, setDatabaseQueryExactIdentify] = useState<number | string>(0);
+
+    const [databaseExactModalTitle, setDatabaseExactModalTitle] = useState("")
+
+    const runDatabaseQueryExact = async (identify: number | string) => {
+        setModalDatabaseExact(false);
+
+        if (typeof identify === 'number') {
+            setDatabaseQueryWhitelistOptionColumnTable(prev => ({
+                ...prev,
+                [identify]: {
+                    ...prev[identify],
+                    viewedButtonFlag: true,
+                },
+            }));
+        } else {
+            setDatabaseQueryObjectOptionColumnTable(prev => ({
+                ...prev,
+                [identify]: {
+                    ...prev[identify],
+                    viewedButtonFlag: true,
+                },
+            }));
+        }
+
+        const response = await apiRequest(
+            'post',
+            typeof identify === 'number'
+                ? `/external/${identify}/database-query-exact-whitelist-run.json`
+                : `/external/${databaseId}/${identify}/database-query-exact-object-run.json`
+        );
+
+        if (HttpStatusCode.Ok === response.status) {
+            setDatabaseExactModalTitle(String(identify));
+            setDatabaseQueryExactColumn(
+                response.data.map((element: DatabaseQueryManualColumData) => {
+                    return {
+                        data: element.name,
+                        type: element.type,
+                        name: `${element.name} (${element.type})`,
+                        class: "text-nowrap",
+                        defaultContent: () => { return <i>NULL</i> }
+                    }
+                })
+            );
+
+            setDatabaseQueryExactIdentify(identify)
+            getDatabaseQueryExact({ identify: identify, page: 1, length: 10 })
+            setModalDatabaseExact(true);
+        } else {
+            toast.show({ type: "error", message: response.message });
+        }
+
+        if (typeof identify === 'number') {
+            setDatabaseQueryWhitelistOptionColumnTable(prev => ({
+                ...prev,
+                [identify]: {
+                    ...prev[identify],
+                    viewedButtonFlag: false,
+                },
+            }));
+        } else {
+            setDatabaseQueryObjectOptionColumnTable(prev => ({
+                ...prev,
+                [identify]: {
+                    ...prev[identify],
+                    viewedButtonFlag: false,
+                },
+            }));
+        }
+    }
+
+    const getDatabaseQueryExact = async (options: {
+        identify: number | string;
+        page: number;
+        length: number;
+    }) => {
+        setDatabaseQueryExactTableLoadingFlag(true)
+
+        const params = {
+            "start": (options.page - 1) * options.length,
+            "length": options.length,
+        };
+
+        const response = await apiRequest(
+            'get',
+            typeof options.identify === 'number'
+                ? `/external/${options.identify}/database-query-exact-whitelist-list.json`
+                : `/external/${databaseId}/${options.identify}/database-query-exact-object-list.json`
+            , params);
+
+        if (HTTP_CODE.OK === response.status) {
+            setDatabaseQueryExactArray(response.data);
+            setDatabaseQueryExactDataTotalTable(response.total);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setDatabaseQueryExactTableLoadingFlag(false);
+    };
+
+    type DatabaseExportData = {
+        format: 'sql' | 'xls' | 'csv' | 'json' | 'xml';
+        header: number;
+        delimiter: string;
+        insertFlag: number;
+        includeColumnNameFlag: number;
+        multipleLineFlag: number;
+        firstAmountConditioned: number;
+        firstAmountCombined: number;
+        saveAs: 'clipboard' | 'file';
+    }
+
+    type DatabaseExportFormError = Partial<Record<keyof DatabaseExportData, string>>;
+
+    const databaseExportInitial: DatabaseExportData = {
+        format: 'sql',
+        header: 0,
+        delimiter: '',
+        insertFlag: 1,
+        includeColumnNameFlag: 0,
+        multipleLineFlag: 0,
+        firstAmountConditioned: 0,
+        firstAmountCombined: 0,
+        saveAs: 'clipboard',
+    };
+
+    const [databaseExportForm, setDatabaseExportForm] = useState<DatabaseExportData>(databaseExportInitial);
+    const [databaseExportFormError, setDatabaseExportFormError] = useState<DatabaseExportFormError>({});
+
+    const onDatabaseExportFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setDatabaseExportForm({ ...databaseExportForm, [name]: value });
+        setDatabaseExportFormError({ ...databaseExportFormError, [name]: undefined });
+    };
+
+    const databaseExportValidate = (data: DatabaseData) => {
+        const error: DatabaseExportFormError = {};
+        // if (!data.code?.trim()) error.code = t("validate.required", { name: t("text.name") });
+        // if (data.databaseTypeId <= 0) error.databaseTypeId = t("validate.required", { name: t("text.type") });
+        // if (!data.username?.trim()) error.username = t("validate.required", { name: t("text.username") });
+        // if (!data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
+        // if (!data.databaseConnection?.trim()) error.databaseConnection = t("validate.required", { name: t("text.databaseConnection") });
+
+        setDatabaseExportFormError(error);
+        return Object.keys(error).length === 0;
+    };
+
+    type ChartType = 'line' | 'bar' | 'bubble' | 'doughnut' | 'pie' | 'polarArea' | 'radar' | 'scatter';
+    type ChartTypeMap = {
+        key: ChartType,
+        icon: string,
+        value: string,
+    };
+
+    const [chartTypeValue, setChartTypeValue] = useState<ChartType>("line");
+    const [chartTypeMap, setChartTypeMap] = useState<ChartTypeMap[]>([]);
+
+    type DatabaseQueryType = 'manual' | 'exact';
+
+    const chartRef = useRef(null);
+    const [canvasLabelArray, setCanvasLabelArray] = useState<string[]>([])
+    const [canvasDatasetCommonArray, setCanvasDatasetCommonArray] = useState<{ hidden: boolean, label: string, data: string }[]>([])
+    const [canvasDatasetBubbleArray, setCanvasDatasetBubbleArray] = useState([])
+    const [canvasOptionArray, setCanvasOptionArray] = useState<ChartOptions>()
+    const [databaseQueryType, setDatabaseQueryType] = useState<DatabaseQueryType>()
+
     const runDatabaseQueryChart = async (databaseQueryType: DatabaseQueryType) => {
         setDatabaseQueryType(databaseQueryType)
         setChartTypeValue("line")
@@ -475,8 +675,13 @@ export default function Database() {
             'get',
             "manual" === databaseQueryType
                 ? `/external/${databaseQueryManualId}/database-query-manual-all-list.json`
-                : `/external/${databaseId}/${queryExactIdentity}/query-exact-data-database.json`
+                : (
+                    typeof databaseQueryExactIdentify === 'number'
+                        ? `/external/${databaseQueryExactIdentify}/database-query-exact-whitelist-all-list.json`
+                        : `/external/${databaseId}/${databaseQueryExactIdentify}/database-query-exact-object-all-list.json`
+                )
         );
+
         if (HTTP_CODE.OK === response.status) {
             const databaseQueryColumn = "manual" === databaseQueryType ? databaseQueryManualColumn : databaseQueryExactColumn;
             const labelArray = [...new Set(
@@ -527,7 +732,7 @@ export default function Database() {
                                     r: datasetCommonArray[1].data[index],
                                 }
                             })
-                        })
+                        });
                     }
                 } else {
                     if (databaseQueryColumn.length === 2) {
@@ -585,7 +790,6 @@ export default function Database() {
             setCanvasLabelArray(labelArray)
             setCanvasDatasetCommonArray(datasetCommonArray)
             setCanvasDatasetBubbleArray(datasetBubbleArray)
-            console.log(datasetCommonArray)
 
             let optionArray: ChartOptions = {
                 maintainAspectRatio: false,
@@ -657,7 +861,7 @@ export default function Database() {
         }
     }
 
-    const onChartTypeChange = (e) => {
+    const onChartTypeChange = (e: { target: { name: string; value: any } }) => {
         setChartTypeValue(e.target.value)
         let optionArray: ChartOptions = {
             maintainAspectRatio: false,
@@ -809,31 +1013,9 @@ export default function Database() {
         setCanvasOptionArray(optionArray)
     }
 
-    const getDatabaseQueryManual = async (options: {
-        id: number;
-        page: number;
-        length: number;
-    }) => {
-        setDatabaseQueryManualTableLoadingFlag(true)
-
-        const params = {
-            "start": (options.page - 1) * options.length,
-            "length": options.length,
-        };
-
-        const response = await apiRequest('get', `/external/${options.id}/database-query-manual-list.json`, params);
-        if (HTTP_CODE.OK === response.status) {
-            setDatabaseQueryManualArray(response.data);
-            setDatabaseQueryManualDataTotalTable(response.total);
-        } else {
-            toast.show({ type: 'error', message: response.message });
-        }
-
-        setDatabaseQueryManualTableLoadingFlag(false);
-    };
-
     const [modalDatabase, setModalDatabase] = useState(false);
-    const [modalDatabaseTesting, setModalDatabaseTesting] = useState(false);
+    const [modalDatabaseConnect, setModalDatabaseConnect] = useState(false);
+    const [modalDatabaseExact, setModalDatabaseExact] = useState(false);
     const [modalDatabaseExport, setModalDatabaseExport] = useState(false);
     const [modalDatabaseChart, setModalDatabaseChart] = useState(false);
 
@@ -890,10 +1072,10 @@ export default function Database() {
                     </div>
                 </Modal>
                 <Modal
-                    show={modalDatabaseTesting}
+                    show={modalDatabaseConnect}
                     size="xl"
-                    title={databaseTestingModalTitle}
-                    onClose={() => setModalDatabaseTesting(false)}
+                    title={databaseConnectModalTitle}
+                    onClose={() => setModalDatabaseConnect(false)}
                 >
                     <Navtab
                         tabs={[
@@ -901,7 +1083,59 @@ export default function Database() {
                                 label: t("text.object"),
                                 icon: "fa-solid fa-table",
                                 content: function () {
-                                    return (<div>Object</div>);
+                                    return (
+                                        <Table
+                                            searchFlag={false}
+                                            dataArray={databaseQueryObjectArray}
+                                            columns={[
+                                                {
+                                                    data: "object_id",
+                                                    name: "id",
+                                                    class: "text-nowrap",
+                                                    orderable: true,
+                                                    minDevice: 'mobile',
+                                                },
+                                                {
+                                                    data: "object_name",
+                                                    name: t("text.name"),
+                                                    class: "text-nowrap",
+                                                    copy: true,
+                                                    minDevice: 'tablet',
+                                                },
+                                                {
+                                                    data: "object_type",
+                                                    name: t("text.type"),
+                                                    class: "text-nowrap",
+                                                    minDevice: 'tablet',
+                                                },
+                                                {
+                                                    data: "object_name",
+                                                    name: t("text.option"),
+                                                    class: "text-nowrap",
+                                                    render: function (data) {
+                                                        return (
+                                                            <div className="flex justify-center max-sm:flex-col gap-4">
+                                                                <Button
+                                                                    label={t("button.data")}
+                                                                    className="max-sm:w-full"
+                                                                    type='primary'
+                                                                    icon="fa-solid fa-list"
+                                                                    onClick={() => runDatabaseQueryExact(data)}
+                                                                    loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    }
+                                                }
+                                            ]}
+
+                                            dataTotal={databaseQueryObjectDataTotalTable}
+                                            onRender={(page, length) => {
+                                                getDatabaseQueryObject({ page: page, length: length })
+                                            }}
+                                            loadingFlag={databaseQueryObjectTableLoadingFlag}
+                                        />
+                                    );
                                 },
                             },
                             {
@@ -974,10 +1208,73 @@ export default function Database() {
                                 label: t("text.whitelist"),
                                 icon: "fa-solid fa-file-circle-check",
                                 content: function () {
-                                    return (<div>Whitelist</div>);
+                                    return (
+                                        <Table
+                                            searchFlag={true}
+                                            dataArray={databaseQueryWhitelistArray}
+                                            columns={[
+                                                {
+                                                    data: "description",
+                                                    name: t("text.description"),
+                                                    class: "text-nowrap",
+                                                    minDevice: 'mobile',
+                                                },
+                                                {
+                                                    data: "query",
+                                                    name: t("text.query"),
+                                                    class: "text-nowrap",
+                                                    copy: true,
+                                                    minDevice: 'tablet',
+                                                },
+                                                {
+                                                    data: "id",
+                                                    name: t("text.option"),
+                                                    class: "text-nowrap",
+                                                    render: function (data) {
+                                                        return (
+                                                            <div className="flex justify-center max-sm:flex-col gap-4">
+                                                                <Button
+                                                                    label={t("button.data")}
+                                                                    className="max-sm:w-full"
+                                                                    type='primary'
+                                                                    icon="fa-solid fa-list"
+                                                                    onClick={() => runDatabaseQueryExact(data)}
+                                                                    loadingFlag={databaseQueryWhitelistOptionColumnTable[data]?.viewedButtonFlag}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    }
+                                                }
+                                            ]}
+
+                                            dataTotal={databaseQueryWhitelistDataTotalTable}
+                                            onRender={(page, length, search) => {
+                                                getDatabaseQueryWhitelist({ page: page, length: length, search: search })
+                                            }}
+                                            loadingFlag={databaseQueryWhitelistTableLoadingFlag}
+                                        />
+                                    );
                                 },
                             }
                         ]}
+                    />
+                </Modal>
+                <Modal
+                    show={modalDatabaseExact}
+                    size="xl"
+                    title={databaseExactModalTitle}
+                    onClose={() => setModalDatabaseExact(false)}
+                >
+                    <Table
+                        searchFlag={false}
+                        dataArray={databaseQueryExactArray}
+                        columns={databaseQueryExactColumn}
+
+                        dataTotal={databaseQueryExactDataTotalTable}
+                        onRender={(page, length) => {
+                            getDatabaseQueryExact({ identify: databaseQueryExactIdentify, page: page, length: length });
+                        }}
+                        loadingFlag={databaseQueryExactTableLoadingFlag}
                     />
                 </Modal>
                 <Modal
@@ -1056,7 +1353,7 @@ export default function Database() {
                             onChange={onChartTypeChange}
                             error={databaseExportFormError.format}
                         />
-                        <div className="min-h-64 max-h-96">
+                        <div className="min-h-96 max-h-96">
                             <Chart
                                 ref={chartRef}
                                 type={chartTypeValue}
