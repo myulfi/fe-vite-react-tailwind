@@ -15,7 +15,7 @@ import Radio from "../../components/form/Radio";
 import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
-import { yesNo } from "../../function/commonHelper";
+import { decode, yesNo } from "../../function/commonHelper";
 import InputPassword from "../../components/form/InputPassword";
 import Navtab from "../../components/containers/Navtab";
 import Switch from "../../components/form/Switch";
@@ -401,6 +401,8 @@ export default function Database() {
     const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
     const [databaseQueryManualChartLoadingFlag, setDatabaseQueryManualChartLoadingFlag] = useState(false);
 
+    const [databaseQueryManualAdditionalButtonFlag, setDatabaseQueryManualAdditionalButtonFlag] = useState(false);
+
     const [databaseQueryManualArray, setDatabaseQueryManualArray] = useState([]);
     const [databaseQueryManualColumn, setDatabaseQueryManualColumn] = useState<DatabaseQueryManualColumData[]>([]);
 
@@ -440,23 +442,48 @@ export default function Database() {
 
             if (HttpStatusCode.Ok === response.status) {
                 setDatabaseQueryManualTableFlag(true);
-                setDatabaseQueryManualColumn(
-                    response.header.map((element: DatabaseQueryManualColumData) => {
-                        return {
-                            data: element.name,
-                            type: element.type,
-                            name: `${element.name} (${element.type})`,
-                            class: "text-nowrap",
-                            defaultContent: () => { return <i>NULL</i> }
-                        }
-                    })
-                );
-
                 if (response.id !== undefined) {
-                    setDatabaseQueryManualId(response.id)
-                    getDatabaseQueryManual({ id: response.id, page: 1, length: 10 })
+                    setDatabaseQueryManualColumn(
+                        response.header.map((element: DatabaseQueryManualColumData) => {
+                            return {
+                                data: element.name,
+                                type: element.type,
+                                name: `${element.name} (${element.type})`,
+                                class: "text-nowrap",
+                                defaultContent: () => { return <i>NULL</i> }
+                            }
+                        })
+                    );
+                    setDatabaseQueryManualId(response.id);
+                    getDatabaseQueryManual({ id: response.id, page: 1, length: 10 });
+                    setDatabaseQueryManualAdditionalButtonFlag(true);
                 } else {
-                    // setDatabaseQueryManualDataArray(response.data.result)
+                    setDatabaseQueryManualColumn([
+                        {
+                            data: "message",
+                            name: "Result Information",
+                            type: "error",
+                            class: "text-nowrap",
+                            render: function (_, row) {
+                                return (
+                                    <div>
+                                        {
+                                            row.message &&
+                                            <strong>{row.message}</strong>
+                                        }
+                                        {
+                                            row.affected !== undefined &&
+                                            <span>{row.affected} {decode(row.action, "insert", "inserted", "update", "updated", "delete", "deleted", "drop", "droped", "create", "created", "alter", "altered", "affected")}</span>
+                                        }
+                                        &nbsp;|&nbsp;<i>{row.query}</i>
+                                    </div>
+                                )
+                            }
+                        }
+                    ]);
+                    setDatabaseQueryManualArray(response.data);
+                    setDatabaseQueryManualDataTotalTable(0);
+                    setDatabaseQueryManualAdditionalButtonFlag(false);
                 }
             } else {
                 toast.show({ type: "error", message: response.message });
@@ -1183,23 +1210,27 @@ export default function Database() {
                                                     </div>
                                                 }
                                             </div>
-                                            <div className="flex flex-row gap-4">
-                                                <Button
-                                                    label={t("button.export")}
-                                                    size="xs"
-                                                    type="primary"
-                                                    icon="fa-solid fa-download"
-                                                    onClick={() => setModalDatabaseExport(true)}
-                                                />
-                                                <Button
-                                                    label={t("button.chart")}
-                                                    size="xs"
-                                                    type="primary"
-                                                    icon="fa-solid fa-chart-line"
-                                                    onClick={() => runDatabaseQueryChart("manual")}
-                                                    loadingFlag={databaseQueryManualChartLoadingFlag}
-                                                />
-                                            </div>
+                                            {
+                                                databaseQueryManualAdditionalButtonFlag &&
+                                                <div className="flex flex-row gap-4">
+                                                    <Button
+                                                        label={t("button.export")}
+                                                        size="xs"
+                                                        type="primary"
+                                                        icon="fa-solid fa-download"
+                                                        onClick={() => setModalDatabaseExport(true)}
+                                                    />
+                                                    <Button
+                                                        label={t("button.chart")}
+                                                        size="xs"
+                                                        type="primary"
+                                                        icon="fa-solid fa-chart-line"
+                                                        onClick={() => runDatabaseQueryChart("manual")}
+                                                        loadingFlag={databaseQueryManualChartLoadingFlag}
+                                                    />
+                                                </div>
+
+                                            }
                                         </Fragment>
                                     );
                                 },
