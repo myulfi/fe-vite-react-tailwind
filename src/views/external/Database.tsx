@@ -630,6 +630,7 @@ export default function Database() {
         delimiter: string;
         insertFlag: number;
         includeColumnNameFlag: number;
+        numberLinePerAction: number;
         multipleLineFlag: number;
         firstAmountConditioned: number;
         firstAmountCombined: number;
@@ -644,11 +645,14 @@ export default function Database() {
         delimiter: '',
         insertFlag: 1,
         includeColumnNameFlag: 0,
+        numberLinePerAction: 0,
         multipleLineFlag: 0,
         firstAmountConditioned: 0,
         firstAmountCombined: 0,
         saveAs: 'clipboard',
     };
+
+    const [databaseExportLoadingFlag, setDatabaseExportLoadingFlag] = useState(false);
 
     const [databaseExportForm, setDatabaseExportForm] = useState<DatabaseExportData>(databaseExportInitial);
     const [databaseExportFormError, setDatabaseExportFormError] = useState<DatabaseExportFormError>({});
@@ -659,17 +663,74 @@ export default function Database() {
         setDatabaseExportFormError({ ...databaseExportFormError, [name]: undefined });
     };
 
-    const databaseExportValidate = (data: DatabaseData) => {
+    const checkDatabaseExportFrom = {
+        header: () => 'csv' === databaseExportForm.format,
+        delimiter: () => 'csv' === databaseExportForm.format,
+        statement: () => 'sql' === databaseExportForm.format,
+        includeColumnName: () => 'sql' === databaseExportForm.format && 1 === databaseExportForm.insertFlag,
+        numberLinePerAction: () => 'sql' === databaseExportForm.format && 1 === databaseExportForm.insertFlag,
+        multipleLine: () => 'sql' === databaseExportForm.format && 0 === databaseExportForm.insertFlag,
+        firstAmountConditioned: () => 'sql' === databaseExportForm.format && 0 === databaseExportForm.insertFlag,
+        firstAmountCombined: () => 'xls' === databaseExportForm.format,
+        saveAs: () => ['sql', 'csv', 'json', 'xml'].includes(databaseExportForm.format),
+    };
+
+    const databaseExportValidate = (data: DatabaseExportData) => {
         const error: DatabaseExportFormError = {};
-        // if (!data.code?.trim()) error.code = t("validate.required", { name: t("text.name") });
-        // if (data.databaseTypeId <= 0) error.databaseTypeId = t("validate.required", { name: t("text.type") });
-        // if (!data.username?.trim()) error.username = t("validate.required", { name: t("text.username") });
-        // if (!data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
-        // if (!data.databaseConnection?.trim()) error.databaseConnection = t("validate.required", { name: t("text.databaseConnection") });
+        if (checkDatabaseExportFrom.delimiter() && !data.delimiter?.trim()) error.delimiter = t("validate.required", { name: t("text.delimiter") });
+        if (checkDatabaseExportFrom.numberLinePerAction() && data.numberLinePerAction < 1) error.numberLinePerAction = t("validate.greaterThanEqual", { name: t("text.firstAmountConditioned"), value: 1 });
+        if (checkDatabaseExportFrom.firstAmountConditioned() && data.firstAmountConditioned < 1) error.firstAmountConditioned = t("validate.greaterThanEqual", { name: t("text.firstAmountConditioned"), value: 1 });
+        if (checkDatabaseExportFrom.firstAmountConditioned() && data.firstAmountCombined < 0) error.firstAmountCombined = t("validate.greaterThanEqual", { name: t("text.firstAmountConditioned"), value: 0 });
 
         setDatabaseExportFormError(error);
         return Object.keys(error).length === 0;
     };
+
+    const onDatabaseExport = async () => {
+        if (databaseExportValidate(databaseExportForm)) {
+            setDatabaseExportLoadingFlag(true);
+
+            let url = '';
+            if ("sql" === databaseExportForm.format) {
+                if ("clipboard" === databaseExportForm.saveAs) {
+                    url = databaseExportForm.insertFlag
+                        ? `/external/${databaseQueryManualId}/${databaseExportForm.includeColumnNameFlag}/${databaseExportForm.numberLinePerAction}/database-manual-query-insert.json`
+                        : `/external/${databaseQueryManualId}/${databaseExportForm.multipleLineFlag}/${databaseExportForm.firstAmountConditioned}/database-manual-query-update.json`;
+                } else if ("file" === databaseExportForm.saveAs) {
+
+                }
+            } else if ("xls" === databaseExportForm.format) {
+                url = `/external/${databaseQueryManualId}/${databaseExportForm.firstAmountCombined}/database-manual-xls.json`;
+            } else if ("csv" === databaseExportForm.format) {
+                if ("clipboard" === databaseExportForm.saveAs) {
+                    url = `/external/${databaseQueryManualId}/${databaseExportForm.header}/${databaseExportForm.delimiter}/database-manual-csv.json`;
+                } else if ("file" === databaseExportForm.saveAs) {
+
+                }
+            } else if ("json" === databaseExportForm.format) {
+                if ("clipboard" === databaseExportForm.saveAs) {
+                    url = `/external/${databaseQueryManualId}/database-manual-json.json`;
+                } else if ("file" === databaseExportForm.saveAs) {
+
+                }
+            } else if ("xml" === databaseExportForm.format) {
+                if ("clipboard" === databaseExportForm.saveAs) {
+                    url = `/external/${databaseQueryManualId}/database-manual-xml.json`;
+                } else if ("file" === databaseExportForm.saveAs) {
+
+                }
+            }
+
+            const response = await apiRequest('get', url);
+            if (HttpStatusCode.Ok === response.status) {
+                setModalDatabaseExport(false);
+            } else {
+                toast.show({ type: "error", message: response.message });
+            }
+            setDatabaseExportLoadingFlag(false);
+        }
+    }
+
 
     type ChartType = 'line' | 'bar' | 'bubble' | 'doughnut' | 'pie' | 'polarArea' | 'radar' | 'scatter';
     type ChartTypeMap = {
@@ -1310,7 +1371,8 @@ export default function Database() {
                 </Modal>
                 <Modal
                     show={modalDatabaseExport}
-                    size="md"
+                    size="sm"
+                    type="dynamic"
                     title={t("text.export")}
                     onClose={() => setModalDatabaseExport(false)}
                     buttonArray={[
@@ -1318,15 +1380,15 @@ export default function Database() {
                             label: t("button.export"),
                             type: "primary",
                             icon: "fa-solid fa-download",
-                            onClick: () => { },
-                            loadingFlag: false
+                            onClick: () => { onDatabaseExport() },
+                            loadingFlag: databaseExportLoadingFlag
                         }
                     ]}
                 >
-                    <div className="grid grid-cols-2 gap-4">
-                        <Radio
+                    <div className="grid md:grid-cols-1 gap-4">
+                        <Radio<string>
                             label={t("text.format")}
-                            columnSpan={2}
+                            size='sm'
                             name="format"
                             value={databaseExportForm.format}
                             map={[
@@ -1339,34 +1401,64 @@ export default function Database() {
                             onChange={onDatabaseExportFormChange}
                             error={databaseExportFormError.format}
                         />
-                        <Switch label={t("text.header")} name="header" value={databaseExportForm.header} onChange={onDatabaseExportFormChange} />
-                        <InputText label={t("text.delimiter")} name="delimiter" value={databaseExportForm.delimiter} onChange={onDatabaseExportFormChange} error={databaseExportFormError.delimiter} />
-                        <Radio
-                            label={t("text.statement")}
-                            name="insertFlag"
-                            value={databaseExportForm.insertFlag}
-                            map={[
-                                { key: 1, icon: "fa-solid fa-add", value: t("text.insert") },
-                                { key: 0, icon: "fa-solid fa-pen", value: t("text.update") },
-                            ]}
-                            onChange={onDatabaseExportFormChange}
-                            error={databaseExportFormError.insertFlag}
-                        />
-                        <Switch label={t("text.includeColumnName")} name="includeColumnNameFlag" value={databaseExportForm.includeColumnNameFlag} onChange={onDatabaseExportFormChange} />
-                        <Switch label={t("text.multipleLine")} name="multipleLineFlag" value={databaseExportForm.multipleLineFlag} onChange={onDatabaseExportFormChange} />
-                        <InputDecimal label={t("text.firstAmountConditioned")} name="firstAmountConditioned" value={databaseExportForm.firstAmountConditioned} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
-                        <InputDecimal label={t("text.firstAmountCombined")} name="firstAmountCombined" value={databaseExportForm.firstAmountCombined} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
-                        <Radio
-                            label={t("text.saveAs")}
-                            name="saveAs"
-                            value={databaseExportForm.saveAs}
-                            map={[
-                                { key: 1, icon: "fa-solid fa-clipboard", value: t("text.clipboard") },
-                                { key: 0, icon: "fa-solid fa-file", value: t("text.file") },
-                            ]}
-                            onChange={onDatabaseExportFormChange}
-                            error={databaseExportFormError.saveAs}
-                        />
+                        {
+                            checkDatabaseExportFrom.header() &&
+                            <Switch label={t("text.header")} name="header" value={databaseExportForm.header} onChange={onDatabaseExportFormChange} />
+                        }
+                        {
+                            checkDatabaseExportFrom.delimiter() &&
+                            <InputText label={t("text.delimiter")} name="delimiter" value={databaseExportForm.delimiter} onChange={onDatabaseExportFormChange} error={databaseExportFormError.delimiter} />
+                        }
+                        {
+                            checkDatabaseExportFrom.statement() &&
+                            <Radio<number>
+                                label={t("text.statement")}
+                                size='sm'
+                                name="insertFlag"
+                                value={databaseExportForm.insertFlag}
+                                map={[
+                                    { key: 1, icon: "fa-solid fa-add", value: t("text.insert") },
+                                    { key: 0, icon: "fa-solid fa-pen", value: t("text.update") },
+                                ]}
+                                onChange={onDatabaseExportFormChange}
+                                error={databaseExportFormError.insertFlag}
+                            />
+                        }
+                        {
+                            checkDatabaseExportFrom.includeColumnName() &&
+                            <Switch label={t("text.includeColumnName")} name="includeColumnNameFlag" value={databaseExportForm.includeColumnNameFlag} onChange={onDatabaseExportFormChange} />
+                        }
+                        {
+                            checkDatabaseExportFrom.numberLinePerAction() &&
+                            <InputDecimal label={t("text.numberLinePerAction")} name="numberLinePerAction" value={databaseExportForm.numberLinePerAction} onChange={onDatabaseExportFormChange} error={databaseExportFormError.numberLinePerAction} />
+                        }
+                        {
+                            checkDatabaseExportFrom.multipleLine() &&
+                            <Switch label={t("text.multipleLine")} name="multipleLineFlag" value={databaseExportForm.multipleLineFlag} onChange={onDatabaseExportFormChange} />
+                        }
+                        {
+                            checkDatabaseExportFrom.firstAmountConditioned() &&
+                            <InputDecimal label={t("text.firstAmountConditioned")} name="firstAmountConditioned" value={databaseExportForm.firstAmountConditioned} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountConditioned} />
+                        }
+                        {
+                            checkDatabaseExportFrom.firstAmountCombined() &&
+                            <InputDecimal label={t("text.firstAmountCombined")} name="firstAmountCombined" value={databaseExportForm.firstAmountCombined} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
+                        }
+                        {
+                            checkDatabaseExportFrom.saveAs() &&
+                            <Radio<string>
+                                label={t("text.saveAs")}
+                                size='sm'
+                                name="saveAs"
+                                value={databaseExportForm.saveAs}
+                                map={[
+                                    { key: "clipboard", icon: "fa-solid fa-clipboard", value: t("text.clipboard") },
+                                    { key: "file", icon: "fa-solid fa-file", value: t("text.file") },
+                                ]}
+                                onChange={onDatabaseExportFormChange}
+                                error={databaseExportFormError.saveAs}
+                            />
+                        }
                     </div>
                 </Modal>
                 <Modal

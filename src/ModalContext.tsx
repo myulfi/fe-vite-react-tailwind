@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import Button from "./components/form/Button";
 import { useTranslation } from "react-i18next";
 import type { ButtonArray } from "./constants/common-constants";
+import { decode } from "./function/commonHelper";
 
 type ConfirmDialogProps = {
     show: boolean;
@@ -166,6 +167,7 @@ function useModalStack() {
 type ModalProps = {
     show: boolean;
     size?: 'sm' | 'md' | 'lg' | 'xl';
+    type?: 'static' | 'dynamic';
     title: string;
     icon?: string;
     buttonArray?: ButtonArray;
@@ -181,7 +183,7 @@ const sizeClasses = {
     xl: 'w-full',
 };
 
-export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClose, children }: ModalProps) {
+export function Modal({ show, size = "xl", type = 'static', title, icon, buttonArray = [], onClose, children }: ModalProps) {
     const { t } = useTranslation();
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
@@ -280,13 +282,13 @@ export function Modal({ show, size = "xl", title, icon, buttonArray = [], onClos
                 ref={modalRef}
                 role="dialog"
                 aria-modal="true"
-                className="flex items-center justify-center min-h-screen py-4 px-4"
+                className={`flex ${decode(type, 'static', 'items-center')} justify-center min-h-screen py-4 px-4`}
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
                     className={`
                         bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line
-                     ${sizeClasses[size]}
+                        ${sizeClasses[size]}
                         rounded-lg shadow-xl h-fit
                         transition-[scale, opacity] duration-200 ease-out
                         ${show && !isLeaving ? "scale-100 opacity-100" : "scale-95 opacity-0"}
