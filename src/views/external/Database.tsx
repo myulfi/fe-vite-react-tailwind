@@ -15,7 +15,7 @@ import Radio from "../../components/form/Radio";
 import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
-import { decode, yesNo } from "../../function/commonHelper";
+import { decode, downloadFile, yesNo } from "../../function/commonHelper";
 import InputPassword from "../../components/form/InputPassword";
 import Navtab from "../../components/containers/Navtab";
 import Switch from "../../components/form/Switch";
@@ -475,7 +475,12 @@ export default function Database() {
                                             row.affected !== undefined &&
                                             <span>{row.affected} {decode(row.action, "insert", "inserted", "update", "updated", "delete", "deleted", "drop", "droped", "create", "created", "alter", "altered", "affected")}</span>
                                         }
-                                        &nbsp;|&nbsp;<i>{row.query}</i>
+                                        {
+                                            row.query &&
+                                            <Fragment>
+                                                &nbsp;|&nbsp;<i>{row.query}</i>
+                                            </Fragment>
+                                        }
                                     </div>
                                 )
                             }
@@ -642,12 +647,12 @@ export default function Database() {
     const databaseExportInitial: DatabaseExportData = {
         format: 'sql',
         header: 0,
-        delimiter: '',
+        delimiter: ',',
         insertFlag: 1,
         includeColumnNameFlag: 0,
-        numberLinePerAction: 0,
+        numberLinePerAction: 1,
         multipleLineFlag: 0,
-        firstAmountConditioned: 0,
+        firstAmountConditioned: 1,
         firstAmountCombined: 0,
         saveAs: 'clipboard',
     };
@@ -692,30 +697,26 @@ export default function Database() {
 
             let url = '';
             if ("sql" === databaseExportForm.format) {
-                if ("clipboard" === databaseExportForm.saveAs) {
-                    url = databaseExportForm.insertFlag
-                        ? `/external/${databaseQueryManualId}/${databaseExportForm.includeColumnNameFlag}/${databaseExportForm.numberLinePerAction}/database-manual-query-insert.json`
-                        : `/external/${databaseQueryManualId}/${databaseExportForm.multipleLineFlag}/${databaseExportForm.firstAmountConditioned}/database-manual-query-update.json`;
-                } else if ("file" === databaseExportForm.saveAs) {
-
-                }
+                url = databaseExportForm.insertFlag
+                    ? `/external/${databaseQueryManualId}/${databaseExportForm.includeColumnNameFlag}/${databaseExportForm.numberLinePerAction}/database-query-manual-sql-insert.json`
+                    : `/external/${databaseQueryManualId}/${databaseExportForm.multipleLineFlag}/${databaseExportForm.firstAmountConditioned}/database-query-manual-sql-update.json`;
             } else if ("xls" === databaseExportForm.format) {
-                url = `/external/${databaseQueryManualId}/${databaseExportForm.firstAmountCombined}/database-manual-xls.json`;
+                url = `/external/${databaseQueryManualId}/${databaseExportForm.firstAmountCombined}/database-query-manual-xls.json`;
             } else if ("csv" === databaseExportForm.format) {
                 if ("clipboard" === databaseExportForm.saveAs) {
-                    url = `/external/${databaseQueryManualId}/${databaseExportForm.header}/${databaseExportForm.delimiter}/database-manual-csv.json`;
+                    url = `/external/${databaseQueryManualId}/${databaseExportForm.header}/${databaseExportForm.delimiter}/database-query-manual-csv.json`;
                 } else if ("file" === databaseExportForm.saveAs) {
 
                 }
             } else if ("json" === databaseExportForm.format) {
                 if ("clipboard" === databaseExportForm.saveAs) {
-                    url = `/external/${databaseQueryManualId}/database-manual-json.json`;
+                    url = `/external/${databaseQueryManualId}/database-query-manual.json`;
                 } else if ("file" === databaseExportForm.saveAs) {
 
                 }
             } else if ("xml" === databaseExportForm.format) {
                 if ("clipboard" === databaseExportForm.saveAs) {
-                    url = `/external/${databaseQueryManualId}/database-manual-xml.json`;
+                    url = `/external/${databaseQueryManualId}/database-query-manual-xml.json`;
                 } else if ("file" === databaseExportForm.saveAs) {
 
                 }
@@ -723,6 +724,12 @@ export default function Database() {
 
             const response = await apiRequest('get', url);
             if (HttpStatusCode.Ok === response.status) {
+                if ("clipboard" === databaseExportForm.saveAs) {
+                    await navigator.clipboard.writeText(response.data)
+                    toast.show({ type: "error", message: "Copied" });
+                } else if ("file" === databaseExportForm.saveAs) {
+                    downloadFile("test.txt", [response.data]);
+                }
                 setModalDatabaseExport(false);
             } else {
                 toast.show({ type: "error", message: response.message });
