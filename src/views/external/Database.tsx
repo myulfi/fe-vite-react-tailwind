@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
-import Button from "../../components/form/Button";
-import { Fragment, useRef, useState, type ReactNode } from "react";
+import "../../function/extensions";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
@@ -21,6 +21,7 @@ import Navtab from "../../components/containers/Navtab";
 import Switch from "../../components/form/Switch";
 import InputDecimal from "../../components/form/InputDecimal";
 import type { ChartOptions } from "chart.js/auto";
+import Button from "../../components/form/Button";
 
 export default function Database() {
     const { t } = useTranslation();
@@ -97,6 +98,26 @@ export default function Database() {
         setDatabaseFormError(error);
         return Object.keys(error).length === 0;
     };
+
+    useEffect(() => {
+        getMasterDatabaseType();
+        getMasterExternalServerArray();
+    }, []);
+
+    const [masterDatabaseTypeArray, setMasterDatabaseTypeArray] = useState<Array<{ key: number; value: string }>>([]);
+    const [masterExternalServerArray, setMasterExternalServerArray] = useState<Array<{ key: number; value: string }>>([]);
+    const getMasterDatabaseType = async () => {
+        const response = await apiRequest('get', '/master/database-type.json')
+        if (HTTP_CODE.OK === response.status) {
+            setMasterDatabaseTypeArray(response.data)
+        }
+    }
+    const getMasterExternalServerArray = async () => {
+        const response = await apiRequest('get', '/master/external-server.json')
+        if (HTTP_CODE.OK === response.status) {
+            setMasterExternalServerArray([{ key: 0, value: t("text.none") }, ...response.data]);
+        }
+    }
 
     const getDatabase = async (options: TableOptions) => {
         setDatabaseTableLoadingFlag(true)
@@ -1158,8 +1179,8 @@ export default function Database() {
                             && <Fragment>
                                 <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
-                                <Select label="SSH" name="externalServerId" map={[]} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
-                                <Select label={t("text.type")} name="value" map={[]} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
+                                <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
+                                <Select label={t("text.type")} name="value" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
                                 <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
                                 <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
                                 <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} />
@@ -1172,8 +1193,8 @@ export default function Database() {
                             && <Fragment>
                                 <Label text={t("text.code")} value={databaseForm.code} />
                                 <Label text={t("text.description")} value={databaseForm.description} />
-                                <Label text="SSH" value={databaseForm.externalServerId} />
-                                <Label text={t("text.type")} value={databaseForm.databaseTypeId} />
+                                <Label text="SSH" value={masterExternalServerArray.getValueByKey?.(databaseForm.externalServerId)} />
+                                <Label text={t("text.type")} value={masterDatabaseTypeArray.getValueByKey?.(databaseForm.databaseTypeId)} />
                                 <Label text={t("text.username")} value={databaseForm.username} />
                                 <Label text={t("text.password")} value={databaseForm.password} password={true} />
                                 <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} />
