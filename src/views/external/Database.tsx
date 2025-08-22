@@ -28,11 +28,13 @@ export default function Database() {
     type DatabaseData = {
         code: string;
         description?: string;
+        externalServerId: number;
         databaseTypeId: number;
         // valueMultiple: [];
         username: string,
         password: string,
         databaseConnection: string,
+        usePageFlag: number,
         lockFlag: number,
         version: number,
     }
@@ -42,10 +44,12 @@ export default function Database() {
     const databaseInitial: DatabaseData = {
         code: '',
         description: undefined,
+        externalServerId: 0,
         databaseTypeId: 1,
         username: '',
         password: '',
         databaseConnection: '',
+        usePageFlag: 1,
         lockFlag: 0,
         version: 0,
     }
@@ -144,10 +148,12 @@ export default function Database() {
                 setDatabaseForm({
                     code: database.code,
                     description: database.description,
+                    externalServerId: database.externalServerId,
                     databaseTypeId: database.databaseTypeId,
                     username: database.username,
                     password: database.password,
                     databaseConnection: database.databaseConnection,
+                    usePageFlag: database.usePageFlag,
                     lockFlag: database.lockFlag,
                     version: database.version,
                 });
@@ -701,7 +707,7 @@ export default function Database() {
                     ? `/external/${databaseQueryManualId}/${databaseExportForm.includeColumnNameFlag}/${databaseExportForm.numberLinePerAction}/database-query-manual-sql-insert.json`
                     : `/external/${databaseQueryManualId}/${databaseExportForm.multipleLineFlag}/${databaseExportForm.firstAmountConditioned}/database-query-manual-sql-update.json`;
             } else if ("xls" === databaseExportForm.format) {
-                url = `/external/${databaseQueryManualId}/${databaseExportForm.firstAmountCombined}/database-query-manual-xls.json`;
+                url = `/external/${databaseQueryManualId}/${databaseExportForm.firstAmountCombined}/database-query-manual.xlsx`;
             } else if ("csv" === databaseExportForm.format) {
                 if ("clipboard" === databaseExportForm.saveAs) {
                     url = `/external/${databaseQueryManualId}/${databaseExportForm.header}/${databaseExportForm.delimiter}/database-query-manual-csv.json`;
@@ -722,17 +728,24 @@ export default function Database() {
                 }
             }
 
-            const response = await apiRequest('get', url);
-            if (HttpStatusCode.Ok === response.status) {
-                if ("clipboard" === databaseExportForm.saveAs) {
-                    await navigator.clipboard.writeText(response.data)
-                    toast.show({ type: "error", message: "Copied" });
-                } else if ("file" === databaseExportForm.saveAs) {
-                    downloadFile("test.txt", [response.data]);
-                }
+            if ("xls" === databaseExportForm.format) {
+                const response = await apiRequest('xlsx', url);
+                console.log(response);
+                downloadFile("test.xlsx", [response.data]);
                 setModalDatabaseExport(false);
             } else {
-                toast.show({ type: "error", message: response.message });
+                const response = await apiRequest('get', url);
+                if (HttpStatusCode.Ok === response.status) {
+                    if ("clipboard" === databaseExportForm.saveAs) {
+                        await navigator.clipboard.writeText(response.data)
+                        toast.show({ type: "error", message: "Copied" });
+                    } else if ("file" === databaseExportForm.saveAs) {
+                        downloadFile("test.txt", [response.data]);
+                    }
+                    setModalDatabaseExport(false);
+                } else {
+                    toast.show({ type: "error", message: response.message });
+                }
             }
             setDatabaseExportLoadingFlag(false);
         }
@@ -1145,10 +1158,12 @@ export default function Database() {
                             && <Fragment>
                                 <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
+                                <Select label="SSH" name="externalServerId" map={[]} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
                                 <Select label={t("text.type")} name="value" map={[]} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
                                 <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
                                 <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
                                 <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} />
+                                <Switch label={t("text.usePageFlag")} name="usePageFlag" value={databaseForm.usePageFlag} onChange={onDatabaseFormChange} />
                                 <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
                             </Fragment>
                         }
@@ -1157,10 +1172,12 @@ export default function Database() {
                             && <Fragment>
                                 <Label text={t("text.code")} value={databaseForm.code} />
                                 <Label text={t("text.description")} value={databaseForm.description} />
+                                <Label text="SSH" value={databaseForm.externalServerId} />
                                 <Label text={t("text.type")} value={databaseForm.databaseTypeId} />
                                 <Label text={t("text.username")} value={databaseForm.username} />
                                 <Label text={t("text.password")} value={databaseForm.password} password={true} />
                                 <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} />
+                                <Label text={t("text.usePageFlag")} value={yesNo(databaseForm.usePageFlag)} />
                                 <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
                             </Fragment>
                         }

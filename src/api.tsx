@@ -17,7 +17,7 @@ const getAuthHeader = (contentType: string) => ({
 })
 
 const apiRequest = async (
-    method: 'get' | 'post' | 'put' | 'patch' | 'delete',
+    method: 'get' | 'xlsx' | 'post' | 'put' | 'patch' | 'delete',
     url: string,
     params?: ParamsType
 ): Promise<any> => {
@@ -38,16 +38,13 @@ const apiRequest = async (
                     response = await api.get(url, { headers, params })
                     break
 
-                // Uncomment if needed later
-                // case CommonConstants.METHOD.GET_BLOB:
-                //   response = await api.get(url, {
-                //     headers: {
-                //       ...getAuthHeader('text/csv'),
-                //     },
-                //     params,
-                //     responseType: 'blob'
-                //   })
-                //   break
+                case 'xlsx':
+                    response = await api.get(url, {
+                        headers,
+                        params,
+                        responseType: 'blob'
+                    })
+                    break
 
                 case 'post':
                     response = await api.post(url, params, { headers })
@@ -69,11 +66,17 @@ const apiRequest = async (
                     throw new Error('HTTP method not supported.')
             }
 
-            result = {
-                ...response.data,
-                status: response.status
+            if ('xlsx' === method) {
+                result = {
+                    data: response.data,
+                    status: response.status
+                }
+            } else {
+                result = {
+                    ...response.data,
+                    status: response.status
+                }
             }
-
         } catch (error) {
             const err = error as AxiosError
             const response = err.response as AxiosResponse<{ message?: string }>;
