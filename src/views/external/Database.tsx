@@ -297,6 +297,7 @@ export default function Database() {
     };
 
     const [databaseConnectModalTitle, setDatabaseConnectModalTitle] = useState("");
+    const [databaseConnectUsePageFlag, setDatabaseConnectUsePageFlag] = useState<number>(0);
 
     const connectDatabase = async (id: number, name: string) => {
         setDatabaseId(id);
@@ -310,11 +311,15 @@ export default function Database() {
         }));
 
         const response = await apiRequest('get', `/external/${id}/database-connect.json`);
-        if (HttpStatusCode.NoContent === response.status) {
+        if (HttpStatusCode.Ok === response.status) {
             setDatabaseConnectModalTitle(name);
+            setDatabaseConnectUsePageFlag(response.data.usePageFlag);
             getDatabaseQueryObject(databaseQueryObjectAttributeTable);
             getDatabaseQueryWhitelist(databaseQueryWhitelistAttributeTable);
             setModalDatabaseConnect(true);
+            setDatabaseQueryManualTableFlag(false);
+            setDatabaseQueryManualAdditionalButtonFlag(false);
+            setDatabaseQueryManualForm({ query: "" });
         } else {
             toast.show({ type: 'error', message: response.message });
         }
@@ -424,6 +429,7 @@ export default function Database() {
     type DatabaseQueryManualFormError = Partial<Record<keyof DatabaseQueryManualData, string>>;
 
     const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
+    const [databaseQueryManualDataLoadMoreFlag, setDatabaseQueryManualDataLoadMoreFlag] = useState(false);
     const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
     const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
     const [databaseQueryManualChartLoadingFlag, setDatabaseQueryManualChartLoadingFlag] = useState(false);
@@ -491,7 +497,7 @@ export default function Database() {
                             name: "Result Information",
                             type: "error",
                             class: "text-nowrap",
-                            render: function (_, row) {
+                            render: function (_, row: any) {
                                 return (
                                     <div>
                                         {
@@ -540,6 +546,7 @@ export default function Database() {
         const response = await apiRequest('get', `/external/${options.id}/database-query-manual-list.json`, params);
         if (HTTP_CODE.OK === response.status) {
             setDatabaseQueryManualArray(response.data);
+            setDatabaseQueryManualDataLoadMoreFlag(response.loaded);
             setDatabaseQueryManualDataTotalTable(response.total);
         } else {
             toast.show({ type: 'error', message: response.message });
@@ -763,7 +770,7 @@ export default function Database() {
                     } else if ("file" === databaseExportForm.saveAs) {
                         downloadFile("test.txt", [response.data]);
                     }
-                    setModalDatabaseExport(false);
+                    // setModalDatabaseExport(false);
                 } else {
                     toast.show({ type: "error", message: response.message });
                 }
@@ -1211,187 +1218,182 @@ export default function Database() {
                     onClose={() => setModalDatabaseConnect(false)}
                 >
                     <Navtab
+                        initialActiveTab={1}
                         tabs={[
                             {
                                 label: t("text.object"),
                                 icon: "fa-solid fa-table",
-                                content: function () {
-                                    return (
-                                        <Table
-                                            searchFlag={false}
-                                            dataArray={databaseQueryObjectArray}
-                                            columns={[
-                                                {
-                                                    data: "object_id",
-                                                    name: "id",
-                                                    class: "text-nowrap",
-                                                    orderable: true,
-                                                    minDevice: 'mobile',
-                                                },
-                                                {
-                                                    data: "object_name",
-                                                    name: t("text.name"),
-                                                    class: "text-nowrap",
-                                                    copy: true,
-                                                    minDevice: 'tablet',
-                                                },
-                                                {
-                                                    data: "object_type",
-                                                    name: t("text.type"),
-                                                    class: "text-nowrap",
-                                                    minDevice: 'tablet',
-                                                },
-                                                {
-                                                    data: "object_name",
-                                                    name: t("text.option"),
-                                                    class: "text-nowrap",
-                                                    render: function (data) {
-                                                        return (
-                                                            <div className="flex justify-center max-sm:flex-col gap-4">
-                                                                <Button
-                                                                    label={t("button.data")}
-                                                                    className="max-sm:w-full"
-                                                                    type='primary'
-                                                                    icon="fa-solid fa-list"
-                                                                    onClick={() => runDatabaseQueryExact(data)}
-                                                                    loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
-                                                                />
-                                                            </div>
-                                                        )
-                                                    }
+                                content:
+                                    <Table
+                                        searchFlag={false}
+                                        dataArray={databaseQueryObjectArray}
+                                        columns={[
+                                            {
+                                                data: "object_id",
+                                                name: "id",
+                                                class: "text-nowrap",
+                                                orderable: true,
+                                                minDevice: 'mobile',
+                                            },
+                                            {
+                                                data: "object_name",
+                                                name: t("text.name"),
+                                                class: "text-nowrap",
+                                                copy: true,
+                                                minDevice: 'tablet',
+                                            },
+                                            {
+                                                data: "object_type",
+                                                name: t("text.type"),
+                                                class: "text-nowrap",
+                                                minDevice: 'tablet',
+                                            },
+                                            {
+                                                data: "object_name",
+                                                name: t("text.option"),
+                                                class: "text-nowrap",
+                                                render: function (data) {
+                                                    return (
+                                                        <div className="flex justify-center max-sm:flex-col gap-4">
+                                                            <Button
+                                                                label={t("button.data")}
+                                                                className="max-sm:w-full"
+                                                                type='primary'
+                                                                icon="fa-solid fa-list"
+                                                                onClick={() => runDatabaseQueryExact(data)}
+                                                                loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
+                                                            />
+                                                        </div>
+                                                    )
                                                 }
-                                            ]}
+                                            }
+                                        ]}
 
-                                            dataTotal={databaseQueryObjectDataTotalTable}
-                                            onRender={(page, length) => {
-                                                getDatabaseQueryObject({ page: page, length: length })
-                                            }}
-                                            loadingFlag={databaseQueryObjectTableLoadingFlag}
-                                        />
-                                    );
-                                },
+                                        dataTotal={databaseQueryObjectDataTotalTable}
+                                        onRender={(page, length) => {
+                                            getDatabaseQueryObject({ page: page, length: length })
+                                        }}
+                                        loadingFlag={databaseQueryObjectTableLoadingFlag}
+                                    />
                             },
                             {
                                 label: t("text.manual"),
                                 icon: "fa-solid fa-wrench",
-                                content: function () {
-                                    return (
-                                        <Fragment>
-                                            <div className="flex flex-col gap-5">
-                                                <Button
-                                                    label={t("button.run")}
-                                                    size="xs"
-                                                    type="primary"
-                                                    icon="fa-solid fa-play"
-                                                    onClick={runDatabaseQueryManual}
-                                                    loadingFlag={databaseQueryManualLoadingFlag}
+                                content:
+                                    <Fragment>
+                                        <div className="flex flex-col gap-5">
+                                            <Button
+                                                label={t("button.run")}
+                                                size="xs"
+                                                type="primary"
+                                                icon="fa-solid fa-play"
+                                                onClick={runDatabaseQueryManual}
+                                                loadingFlag={databaseQueryManualLoadingFlag}
+                                            />
+                                            <div className="font-semibold font-mono">
+                                                <TextArea
+                                                    autoFocus={true}
+                                                    name="query"
+                                                    rows={5}
+                                                    value={databaseQueryManualForm.query}
+                                                    onChange={onDatabaseQueryManualFormChange}
+                                                    onKeyDown={onDatabaseQueryManualValueKeyDown}
+                                                    placeholder={t("text.queryOnHere")}
+                                                    error={databaseQueryManualFormError.query}
                                                 />
-                                                <div className="font-semibold font-mono">
-                                                    <TextArea
-                                                        name="query"
-                                                        rows={5}
-                                                        value={databaseQueryManualForm.query}
-                                                        onChange={onDatabaseQueryManualFormChange}
-                                                        onKeyDown={onDatabaseQueryManualValueKeyDown}
-                                                        placeholder={t("text.queryOnHere")}
-                                                        error={databaseQueryManualFormError.query}
-                                                    />
-                                                </div>
-                                                {
-                                                    databaseQueryManualTableFlag &&
-                                                    <div className="text-sm font-mono">
-                                                        <Table
-                                                            searchFlag={false}
-                                                            dataArray={databaseQueryManualArray}
-                                                            columns={databaseQueryManualColumn}
-
-                                                            dataTotal={databaseQueryManualDataTotalTable}
-                                                            onRender={(page, length) => {
-                                                                if (databaseQueryManualId > 0) {
-                                                                    getDatabaseQueryManual({ id: databaseQueryManualId, page: page, length: length })
-                                                                }
-                                                            }}
-                                                            loadingFlag={databaseQueryManualTableLoadingFlag}
-                                                        />
-                                                    </div>
-                                                }
                                             </div>
                                             {
-                                                databaseQueryManualAdditionalButtonFlag &&
-                                                <div className="flex flex-row gap-4">
-                                                    <Button
-                                                        label={t("button.export")}
-                                                        size="xs"
-                                                        type="primary"
-                                                        icon="fa-solid fa-download"
-                                                        onClick={() => setModalDatabaseExport(true)}
-                                                    />
-                                                    <Button
-                                                        label={t("button.chart")}
-                                                        size="xs"
-                                                        type="primary"
-                                                        icon="fa-solid fa-chart-line"
-                                                        onClick={() => runDatabaseQueryChart("manual")}
-                                                        loadingFlag={databaseQueryManualChartLoadingFlag}
+                                                databaseQueryManualTableFlag &&
+                                                <div className="text-sm font-mono">
+                                                    <Table
+                                                        type={databaseConnectUsePageFlag === 1 ? "pagination" : "load_more"}
+                                                        searchFlag={false}
+                                                        dataArray={databaseQueryManualArray}
+                                                        columns={databaseQueryManualColumn}
+
+                                                        dataTotal={databaseQueryManualDataTotalTable}
+                                                        dataLoadMoreFlag={databaseQueryManualDataLoadMoreFlag}
+                                                        onRender={(page, length) => {
+                                                            if (databaseQueryManualId > 0) {
+                                                                getDatabaseQueryManual({ id: databaseQueryManualId, page: page, length: length })
+                                                            }
+                                                        }}
+                                                        loadingFlag={databaseQueryManualTableLoadingFlag}
                                                     />
                                                 </div>
-
                                             }
-                                        </Fragment>
-                                    );
-                                },
+                                        </div>
+                                        {
+                                            databaseQueryManualAdditionalButtonFlag &&
+                                            <div className="flex flex-row gap-4">
+                                                <Button
+                                                    label={t("button.export")}
+                                                    size="xs"
+                                                    type="primary"
+                                                    icon="fa-solid fa-download"
+                                                    onClick={() => setModalDatabaseExport(true)}
+                                                />
+                                                <Button
+                                                    label={t("button.chart")}
+                                                    size="xs"
+                                                    type="primary"
+                                                    icon="fa-solid fa-chart-line"
+                                                    onClick={() => runDatabaseQueryChart("manual")}
+                                                    loadingFlag={databaseQueryManualChartLoadingFlag}
+                                                />
+                                            </div>
+
+                                        }
+                                    </Fragment>
                             },
                             {
                                 label: t("text.whitelist"),
                                 icon: "fa-solid fa-file-circle-check",
-                                content: function () {
-                                    return (
-                                        <Table
-                                            searchFlag={true}
-                                            dataArray={databaseQueryWhitelistArray}
-                                            columns={[
-                                                {
-                                                    data: "description",
-                                                    name: t("text.description"),
-                                                    class: "text-nowrap",
-                                                    minDevice: 'mobile',
-                                                },
-                                                {
-                                                    data: "query",
-                                                    name: t("text.query"),
-                                                    class: "text-nowrap",
-                                                    copy: true,
-                                                    minDevice: 'tablet',
-                                                },
-                                                {
-                                                    data: "id",
-                                                    name: t("text.option"),
-                                                    class: "text-nowrap",
-                                                    render: function (data) {
-                                                        return (
-                                                            <div className="flex justify-center max-sm:flex-col gap-4">
-                                                                <Button
-                                                                    label={t("button.data")}
-                                                                    className="max-sm:w-full"
-                                                                    type='primary'
-                                                                    icon="fa-solid fa-list"
-                                                                    onClick={() => runDatabaseQueryExact(data)}
-                                                                    loadingFlag={databaseQueryWhitelistOptionColumnTable[data]?.viewedButtonFlag}
-                                                                />
-                                                            </div>
-                                                        )
-                                                    }
+                                content:
+                                    <Table
+                                        searchFlag={true}
+                                        dataArray={databaseQueryWhitelistArray}
+                                        columns={[
+                                            {
+                                                data: "description",
+                                                name: t("text.description"),
+                                                class: "text-nowrap",
+                                                minDevice: 'mobile',
+                                            },
+                                            {
+                                                data: "query",
+                                                name: t("text.query"),
+                                                class: "text-nowrap",
+                                                copy: true,
+                                                minDevice: 'tablet',
+                                            },
+                                            {
+                                                data: "id",
+                                                name: t("text.option"),
+                                                class: "text-nowrap",
+                                                render: function (data) {
+                                                    return (
+                                                        <div className="flex justify-center max-sm:flex-col gap-4">
+                                                            <Button
+                                                                label={t("button.data")}
+                                                                className="max-sm:w-full"
+                                                                type='primary'
+                                                                icon="fa-solid fa-list"
+                                                                onClick={() => runDatabaseQueryExact(data)}
+                                                                loadingFlag={databaseQueryWhitelistOptionColumnTable[data]?.viewedButtonFlag}
+                                                            />
+                                                        </div>
+                                                    )
                                                 }
-                                            ]}
+                                            }
+                                        ]}
 
-                                            dataTotal={databaseQueryWhitelistDataTotalTable}
-                                            onRender={(page, length, search) => {
-                                                getDatabaseQueryWhitelist({ page: page, length: length, search: search })
-                                            }}
-                                            loadingFlag={databaseQueryWhitelistTableLoadingFlag}
-                                        />
-                                    );
-                                },
+                                        dataTotal={databaseQueryWhitelistDataTotalTable}
+                                        onRender={(page, length, search) => {
+                                            getDatabaseQueryWhitelist({ page: page, length: length, search: search })
+                                        }}
+                                        loadingFlag={databaseQueryWhitelistTableLoadingFlag}
+                                    />
                             }
                         ]}
                     />
@@ -1404,6 +1406,7 @@ export default function Database() {
                 >
                     <Table
                         searchFlag={false}
+                        type={databaseConnectUsePageFlag === 1 ? "pagination" : "load_more"}
                         dataArray={databaseQueryExactArray}
                         columns={databaseQueryExactColumn}
 

@@ -3,15 +3,16 @@ import React, { useState } from 'react';
 type Tab = {
     label: string;
     icon?: string;
-    content: () => React.ReactNode;
+    content: React.ReactNode;
 };
 
 type TabsProps = {
     tabs: Tab[];
+    initialActiveTab?: number;
 };
 
-const Navtab: React.FC<TabsProps> = ({ tabs }) => {
-    const [activeTab, setActiveTab] = useState(0);
+const Navtab: React.FC<TabsProps> = ({ tabs, initialActiveTab = 0 }) => {
+    const [activeTab, setActiveTab] = useState(initialActiveTab);
 
     return (
         <div className="w-full">
@@ -30,14 +31,21 @@ const Navtab: React.FC<TabsProps> = ({ tabs }) => {
                         `}
                         onClick={() => setActiveTab(index)}
                     >
-                        <i className={`${tab.icon} mr-2`} />
+                        {tab.icon && <i className={`${tab.icon} mr-2`} />}
                         {tab.label}
                     </button>
                 ))}
             </div>
 
             <div className="mt-4">
-                {tabs[activeTab]?.content()}
+                {tabs.map((tab, index) => (
+                    <div
+                        key={index}
+                        style={{ display: activeTab === index ? 'block' : 'none' }}
+                    >
+                        {tab.content}
+                    </div>
+                ))}
             </div>
         </div>
     );

@@ -35,6 +35,7 @@ interface TableProps {
     checkBoxArray?: number[] | undefined;
     onCheckBox?: (ids: number[]) => void;
     dataTotal?: number;
+    dataLoadMoreFlag?: number;
     initialSizePage?: number;
     limitPaginationButton?: number;
     filter?: any;
@@ -64,6 +65,7 @@ export default function Table({
     checkBoxArray = undefined,
     onCheckBox = () => { alert("Please define your function!") },
     dataTotal = 0,
+    dataLoadMoreFlag = 0,
     initialSizePage = 10,
     limitPaginationButton = 7,
     filter,
@@ -72,7 +74,6 @@ export default function Table({
     loadingFlag = false,
 }: TableProps) {
     const { t } = useTranslation()
-    const [loadMoreButtonFlag, setLoadMoreButtonFlag] = useState(true)
     const [itemArray, setItemArray] = useState(dataArray)
     const [search, setSearch] = useState("")
     const [currentOrder, setCurrentOrder] = useState(order)
@@ -87,9 +88,15 @@ export default function Table({
             setItemArray(dataArray)
         } else if ('load_more' === type) {
             setItemArray([...itemArray, ...dataArray])
-            setLoadMoreButtonFlag(dataArray.length == sizePage)
         }
     }, [dataArray])
+
+    useEffect(() => {
+        if ('load_more' === type) {
+            setItemArray([]);
+            setCurrentPage(1);
+        }
+    }, [columns])
 
     const checkBoxStateArray = itemArray.map(function (obj) {
         return obj['id']
@@ -577,21 +584,33 @@ export default function Table({
             {
                 'load_more' === type
                 && itemArray.length > 0
-                && <Fragment>
-                    <div className="mt-2">
-                        {/* {t("text.amountItem", { amount: itemArray.length })} */}
-                    </div>
+                && <div className="pb-5">
                     {
-                        loadMoreButtonFlag
-                        && <div className="text-center mt-2">
-                            <button className="btn btn-md btn-primary rounded border-0 shadow-sm" disabled={loadingFlag} type="button" onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}>
-                                <span className={loadingFlag ? "spinner-border spinner-border-sm mx-2" : undefined} role="status" aria-hidden="true" />
-                                <span className="bi-arrow-down-circle">&nbsp;&nbsp;{t("button.loadMore")}</span>
-                            </button>
+                        dataLoadMoreFlag === 0
+                        && <div className="flex items-center gap-4 text-light-base dark:text-dark-base text-sm mt-4">
+                            <div className="flex-grow border-t border-light-outline dark:border-dark-outline"></div>
+                            <span className="whitespace-nowrap">{t("text.endData")}</span>
+                            <div className="flex-grow border-t border-light-outline dark:border-dark-outline"></div>
                         </div>
                     }
-                </Fragment>
+                    <div>
+                        {t("text.amountItem", { amount: itemArray.length })}
+                    </div>
+                    {
+                        dataLoadMoreFlag === 1
+                        && <div className="text-center mt-2">
+                            <Button
+                                label={t("button.loadMore")}
+                                size="sm"
+                                type="primary"
+                                icon="fa-solid fa-circle-arrow-down animate-bounce"
+                                onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}
+                                loadingFlag={loadingFlag}
+                            />
+                        </div>
+                    }
+                </div>
             }
-        </div >
+        </div>
     )
 }

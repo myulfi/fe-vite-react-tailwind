@@ -8,6 +8,7 @@ type UnitOption = {
 };
 
 type InputTextProps = {
+    autoFocus?: boolean;
     label?: string;
     name: string;
     rows?: number;
@@ -20,6 +21,7 @@ type InputTextProps = {
 };
 
 export default function TextArea({
+    autoFocus = false,
     label,
     name,
     rows,
@@ -41,6 +43,7 @@ export default function TextArea({
             )}
 
             <textarea
+                autoFocus={autoFocus}
                 className={`
                     form-input w-full rounded-md shadow-sm
                     ${error ? 'form-input-error' : 'form-input-normal'}
