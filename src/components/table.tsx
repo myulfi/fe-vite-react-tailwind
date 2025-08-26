@@ -46,6 +46,7 @@ interface TableProps {
         search: string,
         order?: [string, 'asc' | 'desc']
     ) => void;
+    refresh?: boolean;
     loadingFlag?: boolean;
 }
 
@@ -71,6 +72,7 @@ export default function Table({
     filter,
     resetPagination,
     onRender,
+    refresh = false,
     loadingFlag = false,
 }: TableProps) {
     const { t } = useTranslation()
@@ -96,7 +98,7 @@ export default function Table({
             setItemArray([]);
             setCurrentPage(1);
         }
-    }, [columns])
+    }, [refresh])
 
     const checkBoxStateArray = itemArray.map(function (obj) {
         return obj['id']

@@ -431,6 +431,7 @@ export default function Database() {
     const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
     const [databaseQueryManualDataLoadMoreFlag, setDatabaseQueryManualDataLoadMoreFlag] = useState(false);
     const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
+    const [databaseQueryManualRefresh, setDatabaseQueryManualRefresh] = useState(false);
     const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
     const [databaseQueryManualChartLoadingFlag, setDatabaseQueryManualChartLoadingFlag] = useState(false);
 
@@ -471,6 +472,7 @@ export default function Database() {
             setModalDatabase(false);
             setDatabaseQueryManualLoadingFlag(true);
 
+            setDatabaseQueryManualRefresh(refresh => !refresh);
             const response = await apiRequest('post', `/external/${databaseId}/database-query-manual-run.json`, databaseQueryManualForm);
 
             if (HttpStatusCode.Ok === response.status) {
@@ -1318,6 +1320,7 @@ export default function Database() {
                                                                 getDatabaseQueryManual({ id: databaseQueryManualId, page: page, length: length })
                                                             }
                                                         }}
+                                                        refresh={databaseQueryManualRefresh}
                                                         loadingFlag={databaseQueryManualTableLoadingFlag}
                                                     />
                                                 </div>

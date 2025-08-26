@@ -46,13 +46,13 @@ export default function ExampleTemplate() {
 
     const [exampleTemplateStateModal, setExampleTemplateStateModal] = useState<ModalCategory>("entry");
 
-    const exampleTemplateFilterTableTableInitial = {
+    const exampleTemplateFilterTableInitial = {
         value: 0,
         date: "",
         range: 0,
     };
 
-    const [exampleTemplateFilterTable, setExampleTemplateFilterTable] = useState(exampleTemplateFilterTableTableInitial);
+    const [exampleTemplateFilterTable, setExampleTemplateFilterTable] = useState(exampleTemplateFilterTableInitial);
 
     const onExampleTemplateFilterTableChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
