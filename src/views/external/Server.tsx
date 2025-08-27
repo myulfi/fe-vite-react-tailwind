@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Button from "../../components/form/Button";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
@@ -10,13 +10,13 @@ import { toast } from "../../ToastContext";
 import InputText from "../../components/form/InputText";
 import TextArea from "../../components/form/TextArea";
 import InputDecimal from "../../components/form/InputDecimal";
-import InputDate from "../../components/form/InputDate";
-import Switch from "../../components/form/Switch";
-import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
-import { formatMoney, yesNo } from "../../function/commonHelper";
 import InputPassword from "../../components/form/InputPassword";
+import Radio from "../../components/form/Radio";
+import LabelBig from "../../components/form/LabelBig";
+import Switch from "../../components/form/Switch";
+import { yesNo } from "../../function/commonHelper";
 
 export default function Server() {
     const { t } = useTranslation();
@@ -24,11 +24,13 @@ export default function Server() {
     type ServerData = {
         code: string;
         description?: string;
+        serverTypeId: number;
         ip: string;
         port: number;
         username: string,
-        password: string,
-        privateKey: string,
+        passwordlessFlag?: number,
+        password?: string,
+        privateKey?: string,
         version: number,
     }
 
@@ -37,11 +39,13 @@ export default function Server() {
     const serverInitial: ServerData = {
         code: '',
         description: undefined,
+        serverTypeId: 0,
         ip: '',
         port: 22,
         username: '',
-        password: '',
-        privateKey: '',
+        passwordlessFlag: 0,
+        password: undefined,
+        privateKey: undefined,
         version: 0,
     }
 
@@ -80,13 +84,26 @@ export default function Server() {
     const serverValidate = (data: ServerData) => {
         const error: ServerFormError = {};
         if (!data.code?.trim()) error.code = t("validate.required", { name: t("text.code") });
+        if (data.serverTypeId <= 0) error.serverTypeId = t("validate.required", { name: t("text.type") });
         if (!data.ip?.trim()) error.ip = t("validate.required", { name: "IP" });
         if (data.port <= 0) error.port = t("validate.required", { name: t("text.port") });
-        if (!data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
-        if (!data.privateKey?.trim()) error.privateKey = t("validate.required", { name: t("text.privateKey") });
+        if (0 === serverForm.passwordlessFlag && !data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
+        if (1 === serverForm.passwordlessFlag && !data.privateKey?.trim()) error.privateKey = t("validate.required", { name: t("text.privateKey") });
         setServerFormError(error);
         return Object.keys(error).length === 0;
     };
+
+    useEffect(() => {
+        getMasterServerType();
+    }, []);
+
+    const [masterServerTypeArray, setMasterServerTypeArray] = useState<Array<{ key: number; value: string; icon: string }>>([]);
+    const getMasterServerType = async () => {
+        const response = await apiRequest('get', '/master/server-type.json')
+        if (HTTP_CODE.OK === response.status) {
+            setMasterServerTypeArray(response.data)
+        }
+    }
 
     const getServer = async (options: TableOptions) => {
         setServerTableLoadingFlag(true)
@@ -137,9 +154,11 @@ export default function Server() {
             setServerForm({
                 code: server.code,
                 description: server.description,
+                serverTypeId: server.serverTypeId,
                 ip: server.ip,
                 port: server.port,
                 username: server.username,
+                passwordlessFlag: server.password === null ? 1 : 0,
                 password: server.password,
                 privateKey: server.privateKey,
                 version: server.version,
@@ -205,13 +224,16 @@ export default function Server() {
 
     const storeServer = async () => {
         if (serverValidate(serverForm)) {
-            setModalServer(false);
             setServerEntryModal({ ...serverEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
                 serverId === 0 ? 'post' : 'patch',
-                serverId === 0 ? '/external/server.json' : `/external/${serverId}/server.json`,
-                serverForm,
+                serverId === 0 ? '/external/server.json' : `/external/${serverId}/servers.json`,
+                {
+                    ...serverForm,
+                    [0 === serverForm.passwordlessFlag ? "privateKey" : "password"]: undefined,
+                    passwordlessFlag: undefined,
+                },
             );
 
             if (HttpStatusCode.Ok === response.status || HttpStatusCode.Created === response.status) {
@@ -261,7 +283,39 @@ export default function Server() {
         }));
     };
 
+    const [serverConnectModalTitle, setServerConnectModalTitle] = useState("");
+
+    const connectServer = async (id: number, name: string) => {
+        setServerId(id);
+
+        setServerOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                connectedButtonFlag: true,
+            },
+        }));
+
+        const response = await apiRequest('get', `/external/${id}/server-connect.json`);
+        if (HttpStatusCode.Ok === response.status) {
+            setServerConnectModalTitle(name);
+            setModalServerConnect(true);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setServerOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                connectedButtonFlag: false,
+            },
+        }));
+    };
+
     const [modalServer, setModalServer] = useState(false);
+    const [modalServerConnect, setModalServerConnect] = useState(false);
+
 
     return (
         <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
@@ -269,6 +323,7 @@ export default function Server() {
                 <Modal
                     show={modalServer}
                     size="md"
+                    type="dynamic"
                     title={serverEntryModal.title}
                     onClose={() => setModalServer(false)}
                     buttonArray={[
@@ -294,11 +349,19 @@ export default function Server() {
                             && <Fragment>
                                 <InputText autoFocus={true} label={t("text.code")} name="code" value={serverForm.code} onChange={onServerFormChange} error={serverFormError.code} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={serverForm.description} onChange={onServerFormChange} error={serverFormError.description} />
+                                <Radio label={t("text.type")} columnSpan={2} name="serverTypeId" value={serverForm.serverTypeId} size="sm" map={masterServerTypeArray} onChange={onServerFormChange} error={serverFormError.serverTypeId} />
                                 <InputText label="IP" name="ip" value={serverForm.ip} onChange={onServerFormChange} error={serverFormError.ip} />
                                 <InputDecimal label={t("text.port")} name="port" value={serverForm.port} onChange={onServerFormChange} error={serverFormError.port} />
                                 <InputText autoComplete="off" label={t("text.username")} name="username" value={serverForm.username} onChange={onServerFormChange} error={serverFormError.username} />
-                                <InputPassword autoComplete="off" label={t("text.password")} name="password" value={serverForm.password} onChange={onServerFormChange} error={serverFormError.password} />
-                                <TextArea label={t("text.privateKey")} name="privateKey" rows={3} value={serverForm.privateKey} onChange={onServerFormChange} error={serverFormError.privateKey} />
+                                <Switch label={t("text.passwordless")} name="passwordlessFlag" value={serverForm.passwordlessFlag} onChange={onServerFormChange} />
+                                {
+                                    0 === serverForm.passwordlessFlag &&
+                                    <InputPassword label={t("text.password")} name="password" value={serverForm.password} onChange={onServerFormChange} error={serverFormError.password} />
+                                }
+                                {
+                                    1 === serverForm.passwordlessFlag &&
+                                    <TextArea label={t("text.privateKey")} name="privateKey" rows={3} value={serverForm.privateKey} onChange={onServerFormChange} error={serverFormError.privateKey} />
+                                }
                             </Fragment>
                         }
                         {
@@ -306,14 +369,81 @@ export default function Server() {
                             && <Fragment>
                                 <Label text={t("text.code")} value={serverForm.code} />
                                 <Label text={t("text.description")} value={serverForm.description} />
+                                <Label text={t("text.type")} value={masterServerTypeArray.getValueByKey?.(serverForm.serverTypeId)} />
                                 <Label text="IP" value={serverForm.ip} />
                                 <Label text={t("text.port")} value={serverForm.port} />
                                 <Label text={t("text.username")} value={serverForm.username} />
-                                <Label text={t("text.password")} value={serverForm.password} password={true} />
-                                <Label text={t("text.privateKey")} value={serverForm.privateKey} />
+                                <Label text={t("text.passwordless")} value={yesNo(serverForm.passwordlessFlag)} />
+                                {
+                                    0 === serverForm.passwordlessFlag &&
+                                    <Label text={t("text.password")} value={serverForm.password} password={true} />
+                                }
+                                {
+                                    1 === serverForm.passwordlessFlag &&
+                                    <LabelBig text={t("text.privateKey")} value={serverForm.privateKey} />
+                                }
                             </Fragment>
                         }
                     </div>
+                </Modal>
+                <Modal
+                    show={modalServerConnect}
+                    size="xl"
+                    title={serverConnectModalTitle}
+                    onClose={() => setModalServerConnect(false)}
+                >
+                    <div>Connect</div>
+                    {/* <Table
+                        searchFlag={false}
+                        dataArray={databaseQueryObjectArray}
+                        columns={[
+                            {
+                                data: "object_id",
+                                name: "id",
+                                class: "text-nowrap",
+                                orderable: true,
+                                minDevice: 'mobile',
+                            },
+                            {
+                                data: "object_name",
+                                name: t("text.name"),
+                                class: "text-nowrap",
+                                copy: true,
+                                minDevice: 'tablet',
+                            },
+                            {
+                                data: "object_type",
+                                name: t("text.type"),
+                                class: "text-nowrap",
+                                minDevice: 'tablet',
+                            },
+                            {
+                                data: "object_name",
+                                name: t("text.option"),
+                                class: "text-nowrap",
+                                render: function (data) {
+                                    return (
+                                        <div className="flex justify-center max-sm:flex-col gap-4">
+                                            <Button
+                                                label={t("button.data")}
+                                                className="max-sm:w-full"
+                                                type='primary'
+                                                icon="fa-solid fa-list"
+                                                onClick={() => runDatabaseQueryExact(data)}
+                                                loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
+                                            />
+                                        </div>
+                                    )
+                                }
+                            }
+                        ]}
+
+                        dataTotal={databaseQueryObjectDataTotalTable}
+                        onRender={(page, length) => {
+                            getDatabaseQueryObject({ page: page, length: length })
+                        }}
+                        loadingFlag={databaseQueryObjectTableLoadingFlag}
+                    /> */}
                 </Modal>
             </ModalStackProvider>
             <Table
@@ -343,13 +473,6 @@ export default function Server() {
                         minDevice: 'tablet',
                     },
                     {
-                        data: "createdBy",
-                        name: t("text.createdBy"),
-                        class: "text-nowrap",
-                        width: 10,
-                        minDevice: "desktop"
-                    },
-                    {
                         data: "createdDate",
                         name: t("text.createdDate"),
                         class: "text-nowrap",
@@ -374,6 +497,14 @@ export default function Server() {
                                         icon="fa-solid fa-list"
                                         onClick={() => viewServer(data)}
                                         loadingFlag={serverOptionColumnTable[data]?.viewedButtonFlag}
+                                    />
+                                    <Button
+                                        label={t("button.connect")}
+                                        className="max-sm:w-full"
+                                        type='primary'
+                                        icon="fa-solid fa-plug"
+                                        onClick={() => connectServer(data, row.code)}
+                                        loadingFlag={serverOptionColumnTable[data]?.connectedButtonFlag}
                                     />
                                     <Button
                                         label={t("button.delete")}

@@ -37,7 +37,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         <Fragment>
             {children}
             {/* Toast Container */}
-            <div className="fixed top-4 sm:right-4 z-50 space-y-2 w-screen px-4 md:w-72 md:px-0">
+            <div className="fixed top-4 sm:right-4 space-y-2 w-screen px-4 md:w-72 md:px-0" style={{ zIndex: 6000 }}>
                 {toasts.map((toast) => (
                     <div key={toast.id} className={`flex ${styles[toast.type]} rounded shadow p-4`}>
                         <span className='mr-4'>{toast.message}</span>

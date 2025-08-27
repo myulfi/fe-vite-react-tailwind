@@ -188,7 +188,6 @@ export default function ApplicationProgrammingInterface() {
 
     const storeApplicationProgrammingInterface = async () => {
         if (applicationProgrammingInterfaceValidate(applicationProgrammingInterfaceForm)) {
-            setModalApplicationProgrammingInterface(false);
             setApplicationProgrammingInterfaceEntryModal({ ...applicationProgrammingInterfaceEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(

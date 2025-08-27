@@ -242,7 +242,6 @@ export default function ExampleTemplate() {
 
     const storeExampleTemplate = async () => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
-            setModalExampleTemplate(false);
             setExampleTemplateEntryModal({ ...exampleTemplateEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(

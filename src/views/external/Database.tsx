@@ -240,7 +240,6 @@ export default function Database() {
 
     const storeDatabase = async () => {
         if (databaseValidate(databaseForm)) {
-            setModalDatabase(false);
             setDatabaseEntryModal({ ...databaseEntryModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
@@ -781,7 +780,6 @@ export default function Database() {
         }
     }
 
-
     type ChartType = 'line' | 'bar' | 'bubble' | 'doughnut' | 'pie' | 'polarArea' | 'radar' | 'scatter';
     type ChartTypeMap = {
         key: ChartType,
@@ -1189,7 +1187,7 @@ export default function Database() {
                                 <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
                                 <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
-                                <Select label={t("text.type")} name="value" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
+                                <Select label={t("text.type")} name="databaseTypeId" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
                                 <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
                                 <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
                                 <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} />
