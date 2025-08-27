@@ -17,6 +17,7 @@ import Radio from "../../components/form/Radio";
 import LabelBig from "../../components/form/LabelBig";
 import Switch from "../../components/form/Switch";
 import { yesNo } from "../../function/commonHelper";
+import BreadCrumb from "../../components/BreadCrumb";
 
 export default function Server() {
     const { t } = useTranslation();
@@ -228,7 +229,7 @@ export default function Server() {
 
             const response = await apiRequest(
                 serverId === 0 ? 'post' : 'patch',
-                serverId === 0 ? '/external/server.json' : `/external/${serverId}/servers.json`,
+                serverId === 0 ? '/external/server.json' : `/external/${serverId}/server.json`,
                 {
                     ...serverForm,
                     [0 === serverForm.passwordlessFlag ? "privateKey" : "password"]: undefined,
@@ -298,6 +299,7 @@ export default function Server() {
 
         const response = await apiRequest('get', `/external/${id}/server-connect.json`);
         if (HttpStatusCode.Ok === response.status) {
+            setServerDirectoryCurrent(response.data);
             setServerConnectModalTitle(name);
             setModalServerConnect(true);
         } else {
@@ -312,6 +314,58 @@ export default function Server() {
             },
         }));
     };
+
+    const [serverDirectoryCurrent, setServerDirectoryCurrent] = useState<string[]>([]);
+
+    const [serverDirectoryBulkOptionLoadingFlag, setServerDirectoryBulkOptionLoadingFlag] = useState(false);
+    const [serverDirectoryCheckBoxTableArray, setServerDirectoryCheckBoxTableArray] = useState<number[]>([]);
+    const [serverDirectoryOptionColumnTable, setServerDirectoryOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
+    const [serverDirectoryAttributeTable, setServerDirectoryAttributeTable] = useState<TableOptions>({ page: 1, length: 10 });
+    const [serverDirectoryDataTotalTable, setServerDirectoryDataTotalTable] = useState(0);
+    const [serverDirectoryTableLoadingFlag, setServerDirectoryTableLoadingFlag] = useState(false);
+    const [serverDirectoryRefreshTable, setServerDirectoryRefreshTable] = useState<boolean>(false);
+
+    const [serverDirectoryDataArray, setServerDirectoryDataArray] = useState([]);
+
+    const getServerDirectory = async (options: TableOptions) => {
+        setServerDirectoryTableLoadingFlag(true)
+
+        const params = {
+            "start": (options.page - 1) * options.length,
+            "length": options.length,
+            "search": encodeURIComponent(options.search!),
+            "sort": Array.isArray(options.order) && options.order.length > 0 ? options.order[0] : null,
+            "dir": Array.isArray(options.order) && options.order.length > 0 ? options.order[1] : null,
+            "directory": serverDirectoryCurrent.join("/")
+        };
+        setServerDirectoryAttributeTable(options);
+
+        const response = await apiRequest('get', `/external/${serverId}/server-directory.json`, params);
+        if (HTTP_CODE.OK === response.status) {
+            setServerDirectoryDataArray(response.data);
+            setServerDirectoryDataTotalTable(response.total);
+            setServerDirectoryOptionColumnTable(
+                response.data.reduce(function (map: Record<string, any>, obj: any) {
+                    map[obj.id] = { "viewedButtonFlag": false, "deletedButtonFlag": false }
+                    return map
+                }, {})
+            );
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setServerDirectoryTableLoadingFlag(false);
+    };
+
+    const jumpFolder = (index: number) => {
+        setServerDirectoryRefreshTable(refresh => !refresh);
+        setServerDirectoryCurrent(serverDirectoryCurrent => serverDirectoryCurrent.splice(0, index + 1));
+
+        setServerDirectoryCheckBoxTableArray([]);
+        // const shortcutIndex = serverShortcutMap.findIndex((item) => options.directory.length > 0 && item.value.endsWith(options.directory))
+        // setServerShortcutValue(shortcutIndex > -1 ? serverShortcutMap[shortcutIndex].key : 0)
+        getServerDirectory(serverDirectoryAttributeTable);
+    }
 
     const [modalServer, setModalServer] = useState(false);
     const [modalServerConnect, setModalServerConnect] = useState(false);
@@ -392,58 +446,69 @@ export default function Server() {
                     title={serverConnectModalTitle}
                     onClose={() => setModalServerConnect(false)}
                 >
-                    <div>Connect</div>
-                    {/* <Table
+                    <div>
+                        <BreadCrumb
+                            valueList={serverDirectoryCurrent}
+                            delimiter="/"
+                            onClick={jumpFolder}
+                            // onEdit={onServerDirectoryCurrentManualChange}
+                            onEdit={() => { }}
+                        />
+                    </div>
+                    <Table
                         searchFlag={false}
-                        dataArray={databaseQueryObjectArray}
+                        additionalButtonArray={[]}
+
+                        bulkOptionLoadingFlag={serverDirectoryBulkOptionLoadingFlag}
+                        bulkOptionArray={[]}
+
+                        // dataArray={
+                        //     serverDirectoryCurrent[0].length > 0 || serverDirectoryCurrent.length > 1
+                        //         ? [{ name: ".:Up:.", goToParentFlag: true }, ...serverDirectoryDataArray]
+                        //         : serverDirectoryDataArray
+                        // }
+                        dataArray={serverDirectoryDataArray}
                         columns={[
                             {
-                                data: "object_id",
-                                name: "id",
+                                data: "name",
+                                name: t("common.text.name"),
                                 class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'mobile',
                             },
                             {
-                                data: "object_name",
-                                name: t("text.name"),
+                                data: "size",
+                                name: t("common.text.size"),
                                 class: "text-nowrap",
-                                copy: true,
-                                minDevice: 'tablet',
-                            },
-                            {
-                                data: "object_type",
-                                name: t("text.type"),
-                                class: "text-nowrap",
-                                minDevice: 'tablet',
-                            },
-                            {
-                                data: "object_name",
-                                name: t("text.option"),
-                                class: "text-nowrap",
-                                render: function (data) {
-                                    return (
-                                        <div className="flex justify-center max-sm:flex-col gap-4">
-                                            <Button
-                                                label={t("button.data")}
-                                                className="max-sm:w-full"
-                                                type='primary'
-                                                icon="fa-solid fa-list"
-                                                onClick={() => runDatabaseQueryExact(data)}
-                                                loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
-                                            />
-                                        </div>
-                                    )
+                                orderable: true,
+                                minDevice: 'mobile',
+                                render: (data, row) => {
+                                    if (row.goToParentFlag) {
+                                        return ""
+                                    } else {
+                                        return data
+                                    }
                                 }
-                            }
+                            },
+                            {
+                                data: "createdDate",
+                                name: t("common.text.modifiedDate"),
+                                class: "text-nowrap",
+                                orderable: true,
+                                minDevice: 'tablet',
+                            },
                         ]}
 
-                        dataTotal={databaseQueryObjectDataTotalTable}
-                        onRender={(page, length) => {
-                            getDatabaseQueryObject({ page: page, length: length })
+                        checkBoxArray={serverDirectoryCheckBoxTableArray}
+                        onCheckBox={serverDirectoryCheckBoxTableArray => { setServerDirectoryCheckBoxTableArray([...serverDirectoryCheckBoxTableArray]) }}
+                        dataTotal={serverDirectoryDataTotalTable}
+
+                        onRender={(page, length, search, order) => {
+                            getServerDirectory({ page: page, length: length, search, order })
                         }}
-                        loadingFlag={databaseQueryObjectTableLoadingFlag}
-                    /> */}
+                        refresh={serverDirectoryRefreshTable}
+                        loadingFlag={serverDirectoryTableLoadingFlag}
+                    />
                 </Modal>
             </ModalStackProvider>
             <Table
