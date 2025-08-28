@@ -94,10 +94,8 @@ export default function Table({
     }, [dataArray])
 
     useEffect(() => {
-        if ('load_more' === type) {
-            setItemArray([]);
-            setCurrentPage(1);
-        }
+        setItemArray([]);
+        setCurrentPage(1);
     }, [refresh])
 
     const checkBoxStateArray = itemArray.map(function (obj) {

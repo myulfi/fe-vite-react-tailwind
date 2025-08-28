@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { onCopy } from "../function/commonHelper";
+import Span from "./Span";
 
 type BreadCrumbProps = {
     valueList: string[];
@@ -23,11 +24,7 @@ const BreadCrumb: React.FC<BreadCrumbProps> = ({
                     {index === valueList.length - 1 ? (
                         <b>{name}</b>
                     ) : (
-                        <span className="cursor-pointer hover:underline" onClick={() => onClick(index)}>{name}</span>
-                        // <Href
-                        //     label={name.length > 0 ? name : "..."}
-                        //     onClick={() => onClick(index)}
-                        // />
+                        <Span label={name} className="cursor-pointer hover:underline" onClick={() => onClick(index)} />
                     )}
                 </Fragment>
             ))}

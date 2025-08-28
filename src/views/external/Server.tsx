@@ -18,6 +18,7 @@ import LabelBig from "../../components/form/LabelBig";
 import Switch from "../../components/form/Switch";
 import { yesNo } from "../../function/commonHelper";
 import BreadCrumb from "../../components/BreadCrumb";
+import Span from "../../components/Span";
 
 export default function Server() {
     const { t } = useTranslation();
@@ -327,7 +328,7 @@ export default function Server() {
 
     const [serverDirectoryDataArray, setServerDirectoryDataArray] = useState([]);
 
-    const getServerDirectory = async (options: TableOptions) => {
+    const getServerDirectory = async (options: TableOptions, serverDirectoryCurrent: string[]) => {
         setServerDirectoryTableLoadingFlag(true)
 
         const params = {
@@ -343,6 +344,7 @@ export default function Server() {
         const response = await apiRequest('get', `/external/${serverId}/server-directory.json`, params);
         if (HTTP_CODE.OK === response.status) {
             setServerDirectoryDataArray(response.data);
+            setServerDirectoryCurrent(response.directory);
             setServerDirectoryDataTotalTable(response.total);
             setServerDirectoryOptionColumnTable(
                 response.data.reduce(function (map: Record<string, any>, obj: any) {
@@ -359,12 +361,27 @@ export default function Server() {
 
     const jumpFolder = (index: number) => {
         setServerDirectoryRefreshTable(refresh => !refresh);
-        setServerDirectoryCurrent(serverDirectoryCurrent => serverDirectoryCurrent.splice(0, index + 1));
-
         setServerDirectoryCheckBoxTableArray([]);
         // const shortcutIndex = serverShortcutMap.findIndex((item) => options.directory.length > 0 && item.value.endsWith(options.directory))
         // setServerShortcutValue(shortcutIndex > -1 ? serverShortcutMap[shortcutIndex].key : 0)
-        getServerDirectory(serverDirectoryAttributeTable);
+        // {...serverDirectoryAttributeTable, page : 0}
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1 }, index > 0 ? serverDirectoryCurrent.slice(0, index) : []);
+    }
+
+    const goToParent = () => {
+        setServerDirectoryRefreshTable(refresh => !refresh);
+        setServerDirectoryCheckBoxTableArray([]);
+        // const shortcutIndex = serverShortcutMap.findIndex((item) => options.directory.length > 0 && item.value.endsWith(options.directory))
+        // setServerShortcutValue(shortcutIndex > -1 ? serverShortcutMap[shortcutIndex].key : 0)
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1 }, serverDirectoryCurrent.slice(0, -1));
+    }
+
+    const enterFolder = (name: string) => {
+        setServerDirectoryRefreshTable(refresh => !refresh);
+        setServerDirectoryCheckBoxTableArray([])
+        // const index = serverShortcutMap.findIndex((item) => item.value.endsWith(options.directory))
+        // setServerShortcutValue(index > -1 ? serverShortcutMap[index].key : 0)
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1 }, [...serverDirectoryCurrent, name]);
     }
 
     const [modalServer, setModalServer] = useState(false);
@@ -448,7 +465,7 @@ export default function Server() {
                 >
                     <div>
                         <BreadCrumb
-                            valueList={serverDirectoryCurrent}
+                            valueList={["...", ...serverDirectoryCurrent]}
                             delimiter="/"
                             onClick={jumpFolder}
                             // onEdit={onServerDirectoryCurrentManualChange}
@@ -462,23 +479,53 @@ export default function Server() {
                         bulkOptionLoadingFlag={serverDirectoryBulkOptionLoadingFlag}
                         bulkOptionArray={[]}
 
-                        // dataArray={
-                        //     serverDirectoryCurrent[0].length > 0 || serverDirectoryCurrent.length > 1
-                        //         ? [{ name: ".:Up:.", goToParentFlag: true }, ...serverDirectoryDataArray]
-                        //         : serverDirectoryDataArray
-                        // }
-                        dataArray={serverDirectoryDataArray}
+                        dataArray={
+                            serverDirectoryCurrent.length > 0
+                                ? [{ name: ".:Up:.", goToParentFlag: true }, ...serverDirectoryDataArray]
+                                : serverDirectoryDataArray
+                        }
                         columns={[
                             {
                                 data: "name",
-                                name: t("common.text.name"),
+                                name: t("text.name"),
                                 class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'mobile',
+                                render: (data, row) => {
+                                    if (row.goToParentFlag) {
+                                        return (
+                                            <Span label={data} icon="fa-solid fa-arrow-turn-up fa-flip-horizontal" className="cursor-pointer hover:underline" onClick={goToParent} />
+                                        )
+                                    } else {
+                                        return (
+                                            <Fragment>
+                                                <label
+                                                    className={`
+                                                        hover:cursor-pointer
+                                                        hover:underline
+                                                    `}
+                                                    onClick={() => row.directoryFlag ? enterFolder(data) : enterFolder(data)}>
+                                                    <i className={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file"}`} />&nbsp;{data}
+                                                </label>
+                                                {/* <label role="button" onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}>
+                                                    <i className={`${row.directoryFlag ? "bi-folder-fill" : "bi-file"}`} />&nbsp;&nbsp;{data}
+                                                </label>
+                                                &nbsp;|&nbsp;<label className="sm-1" role="button" onClick={() => entryServerDirectoryFile(data)}>
+                                                    <i className="bi-arrow-repeat" />
+                                                </label>
+                                                &nbsp;<label className="sm-1" role="button" onClick={() => confirmPasteServerDirectoryFile(data)}>
+                                                    <i className="bi-copy" />
+                                                </label>&nbsp;<label className="sm-1" role="button" onClick={() => confirmDeleteServerDirectoryFile(data)}>
+                                                    <i className="bi-trash" />
+                                                </label> */}
+                                            </Fragment>
+                                        )
+                                    }
+                                }
                             },
                             {
                                 data: "size",
-                                name: t("common.text.size"),
+                                name: t("text.size"),
                                 class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'mobile',
@@ -492,7 +539,7 @@ export default function Server() {
                             },
                             {
                                 data: "createdDate",
-                                name: t("common.text.modifiedDate"),
+                                name: t("text.modifiedDate"),
                                 class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'tablet',
@@ -504,7 +551,7 @@ export default function Server() {
                         dataTotal={serverDirectoryDataTotalTable}
 
                         onRender={(page, length, search, order) => {
-                            getServerDirectory({ page: page, length: length, search, order })
+                            getServerDirectory({ page: page, length: length, search, order }, serverDirectoryCurrent)
                         }}
                         refresh={serverDirectoryRefreshTable}
                         loadingFlag={serverDirectoryTableLoadingFlag}
