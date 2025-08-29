@@ -31,10 +31,12 @@ export default function Database() {
         description?: string;
         externalServerId: number;
         databaseTypeId: number;
-        // valueMultiple: [];
+        ip: string,
+        port: number,
         username: string,
         password: string,
-        databaseConnection: string,
+        databaseName: string,
+        // databaseConnection: string,
         usePageFlag: number,
         lockFlag: number,
         version: number,
@@ -47,9 +49,12 @@ export default function Database() {
         description: undefined,
         externalServerId: 0,
         databaseTypeId: 1,
+        ip: '',
+        port: 0,
         username: '',
         password: '',
-        databaseConnection: '',
+        databaseName: '',
+        // databaseConnection: '',
         usePageFlag: 1,
         lockFlag: 0,
         version: 0,
@@ -91,9 +96,12 @@ export default function Database() {
         const error: DatabaseFormError = {};
         if (!data.code?.trim()) error.code = t("validate.required", { name: t("text.name") });
         if (data.databaseTypeId <= 0) error.databaseTypeId = t("validate.required", { name: t("text.type") });
+        if (!data.ip?.trim()) error.ip = t("validate.required", { name: "IP" });
+        if (data.port <= 0) error.port = t("validate.required", { name: t("text.port") });
         if (!data.username?.trim()) error.username = t("validate.required", { name: t("text.username") });
         if (!data.password?.trim()) error.password = t("validate.required", { name: t("text.password") });
-        if (!data.databaseConnection?.trim()) error.databaseConnection = t("validate.required", { name: t("text.databaseConnection") });
+        if (!data.databaseName?.trim()) error.databaseName = t("validate.required", { name: t("text.databaseName") });
+        // if (!data.databaseConnection?.trim()) error.databaseConnection = t("validate.required", { name: t("text.databaseConnection") });
 
         setDatabaseFormError(error);
         return Object.keys(error).length === 0;
@@ -171,9 +179,12 @@ export default function Database() {
                     description: database.description,
                     externalServerId: database.externalServerId,
                     databaseTypeId: database.databaseTypeId,
+                    ip: database.ip,
+                    port: database.port,
                     username: database.username,
                     password: database.password,
-                    databaseConnection: database.databaseConnection,
+                    databaseName: database.databaseName,
+                    // databaseConnection: database.databaseConnection,
                     usePageFlag: database.usePageFlag,
                     lockFlag: database.lockFlag,
                     version: database.version,
@@ -1188,9 +1199,12 @@ export default function Database() {
                                 <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
                                 <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
                                 <Select label={t("text.type")} name="databaseTypeId" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
+                                <InputText label="IP" name="ip" value={databaseForm.ip} onChange={onDatabaseFormChange} error={databaseFormError.ip} />
+                                <InputDecimal label={t("text.port")} name="port" value={databaseForm.port} onChange={onDatabaseFormChange} error={databaseFormError.port} />
                                 <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
                                 <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
-                                <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} />
+                                <InputText label={t("text.databaseName")} name="databaseName" value={databaseForm.databaseName} onChange={onDatabaseFormChange} error={databaseFormError.databaseName} />
+                                {/* <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} /> */}
                                 <Switch label={t("text.usePageFlag")} name="usePageFlag" value={databaseForm.usePageFlag} onChange={onDatabaseFormChange} />
                                 <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
                             </Fragment>
@@ -1202,9 +1216,12 @@ export default function Database() {
                                 <Label text={t("text.description")} value={databaseForm.description} />
                                 <Label text="SSH" value={masterExternalServerArray.getValueByKey?.(databaseForm.externalServerId)} />
                                 <Label text={t("text.type")} value={masterDatabaseTypeArray.getValueByKey?.(databaseForm.databaseTypeId)} />
+                                <Label text="IP" value={databaseForm.ip} />
+                                <Label text={t("text.port")} value={databaseForm.port} />
                                 <Label text={t("text.username")} value={databaseForm.username} />
                                 <Label text={t("text.password")} value={databaseForm.password} password={true} />
-                                <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} />
+                                <Label text={t("text.databaseName")} value={databaseForm.databaseName} />
+                                {/* <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} /> */}
                                 <Label text={t("text.usePageFlag")} value={yesNo(databaseForm.usePageFlag)} />
                                 <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
                             </Fragment>

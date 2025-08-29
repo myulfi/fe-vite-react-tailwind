@@ -459,6 +459,7 @@ export default function Server() {
                 </Modal>
                 <Modal
                     show={modalServerConnect}
+                    type="dynamic"
                     size="xl"
                     title={serverConnectModalTitle}
                     onClose={() => setModalServerConnect(false)}
