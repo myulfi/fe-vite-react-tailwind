@@ -1230,6 +1230,7 @@ export default function Database() {
                 </Modal>
                 <Modal
                     show={modalDatabaseConnect}
+                    type="dynamic"
                     size="xl"
                     title={databaseConnectModalTitle}
                     onClose={() => setModalDatabaseConnect(false)}
@@ -1576,18 +1577,24 @@ export default function Database() {
                         minDevice: 'none',
                     },
                     {
-                        data: "username",
-                        name: t("text.username"),
+                        data: "externalServerId",
+                        name: "SSH",
                         class: "text-nowrap",
                         width: 10,
                         minDevice: 'tablet',
+                        render: function (data) {
+                            return masterExternalServerArray.getValueByKey?.(data)
+                        }
                     },
                     {
-                        data: "createdBy",
-                        name: t("text.createdBy"),
+                        data: "ip",
+                        name: "IP",
                         class: "text-nowrap",
                         width: 10,
-                        minDevice: "desktop"
+                        minDevice: "desktop",
+                        render: function (data, row) {
+                            return `${data}:${row.port}`
+                        }
                     },
                     {
                         data: "createdDate",
