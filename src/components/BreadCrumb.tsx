@@ -16,7 +16,7 @@ const BreadCrumb: React.FC<BreadCrumbProps> = ({
     onEdit,
 }) => {
     return (
-        <div>
+        <Fragment>
             {valueList.map((name, index) => (
                 <Fragment key={index}>
                     {index > 0 && <span className="px-1">{delimiter}</span>}
@@ -28,10 +28,11 @@ const BreadCrumb: React.FC<BreadCrumbProps> = ({
                     )}
                 </Fragment>
             ))}
-            &nbsp;&nbsp;<span className="fa-solid fa-pen cursor-pointer" onClick={onEdit} />
-            &nbsp;&nbsp;<span className="fa-solid fa-copy cursor-pointer" onClick={(e) => onCopy(e, valueList.join(delimiter))}
+            <span className="ml-2">|</span>
+            <span className="fa-solid fa-pen cursor-pointer ml-2" onClick={onEdit} />
+            <span className="fa-solid fa-copy cursor-pointer ml-2" onClick={(e) => onCopy(e, valueList.join(delimiter))}
             />
-        </div>
+        </Fragment>
     );
 };
 

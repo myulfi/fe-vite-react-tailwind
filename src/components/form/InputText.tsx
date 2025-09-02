@@ -14,6 +14,7 @@ type InputTextProps = {
     label?: string;
     name: string;
     value: string;
+    placeholder?: string;
     disabled?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
@@ -33,6 +34,7 @@ export default function InputText({
     label,
     name,
     value,
+    placeholder,
     disabled = false,
     onChange,
     onKeyDown,
@@ -122,7 +124,7 @@ export default function InputText({
                     onChange={onChange}
                     onKeyDown={onKeyDown}
                     onBlur={onBlur}
-                    placeholder={t('text.inputName', { name: label })}
+                    placeholder={placeholder ?? t('text.inputName', { name: label })}
                 />
 
                 {renderUnitRight()}

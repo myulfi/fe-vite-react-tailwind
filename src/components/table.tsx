@@ -39,7 +39,6 @@ interface TableProps {
     initialSizePage?: number;
     limitPaginationButton?: number;
     filter?: any;
-    resetPagination?: boolean;
     onRender: (
         page: number,
         size: number,
@@ -70,7 +69,6 @@ export default function Table({
     initialSizePage = 10,
     limitPaginationButton = 7,
     filter,
-    resetPagination,
     onRender,
     refresh = false,
     loadingFlag = false,
@@ -96,6 +94,8 @@ export default function Table({
     useEffect(() => {
         setItemArray([]);
         setCurrentPage(1);
+        // setDetailRow(itemArray.map(() => false));
+        setSearch("");
     }, [refresh])
 
     const checkBoxStateArray = itemArray.map(function (obj) {
@@ -254,11 +254,6 @@ export default function Table({
         }
     }, [filter])
 
-    useEffect(() => {
-        setCurrentPage(1)
-        setDetailRow(itemArray.map(() => false))
-    }, [resetPagination])
-
     return (
         <div>
             <div>
@@ -321,6 +316,7 @@ export default function Table({
                                     autoComplete="off"
                                     name="name"
                                     value={search}
+                                    placeholder={t("text.search")}
                                     onChange={event => setSearch(event.target.value)}
                                     onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
                             </div>

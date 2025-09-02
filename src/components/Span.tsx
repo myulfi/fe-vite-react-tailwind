@@ -14,12 +14,12 @@ export default function Span({
     onClick,
 }: SpanProps) {
     return (
-        <span className={className} onClick={onClick}>
+        <span onClick={onClick}>
             {
                 icon &&
-                <i className={`mr-1 ${icon}`} />
+                <i className={`mr-2 ${icon}`} />
             }
-            {label}
+            <label className={className}>{label}</label>
         </span>
     );
 }

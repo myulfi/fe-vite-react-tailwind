@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Button from "../../components/form/Button";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
@@ -16,9 +16,11 @@ import InputPassword from "../../components/form/InputPassword";
 import Radio from "../../components/form/Radio";
 import LabelBig from "../../components/form/LabelBig";
 import Switch from "../../components/form/Switch";
-import { yesNo } from "../../function/commonHelper";
+import { formatBytes, yesNo } from "../../function/commonHelper";
 import BreadCrumb from "../../components/BreadCrumb";
 import Span from "../../components/Span";
+import { useClickOutside } from "../../hook/useClickOutside";
+import InputFile from "../../components/form/InputFile";
 
 export default function Server() {
     const { t } = useTranslation();
@@ -218,7 +220,7 @@ export default function Server() {
         if (serverValidate(serverForm)) {
             confirmDialog({
                 type: 'confirmation',
-                message: t(serverId === 0 ? "confirmation.create" : "confirmation.update", { name: serverForm.name }),
+                message: t(serverId === 0 ? "confirmation.create" : "confirmation.update", { name: serverForm.code }),
                 onConfirm: () => storeServer(),
             });
         }
@@ -317,6 +319,8 @@ export default function Server() {
     };
 
     const [serverDirectoryCurrent, setServerDirectoryCurrent] = useState<string[]>([]);
+    const [serverDirectoryCurrentManual, setServerDirectoryCurrentManual] = useState(false);
+    const [serverDirectoryCurrentText, setServerDirectoryCurrentText] = useState<string>();
 
     const [serverDirectoryBulkOptionLoadingFlag, setServerDirectoryBulkOptionLoadingFlag] = useState(false);
     const [serverDirectoryCheckBoxTableArray, setServerDirectoryCheckBoxTableArray] = useState<number[]>([]);
@@ -359,13 +363,38 @@ export default function Server() {
         setServerDirectoryTableLoadingFlag(false);
     };
 
+    const onServerDirectoryCurrentTextChange = (e: { target: { value: any } }) => {
+        const { value } = e.target
+        setServerDirectoryCurrentText(value)
+    }
+
+    const onServerDirectoryCurrentTextKeyDown = (e: { key: any }) => {
+        if (e.key === "Enter") {
+            manualFolder(serverDirectoryCurrentText);
+            setServerDirectoryCurrentManual(false);
+        }
+    }
+
+    const serverDirectoryCurrentTextRef = useRef<HTMLInputElement>(null);
+    useClickOutside(serverDirectoryCurrentTextRef, () => setServerDirectoryCurrentManual(false));
+    const onServerDirectoryCurrentManualChange = () => {
+        setServerDirectoryCurrentManual(!serverDirectoryCurrentManual);
+    }
+
+    useEffect(() => {
+        if (serverDirectoryCurrentManual) {
+            setServerDirectoryCurrentText(serverDirectoryCurrent.join("/"))
+            serverDirectoryCurrentTextRef.current!.focus()
+        }
+    }, [serverDirectoryCurrentManual]);
+
     const jumpFolder = (index: number) => {
         setServerDirectoryRefreshTable(refresh => !refresh);
         setServerDirectoryCheckBoxTableArray([]);
         // const shortcutIndex = serverShortcutMap.findIndex((item) => options.directory.length > 0 && item.value.endsWith(options.directory))
         // setServerShortcutValue(shortcutIndex > -1 ? serverShortcutMap[shortcutIndex].key : 0)
         // {...serverDirectoryAttributeTable, page : 0}
-        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1 }, index > 0 ? serverDirectoryCurrent.slice(0, index) : []);
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1, search: "" }, index > 0 ? serverDirectoryCurrent.slice(0, index) : []);
     }
 
     const goToParent = () => {
@@ -373,20 +402,247 @@ export default function Server() {
         setServerDirectoryCheckBoxTableArray([]);
         // const shortcutIndex = serverShortcutMap.findIndex((item) => options.directory.length > 0 && item.value.endsWith(options.directory))
         // setServerShortcutValue(shortcutIndex > -1 ? serverShortcutMap[shortcutIndex].key : 0)
-        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1 }, serverDirectoryCurrent.slice(0, -1));
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1, search: "" }, serverDirectoryCurrent.slice(0, -1));
     }
 
     const enterFolder = (name: string) => {
         setServerDirectoryRefreshTable(refresh => !refresh);
-        setServerDirectoryCheckBoxTableArray([])
+        setServerDirectoryCheckBoxTableArray([]);
         // const index = serverShortcutMap.findIndex((item) => item.value.endsWith(options.directory))
         // setServerShortcutValue(index > -1 ? serverShortcutMap[index].key : 0)
-        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1 }, [...serverDirectoryCurrent, name]);
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1, search: "" }, [...serverDirectoryCurrent, name]);
+    }
+
+    const manualFolder = (path?: string) => {
+        setServerDirectoryRefreshTable(refresh => !refresh);
+        setServerDirectoryCheckBoxTableArray([]);
+
+        // const shortcutIndex = serverShortcutMap.findIndex((item) => options.directory.length > 0 && item.value.endsWith(options.directory))
+        // setServerShortcutValue(shortcutIndex > -1 ? serverShortcutMap[shortcutIndex].key : 0)
+        getServerDirectory({ ...serverDirectoryAttributeTable, page: 1, search: "" }, path!.split("/"));
+    }
+
+    type ServerFolderData = {
+        name: string;
+    }
+
+    type ServerFolderFormError = Partial<Record<keyof ServerFolderData, string>>;
+
+    const serverFolderInitial: ServerFolderData = {
+        name: "",
+    }
+
+    const [serverFolderModalTitle, setServerFolderModalTitle] = useState("");
+    const [serverFolderSubmitModalLoadingFlag, setServerFolderSubmitModalLoadingFlag] = useState(false);
+
+    const [serverFolderForm, setServerFolderForm] = useState<ServerFolderData>(serverFolderInitial);
+    const [serverFolderFormError, setServerFolderFormError] = useState<ServerFolderFormError>({});
+
+    const onServerFolderFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setServerFolderForm({ ...serverFolderForm, [name]: value });
+        setServerFolderFormError({ ...serverFolderFormError, [name]: undefined });
+    };
+
+    const serverFolderValidate = (data: ServerFolderData) => {
+        const error: ServerFolderFormError = {};
+        if (!data.name?.trim()) error.name = t("validate.required", { name: t("text.name") });
+        setServerFolderFormError(error);
+        return Object.keys(error).length === 0;
+    };
+
+    const entryServerFolder = () => {
+        setServerFolderFormError({});
+        setServerFolderForm(serverFolderInitial);
+        setServerFolderModalTitle(serverDirectoryCurrent.join("/"));
+        setServerFolderSubmitModalLoadingFlag(false);
+        setModalServerFolder(true);
+    };
+
+    const confirmStoreServerFolder = async () => {
+        if (serverFolderValidate(serverFolderForm)) {
+            confirmDialog({
+                type: 'confirmation',
+                message: t("confirmation.create", { name: serverFolderForm.name }),
+                onConfirm: () => storeServerFolder(),
+            });
+        }
+    };
+
+    const storeServerFolder = async () => {
+        if (serverFolderValidate(serverFolderForm)) {
+            setServerFolderSubmitModalLoadingFlag(true);
+
+            const response = await apiRequest(
+                'post'
+                , '/external/server-folder.json',
+                {
+                    ...serverFolderForm,
+                },
+            );
+
+            if (HttpStatusCode.Created === response.status) {
+                getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
+                toast.show({ type: "done", message: "information.created" });
+                setModalServerFolder(false);
+            } else {
+                toast.show({ type: "error", message: response.message });
+            }
+
+            setServerFolderSubmitModalLoadingFlag(false);
+        }
+    }
+
+    type ServerFileData = {
+        name: string;
+        content: string;
+    }
+
+    type ServerFileFormError = Partial<Record<keyof ServerFileData, string>>;
+
+    const serverFileInitial: ServerFileData = {
+        name: "",
+        content: "",
+    }
+
+    const [serverFileModalTitle, setServerFileModalTitle] = useState("");
+    const [serverFileSubmitModalLoadingFlag, setServerFileSubmitModalLoadingFlag] = useState(false);
+
+    const [serverFileForm, setServerFileForm] = useState<ServerFileData>(serverFileInitial);
+    const [serverFileFormError, setServerFileFormError] = useState<ServerFileFormError>({});
+
+    const onServerFileFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setServerFileForm({ ...serverFileForm, [name]: value });
+        setServerFileFormError({ ...serverFileFormError, [name]: undefined });
+    };
+
+    const serverFileValidate = (data: ServerFileData) => {
+        const error: ServerFileFormError = {};
+        if (!data.name?.trim()) error.name = t("validate.required", { name: t("text.name") });
+        if (!data.content?.trim()) error.name = t("validate.required", { name: t("text.content") });
+        setServerFileFormError(error);
+        return Object.keys(error).length === 0;
+    };
+
+    const entryServerFile = () => {
+        setServerFileFormError({});
+        setServerFileForm(serverFileInitial);
+        setServerFileModalTitle(serverDirectoryCurrent.join("/"));
+        setServerFileSubmitModalLoadingFlag(false);
+        setModalServerFile(true);
+    };
+
+    const confirmStoreServerFile = async () => {
+        if (serverFileValidate(serverFileForm)) {
+            confirmDialog({
+                type: 'confirmation',
+                message: t("confirmation.create", { name: serverFileForm.name }),
+                onConfirm: () => storeServerFile(),
+            });
+        }
+    };
+
+    const storeServerFile = async () => {
+        if (serverFileValidate(serverFileForm)) {
+            setServerFileSubmitModalLoadingFlag(true);
+
+            const response = await apiRequest(
+                'post'
+                , '/external/server-file.json',
+                {
+                    ...serverFileForm,
+                },
+            );
+
+            if (HttpStatusCode.Created === response.status) {
+                getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
+                toast.show({ type: "done", message: "information.created" });
+                setModalServerFile(false);
+            } else {
+                toast.show({ type: "error", message: response.message });
+            }
+
+            setServerFileSubmitModalLoadingFlag(false);
+        }
+    }
+
+    type ServerUploadData = {
+        file: File[];
+    }
+
+    type ServerUploadFormError = Partial<Record<keyof ServerUploadData, string>>;
+
+    const serverUploadInitial: ServerUploadData = {
+        file: [],
+    }
+
+    const [serverUploadModalTitle, setServerUploadModalTitle] = useState("");
+    const [serverUploadSubmitModalLoadingFlag, setServerUploadSubmitModalLoadingFlag] = useState(false);
+
+    const [serverUploadForm, setServerUploadForm] = useState<ServerUploadData>(serverUploadInitial);
+    const [serverUploadFormError, setServerUploadFormError] = useState<ServerUploadFormError>({});
+
+    const onServerUploadFormChange = (e: { target: { name: string; value: any } }) => {
+        const { name, value } = e.target;
+        setServerUploadForm({ ...serverUploadForm, [name]: value });
+        setServerUploadFormError({ ...serverUploadFormError, [name]: undefined });
+    };
+
+    const serverUploadValidate = (data: ServerUploadData) => {
+        const error: ServerUploadFormError = {};
+        if (data.file.length === 0) error.file = t("validate.required", { name: t("text.name") });
+        setServerUploadFormError(error);
+        return Object.keys(error).length === 0;
+    };
+
+    const entryServerUpload = () => {
+        setServerUploadFormError({});
+        setServerUploadForm(serverUploadInitial);
+        setServerUploadModalTitle(serverDirectoryCurrent.join("/"));
+        setServerUploadSubmitModalLoadingFlag(false);
+        setModalServerUpload(true);
+    };
+
+    const confirmStoreServerUpload = async () => {
+        if (serverUploadValidate(serverUploadForm)) {
+            confirmDialog({
+                type: 'confirmation',
+                message: t("confirmation.create", { name: serverUploadForm.file.length }),
+                onConfirm: () => storeServerUpload(),
+            });
+        }
+    };
+
+    const storeServerUpload = async () => {
+        if (serverUploadValidate(serverUploadForm)) {
+            setServerUploadSubmitModalLoadingFlag(true);
+
+            const response = await apiRequest(
+                'post'
+                , '/external/server-upload.json',
+                {
+                    ...serverUploadForm,
+                },
+            );
+
+            if (HttpStatusCode.Created === response.status) {
+                getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
+                toast.show({ type: "done", message: "information.created" });
+                setModalServerUpload(false);
+            } else {
+                toast.show({ type: "error", message: response.message });
+            }
+
+            setServerUploadSubmitModalLoadingFlag(false);
+        }
     }
 
     const [modalServer, setModalServer] = useState(false);
     const [modalServerConnect, setModalServerConnect] = useState(false);
-
+    const [modalServerFolder, setModalServerFolder] = useState(false);
+    const [modalServerFile, setModalServerFile] = useState(false);
+    const [modalServerUpload, setModalServerUpload] = useState(false);
 
     return (
         <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
@@ -424,10 +680,10 @@ export default function Server() {
                                 <InputText label="IP" name="ip" value={serverForm.ip} onChange={onServerFormChange} error={serverFormError.ip} />
                                 <InputDecimal label={t("text.port")} name="port" value={serverForm.port} onChange={onServerFormChange} error={serverFormError.port} />
                                 <InputText autoComplete="off" label={t("text.username")} name="username" value={serverForm.username} onChange={onServerFormChange} error={serverFormError.username} />
-                                <Switch label={t("text.passwordless")} name="passwordlessFlag" value={serverForm.passwordlessFlag} onChange={onServerFormChange} />
+                                <Switch label={t("text.passwordless")} name="passwordlessFlag" value={serverForm.passwordlessFlag!} onChange={onServerFormChange} />
                                 {
                                     0 === serverForm.passwordlessFlag &&
-                                    <InputPassword label={t("text.password")} name="password" value={serverForm.password} onChange={onServerFormChange} error={serverFormError.password} />
+                                    <InputPassword label={t("text.password")} name="password" value={serverForm.password!} onChange={onServerFormChange} error={serverFormError.password} />
                                 }
                                 {
                                     1 === serverForm.passwordlessFlag &&
@@ -444,7 +700,7 @@ export default function Server() {
                                 <Label text="IP" value={serverForm.ip} />
                                 <Label text={t("text.port")} value={serverForm.port} />
                                 <Label text={t("text.username")} value={serverForm.username} />
-                                <Label text={t("text.passwordless")} value={yesNo(serverForm.passwordlessFlag)} />
+                                <Label text={t("text.passwordless")} value={yesNo(serverForm.passwordlessFlag!)} />
                                 {
                                     0 === serverForm.passwordlessFlag &&
                                     <Label text={t("text.password")} value={serverForm.password} password={true} />
@@ -464,21 +720,72 @@ export default function Server() {
                     title={serverConnectModalTitle}
                     onClose={() => setModalServerConnect(false)}
                 >
-                    <div>
-                        <BreadCrumb
-                            valueList={["...", ...serverDirectoryCurrent]}
-                            delimiter="/"
-                            onClick={jumpFolder}
-                            // onEdit={onServerDirectoryCurrentManualChange}
-                            onEdit={() => { }}
-                        />
-                    </div>
+                    {
+                        serverDirectoryCurrentManual &&
+                        <div className="pt-1.5 pb-5">
+                            <InputText
+                                name=""
+                                positionUnit="left"
+                                valueUnit="... / "
+                                refference={serverDirectoryCurrentTextRef}
+                                value={serverDirectoryCurrentText!}
+                                onChange={onServerDirectoryCurrentTextChange}
+                                onKeyDown={onServerDirectoryCurrentTextKeyDown}
+                            />
+                        </div>
+                    }
+                    {
+                        !serverDirectoryCurrentManual &&
+                        <div className="pt-3 pb-7">
+                            <BreadCrumb
+                                valueList={["...", ...serverDirectoryCurrent]}
+                                delimiter="/"
+                                onClick={jumpFolder}
+                                onEdit={onServerDirectoryCurrentManualChange}
+                            />
+                        </div>
+                    }
                     <Table
-                        searchFlag={false}
-                        additionalButtonArray={[]}
+                        additionalButtonArray={[
+                            {
+                                label: t("button.addToShortcut"),
+                                type: 'primary',
+                                icon: "fa-solid fa-up-right-from-square",
+                                onClick: () => toast.show({ type: "done", message: "hahah" })
+                            },
+                            {
+                                label: t("button.createDirectory"),
+                                type: 'primary',
+                                icon: "fa-solid fa-folder-plus",
+                                onClick: () => entryServerFolder()
+                            },
+                            {
+                                label: t("button.addFile"),
+                                type: 'primary',
+                                icon: "fa-solid fa-file-circle-plus",
+                                onClick: () => entryServerFile()
+                            },
+                            {
+                                label: t("button.upload"),
+                                type: 'primary',
+                                icon: "fa-solid fa-upload",
+                                onClick: () => entryServerUpload()
+                            }
+                        ]}
 
                         bulkOptionLoadingFlag={serverDirectoryBulkOptionLoadingFlag}
-                        bulkOptionArray={[]}
+                        bulkOptionArray={[
+                            {
+                                label: t("button.clone"),
+                                icon: "fa-solid fa-clone",
+                                onClick: () => { },
+                            },
+                            {
+                                label: t("button.delete"),
+                                icon: "fa-solid fa-trash",
+                                onClick: () => { },
+                            }
+                        ]}
 
                         dataArray={
                             serverDirectoryCurrent.length > 0
@@ -500,14 +807,12 @@ export default function Server() {
                                     } else {
                                         return (
                                             <Fragment>
-                                                <label
-                                                    className={`
-                                                        hover:cursor-pointer
-                                                        hover:underline
-                                                    `}
-                                                    onClick={() => row.directoryFlag ? enterFolder(data) : enterFolder(data)}>
-                                                    <i className={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file"}`} />&nbsp;{data}
-                                                </label>
+                                                <Span
+                                                    label={data}
+                                                    icon={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file"}`}
+                                                    className="hover:cursor-pointer hover:underline"
+                                                    onClick={() => row.directoryFlag ? enterFolder(data) : enterFolder(data)}
+                                                />
                                                 {/* <label role="button" onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}>
                                                     <i className={`${row.directoryFlag ? "bi-folder-fill" : "bi-file"}`} />&nbsp;&nbsp;{data}
                                                 </label>
@@ -534,18 +839,39 @@ export default function Server() {
                                     if (row.goToParentFlag) {
                                         return ""
                                     } else {
-                                        return data
+                                        return formatBytes(data)
                                     }
                                 }
                             },
                             {
-                                data: "createdDate",
+                                data: "modified_date",
                                 name: t("text.modifiedDate"),
                                 class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'tablet',
+                                render: (data, row) => {
+                                    if (row.goToParentFlag) {
+                                        return ""
+                                    } else {
+                                        return formatDate(new Date(data), 'dd MMM yyyy HH:mm:ss')
+                                    }
+                                }
+                            },
+                            {
+                                data: "status",
+                                name: t("text.status"),
+                                class: "text-nowrap",
+                                minDevice: 'tablet',
+                                render: (data, row) => {
+                                    if (row.goToParentFlag) {
+                                        return ""
+                                    } else {
+                                        return data
+                                    }
+                                }
                             },
                         ]}
+                        order={["name", "asc"]}
 
                         checkBoxArray={serverDirectoryCheckBoxTableArray}
                         onCheckBox={serverDirectoryCheckBoxTableArray => { setServerDirectoryCheckBoxTableArray([...serverDirectoryCheckBoxTableArray]) }}
@@ -557,6 +883,64 @@ export default function Server() {
                         refresh={serverDirectoryRefreshTable}
                         loadingFlag={serverDirectoryTableLoadingFlag}
                     />
+                </Modal>
+                <Modal
+                    show={modalServerFolder}
+                    size="md"
+                    title={`${serverConnectModalTitle} | ${serverFolderModalTitle}`}
+                    onClose={() => setModalServerFolder(false)}
+                    buttonArray={[
+                        {
+                            label: t("button.create"),
+                            type: "primary",
+                            icon: 'fa-solid fa-bookmark',
+                            onClick: () => confirmStoreServerFolder(),
+                            loadingFlag: serverFolderSubmitModalLoadingFlag
+                        }
+                    ]}
+                >
+                    <div className="grid grid-cols-1 gap-4">
+                        <InputText autoFocus={true} label={t("text.name")} name="name" value={serverFolderForm.name} onChange={onServerFolderFormChange} error={serverFolderFormError.name} />
+                    </div>
+                </Modal>
+                <Modal
+                    show={modalServerFile}
+                    size="lg"
+                    title={`${serverConnectModalTitle} | ${serverFileModalTitle}`}
+                    onClose={() => setModalServerFile(false)}
+                    buttonArray={[
+                        {
+                            label: t("button.create"),
+                            type: "primary",
+                            icon: 'fa-solid fa-bookmark',
+                            onClick: () => confirmStoreServerFile(),
+                            loadingFlag: serverFileSubmitModalLoadingFlag
+                        }
+                    ]}
+                >
+                    <div className="grid grid-cols-1 gap-4">
+                        <InputText autoFocus={true} label={t("text.name")} name="name" value={serverFileForm.name} onChange={onServerFileFormChange} error={serverFileFormError.name} />
+                        <TextArea label={t("text.content")} name="content" rows={10} value={serverFileForm.content} onChange={onServerFileFormChange} error={serverFileFormError.content} />
+                    </div>
+                </Modal>
+                <Modal
+                    show={modalServerUpload}
+                    size="lg"
+                    title={`${serverConnectModalTitle} | ${serverUploadModalTitle}`}
+                    onClose={() => setModalServerUpload(false)}
+                    buttonArray={[
+                        {
+                            label: t("button.upload"),
+                            type: "primary",
+                            icon: 'fa-solid fa-upload',
+                            onClick: () => confirmStoreServerUpload(),
+                            loadingFlag: serverUploadSubmitModalLoadingFlag
+                        }
+                    ]}
+                >
+                    <div className="grid grid-cols-1 gap-4">
+                        <InputFile label={t("text.file")} name="content" value={serverUploadForm.file} onChange={onServerUploadFormChange} error={serverUploadFormError.file} />
+                    </div>
                 </Modal>
             </ModalStackProvider>
             <Table
