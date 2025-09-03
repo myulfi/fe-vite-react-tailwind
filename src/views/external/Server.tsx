@@ -475,13 +475,14 @@ export default function Server() {
 
             const response = await apiRequest(
                 'post'
-                , '/external/server-folder.json',
+                , `/external/${serverId}/server-folder.json`,
                 {
                     ...serverFolderForm,
+                    directory: serverDirectoryCurrent,
                 },
             );
 
-            if (HttpStatusCode.Created === response.status) {
+            if (HttpStatusCode.NoContent === response.status) {
                 getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
                 toast.show({ type: "done", message: "information.created" });
                 setModalServerFolder(false);
@@ -620,13 +621,14 @@ export default function Server() {
 
             const response = await apiRequest(
                 'post'
-                , '/external/server-upload.json',
+                , `/external/${serverId}/server-upload.json`,
                 {
                     ...serverUploadForm,
+                    directory: serverDirectoryCurrent,
                 },
             );
 
-            if (HttpStatusCode.Created === response.status) {
+            if (HttpStatusCode.NoContent === response.status) {
                 getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
                 toast.show({ type: "done", message: "information.created" });
                 setModalServerUpload(false);
@@ -754,7 +756,7 @@ export default function Server() {
                                 onClick: () => toast.show({ type: "done", message: "hahah" })
                             },
                             {
-                                label: t("button.createDirectory"),
+                                label: t("button.createFolder"),
                                 type: 'primary',
                                 icon: "fa-solid fa-folder-plus",
                                 onClick: () => entryServerFolder()
