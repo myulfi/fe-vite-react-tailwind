@@ -16,6 +16,26 @@ export function format(template: string, values: any[]) {
     });
 }
 
+export function reduceInMiddleText(
+    text: string,
+    firstLimit: number,
+    secondLimit?: number
+): string {
+    if (!secondLimit || secondLimit <= 0) {
+        secondLimit = Math.floor(firstLimit / 2);
+        firstLimit = Math.floor(firstLimit / 2);
+    }
+
+    if (text.length > firstLimit + secondLimit) {
+        const firstPart = text.substring(0, firstLimit);
+        const secondPart = text.substring(text.length - secondLimit);
+        return `${firstPart}...${secondPart}`;
+    }
+
+    return text;
+}
+
+
 export function decode(key?: string | number, ...args: (string | number | ((key: string | number) => string))[]): string {
     if (key === undefined || key === null) return "";
 

@@ -925,6 +925,7 @@ export default function Server() {
                 </Modal>
                 <Modal
                     show={modalServerUpload}
+                    type="dynamic"
                     size="lg"
                     title={`${serverConnectModalTitle} | ${serverUploadModalTitle}`}
                     onClose={() => setModalServerUpload(false)}
@@ -939,7 +940,7 @@ export default function Server() {
                     ]}
                 >
                     <div className="grid grid-cols-1 gap-4">
-                        <InputFile label={t("text.file")} name="content" value={serverUploadForm.file} onChange={onServerUploadFormChange} error={serverUploadFormError.file} />
+                        <InputFile label={t("text.file")} name="file" value={serverUploadForm.file} onChange={onServerUploadFormChange} error={serverUploadFormError.file} />
                     </div>
                 </Modal>
             </ModalStackProvider>

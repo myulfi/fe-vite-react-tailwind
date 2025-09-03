@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorForm from "./ErrorForm";
+import { reduceInMiddleText } from "../../function/commonHelper";
 
 type InputFileProps = {
     label: string;
@@ -44,6 +45,20 @@ export default function InputFile({
         [currentFiles, name, onChange]
     );
 
+    const handleDeleteFile = useCallback(
+        (index: number) => {
+            const updatedFiles = currentFiles.filter((_, i) => i !== index);
+            setInternalFiles(updatedFiles);
+            onChange({
+                target: {
+                    name,
+                    value: updatedFiles,
+                },
+            });
+        },
+        [currentFiles, name, onChange]
+    );
+
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         if (disabled) return;
@@ -65,35 +80,28 @@ export default function InputFile({
                     {label}
                 </label>
             )}
-
             <div
-                className={`w-full p-4 border-2 border-dashed rounded-md min-h-[120px] transition-colors
-                    ${disabled ? "border-gray-200 bg-gray-100 cursor-not-allowed" : "border-gray-300 hover:border-blue-400"}
-                    ${error ? "border-red-500" : ""}
+                className={`
+                    w-full border rounded-md min-h-[120px]
+                    transition-colors
+                    shadow-sm
+                    ${currentFiles.length === 0
+                        ? `
+                            flex flex-col items-center justify-center
+                            hover:border-2    
+                            hover:text-light-base hover:dark:text-dark-base
+                            hover:border-light-base hover:dark:border-dark-base
+                            cursor-pointer                   
+                        `
+                        : 'grid grid-cols-5 gap-1 p-2'
+                    }
+                    
+                    ${error ? "form-input-error" : "border-light-outline dark:border-dark-outline"}
                 `}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
+                onClick={currentFiles.length === 0 ? openFilePicker : () => { }}
             >
-                <div className="flex flex-wrap gap-3">
-                    {currentFiles.map((file, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center px-3 py-1 bg-gray-100 border rounded text-sm text-gray-700"
-                        >
-                            📄 {file.name}
-                        </div>
-                    ))}
-
-                    <div
-                        className={`flex items-center justify-center w-24 h-16 border border-gray-300 rounded cursor-pointer text-sm
-                            ${disabled ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "hover:bg-gray-100 text-gray-500"}
-                        `}
-                        onClick={openFilePicker}
-                    >
-                        ➕ {t(".text.addFile") ?? "Add File"}
-                    </div>
-                </div>
-
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -102,12 +110,68 @@ export default function InputFile({
                     onChange={(e) => handleFiles(e.target.files)}
                     disabled={disabled}
                 />
-
-                {currentFiles.length === 0 && (
-                    <div className="mt-3 text-sm text-gray-400">
-                        {t("button.dragHere") ?? "Drag files here or click 'Add File'"}
+                {
+                    currentFiles.length === 0 &&
+                    <div className="text-center">
+                        <i className="fa-solid fa-arrow-up-from-bracket" />
+                        <div>
+                            {t("button.clickOrdragHere")}
+                        </div>
                     </div>
-                )}
+                }
+                {
+                    currentFiles.map((file, index) => (
+                        <div
+                            key={index}
+                            className={`
+                                relative
+                                flex items-center justify-center p-4 m-2
+                                h-[80px]
+                                text-light-base-line dark:text-dark-base-line
+                                bg-light-clear dark:bg-dark-clear
+                                border border-dashed
+                                rounded text-sm
+                            `}
+                        >
+                            <button
+                                onClick={() => handleDeleteFile(index)}
+                                className="
+                                    absolute top-1.5 right-1
+                                    text-light-danger-base hover:text-light-danger-base-hover
+                                    hover:cursor-pointer
+                                    flex items-center justify-center
+                                "
+                            >
+                                <i className="fa-solid fa-circle-xmark" />
+                            </button>
+                            {reduceInMiddleText(file.name, 10, 20)}
+                        </div>
+                    ))
+                }
+
+                {
+                    currentFiles.length > 0 &&
+                    <div
+                        className={`
+                                p-4 m-2
+                                h-[80px]
+                                flex flex-col items-center justify-center
+                                text-light-base-line dark:text-dark-base-line
+                                bg-light-clear dark:bg-dark-clear
+                                hover:text-light-base hover:dark:text-dark-base
+                                hover:border-light-base hover:dark:border-dark-base
+                                hover:cursor-pointer
+                                border border-dashed
+                                rounded text-sm
+                            `}
+                        onClick={openFilePicker}
+                    >
+                        <i className="fa-solid fa-circle-plus" />
+                        <div>
+                            {t("button.add")}
+                        </div>
+                    </div>
+                }
             </div>
 
             {error && <ErrorForm text={error} />}
