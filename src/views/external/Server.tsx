@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
-import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
+import { Modal, ModalStackProvider } from "../../ModalContext";
 import Label from "../../components/form/Label";
 import { toast } from "../../ToastContext";
 import InputText from "../../components/form/InputText";
@@ -21,6 +21,7 @@ import BreadCrumb from "../../components/BreadCrumb";
 import Span from "../../components/Span";
 import { useClickOutside } from "../../hook/useClickOutside";
 import InputFile from "../../components/form/InputFile";
+import { dialog } from "../../DialogContext";
 
 export default function Server() {
     const { t } = useTranslation();
@@ -218,7 +219,7 @@ export default function Server() {
 
     const confirmStoreServer = async () => {
         if (serverValidate(serverForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t(serverId === 0 ? "confirmation.create" : "confirmation.update", { name: serverForm.code }),
                 onConfirm: () => storeServer(),
@@ -253,7 +254,7 @@ export default function Server() {
     }
 
     const confirmDeleteServer = (id: number, name: string) => {
-        confirmDialog({
+        dialog.show({
             type: 'warning',
             message: t("confirmation.delete", { name: name }),
             onConfirm: () => deleteServer(id),
@@ -461,7 +462,7 @@ export default function Server() {
 
     const confirmStoreServerFolder = async () => {
         if (serverFolderValidate(serverFolderForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t("confirmation.create", { name: serverFolderForm.name }),
                 onConfirm: () => storeServerFolder(),
@@ -526,17 +527,41 @@ export default function Server() {
         return Object.keys(error).length === 0;
     };
 
-    const entryServerFile = () => {
+    const entryServerFile = async (name?: string) => {
         setServerFileFormError({});
-        setServerFileForm(serverFileInitial);
-        setServerFileModalTitle(serverDirectoryCurrent.join("/"));
-        setServerFileSubmitModalLoadingFlag(false);
+
+        if (name) {
+            const response = await apiRequest(
+                'get'
+                , `/external/${serverId}/server-file.json`,
+                {
+                    name: name,
+                    directory: serverDirectoryCurrent.join("/"),
+                },
+            );
+
+            if (HttpStatusCode.Ok === response.status) {
+                response
+                setServerFileForm({
+                    "name": name,
+                    "content": response.content
+                })
+                toast.show({ type: "done", message: "information.created" });
+            } else {
+                toast.show({ type: "error", message: response.message });
+            }
+        } else {
+            setServerFileForm(serverFileInitial);
+            setServerFileModalTitle(serverDirectoryCurrent.join("/"));
+            setServerFileSubmitModalLoadingFlag(false);
+        }
+
         setModalServerFile(true);
     };
 
     const confirmStoreServerFile = async () => {
         if (serverFileValidate(serverFileForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t("confirmation.create", { name: serverFileForm.name }),
                 onConfirm: () => storeServerFile(),
@@ -550,13 +575,14 @@ export default function Server() {
 
             const response = await apiRequest(
                 'post'
-                , '/external/server-file.json',
+                , `/external/${serverId}/server-file.json`,
                 {
                     ...serverFileForm,
+                    directory: serverDirectoryCurrent,
                 },
             );
 
-            if (HttpStatusCode.Created === response.status) {
+            if (HttpStatusCode.NoContent === response.status) {
                 getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
                 toast.show({ type: "done", message: "information.created" });
                 setModalServerFile(false);
@@ -607,7 +633,7 @@ export default function Server() {
 
     const confirmStoreServerUpload = async () => {
         if (serverUploadValidate(serverUploadForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t("confirmation.create", { name: serverUploadForm.file.length }),
                 onConfirm: () => storeServerUpload(),
@@ -813,7 +839,7 @@ export default function Server() {
                                                     label={data}
                                                     icon={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file"}`}
                                                     className="hover:cursor-pointer hover:underline"
-                                                    onClick={() => row.directoryFlag ? enterFolder(data) : enterFolder(data)}
+                                                    onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}
                                                 />
                                                 {/* <label role="button" onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}>
                                                     <i className={`${row.directoryFlag ? "bi-folder-fill" : "bi-file"}`} />&nbsp;&nbsp;{data}
