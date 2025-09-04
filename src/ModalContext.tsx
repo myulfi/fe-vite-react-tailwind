@@ -172,6 +172,7 @@ type ModalProps = {
     icon?: string;
     buttonArray?: ButtonArray;
     onClose: () => void;
+    loadingFlag?: boolean;
     children: React.ReactNode;
 };
 
@@ -183,7 +184,7 @@ const sizeClasses = {
     xl: 'w-full',
 };
 
-export function Modal({ show, size = "xl", type = 'static', title, icon, buttonArray = [], onClose, children }: ModalProps) {
+export function Modal({ show, size = "xl", type = 'static', title, icon, buttonArray = [], onClose, loadingFlag = false, children }: ModalProps) {
     const { t } = useTranslation();
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
@@ -309,11 +310,25 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                             <i className="fa-solid fa-xmark text-xl" />
                         </button>
                     </div>
-                    <div className="py-4 px-8 border-y-1 border-light-divider dark:border-dark-divider">
-                        {children}
+                    <div className=" py-4 px-8 border-y-1 border-light-divider dark:border-dark-divider">
+                        <div className={`${loadingFlag ? 'opacity-0 pointer-events-none' : ''}`}>
+                            {children}
+                        </div>
+                        {
+                            loadingFlag &&
+                            <div className={`
+                                text-light-base dark:text-dark-base
+                                absolute top-1/2 left-1/2
+                                transform -translate-x-1/2 -translate-y-1/2
+                                fa-solid fa-spinner fa-spin text-9xl
+                                opacity-100
+                            `}
+                            />
+                        }
                     </div>
                     <div className="flex max-sm:flex-col justify-end md:flex-row gap-4 p-4">
                         {
+                            !loadingFlag &&
                             buttonArray.map((button, index) => (
                                 <Button
                                     key={index}

@@ -348,7 +348,7 @@ export default function Server() {
 
         const response = await apiRequest('get', `/external/${serverId}/server-directory.json`, params);
         if (HTTP_CODE.OK === response.status) {
-            setServerDirectoryDataArray(response.data);
+            setServerDirectoryDataArray(response.data.map((item: any) => ({ ...item, id: item.name })));
             setServerDirectoryCurrent(response.directory);
             setServerDirectoryDataTotalTable(response.total);
             setServerDirectoryOptionColumnTable(
@@ -507,8 +507,15 @@ export default function Server() {
         content: "",
     }
 
-    const [serverFileModalTitle, setServerFileModalTitle] = useState("");
-    const [serverFileSubmitModalLoadingFlag, setServerFileSubmitModalLoadingFlag] = useState(false);
+    const [serverFileStateModal, setServerFileStateModal] = useState<'new' | 'edit'>("new");
+    const [serverFileEntryModal, setServerFileEntryModal] = useState<ModalType>({
+        title: "",
+        submitLabel: "",
+        submitClass: "",
+        submitIcon: "",
+        submitLoadingFlag: false,
+        loadingFlag: false
+    });
 
     const [serverFileForm, setServerFileForm] = useState<ServerFileData>(serverFileInitial);
     const [serverFileFormError, setServerFileFormError] = useState<ServerFileFormError>({});
@@ -521,7 +528,7 @@ export default function Server() {
 
     const serverFileValidate = (data: ServerFileData) => {
         const error: ServerFileFormError = {};
-        if (!data.name?.trim()) error.name = t("validate.required", { name: t("text.name") });
+        if ('new' === serverFileStateModal && !data.name?.trim()) error.name = t("validate.required", { name: t("text.name") });
         if (!data.content?.trim()) error.name = t("validate.required", { name: t("text.content") });
         setServerFileFormError(error);
         return Object.keys(error).length === 0;
@@ -531,6 +538,16 @@ export default function Server() {
         setServerFileFormError({});
 
         if (name) {
+            setServerFileStateModal("edit");
+            setServerFileEntryModal({
+                ...serverFileEntryModal,
+                title: `${serverDirectoryCurrent.join("/")}/${name}`,
+                submitLabel: t("button.update"),
+                submitIcon: "fa-solid fa-refresh",
+                submitLoadingFlag: false,
+                loadingFlag: true,
+            });
+            setModalServerFile(true);
             const response = await apiRequest(
                 'get'
                 , `/external/${serverId}/server-file.json`,
@@ -546,24 +563,38 @@ export default function Server() {
                     "name": name,
                     "content": response.content
                 })
-                toast.show({ type: "done", message: "information.created" });
             } else {
                 toast.show({ type: "error", message: response.message });
+                setModalServerFile(false);
             }
+            setServerFileEntryModal({
+                ...serverFileEntryModal,
+                title: `${serverDirectoryCurrent.join("/")}/${name}`,
+                submitLabel: t("button.update"),
+                submitIcon: "fa-solid fa-refresh",
+                submitLoadingFlag: false,
+                loadingFlag: false,
+            });
         } else {
+            setServerFileStateModal("new");
             setServerFileForm(serverFileInitial);
-            setServerFileModalTitle(serverDirectoryCurrent.join("/"));
-            setServerFileSubmitModalLoadingFlag(false);
+            setServerFileEntryModal({
+                ...serverFileEntryModal,
+                title: serverDirectoryCurrent.join("/"),
+                submitLabel: t("button.create"),
+                submitIcon: "fa-solid fa-bookmark",
+                submitLoadingFlag: false,
+                loadingFlag: false,
+            });
+            setModalServerFile(true);
         }
-
-        setModalServerFile(true);
     };
 
     const confirmStoreServerFile = async () => {
         if (serverFileValidate(serverFileForm)) {
             dialog.show({
                 type: 'confirmation',
-                message: t("confirmation.create", { name: serverFileForm.name }),
+                message: t('new' === serverFileStateModal ? "confirmation.create" : "confirmation.update", { name: serverFileForm.name }),
                 onConfirm: () => storeServerFile(),
             });
         }
@@ -571,15 +602,18 @@ export default function Server() {
 
     const storeServerFile = async () => {
         if (serverFileValidate(serverFileForm)) {
-            setServerFileSubmitModalLoadingFlag(true);
+            setServerFileEntryModal({
+                ...serverFileEntryModal,
+                submitLoadingFlag: true
+            });
 
             const response = await apiRequest(
-                'post'
-                , `/external/${serverId}/server-file.json`,
+                'new' === serverFileStateModal ? 'post' : 'patch',
+                `/external/${serverId}/server-file.json`,
                 {
                     ...serverFileForm,
                     directory: serverDirectoryCurrent,
-                },
+                }
             );
 
             if (HttpStatusCode.NoContent === response.status) {
@@ -590,9 +624,110 @@ export default function Server() {
                 toast.show({ type: "error", message: response.message });
             }
 
-            setServerFileSubmitModalLoadingFlag(false);
+            setServerFileEntryModal({
+                ...serverFileEntryModal,
+                submitLoadingFlag: false
+            });
         }
     }
+
+    const confirmCloneServerEntity = (name?: string) => {
+        if (name !== undefined) {
+            dialog.show({
+                type: 'confirmation',
+                message: t("confirmation.clone", { name: name }),
+                onConfirm: () => cloneServerEntity(name),
+            });
+        } else {
+            if (serverDirectoryCheckBoxTableArray.length > 0) {
+                dialog.show({
+                    type: 'confirmation',
+                    message: t("confirmation.clone", { name: t("text.amountItem", { amount: serverDirectoryCheckBoxTableArray.length }) }),
+                    onConfirm: () => cloneServerEntity(),
+                });
+            } else {
+                dialog.show({
+                    type: 'alert',
+                    message: t("validate.pleaseTickAtLeastAnItem")
+                });
+            }
+        }
+    };
+
+    const cloneServerEntity = async (name?: string) => {
+        if (name === undefined) {
+            setServerDirectoryBulkOptionLoadingFlag(true);
+        }
+
+        const response = await apiRequest(
+            'patch',
+            `/external/${serverId}/server-entity-clone.json`,
+            {
+                "name": name !== undefined ? [name] : serverDirectoryCheckBoxTableArray,
+                "directory": serverDirectoryCurrent
+            }
+        );
+
+        if (HttpStatusCode.NoContent === response.status) {
+            setServerDirectoryCheckBoxTableArray([]);
+            getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
+        } else {
+            toast.show({ type: "error", message: response.message });
+        }
+
+        if (name === undefined) {
+            setServerDirectoryBulkOptionLoadingFlag(false);
+        }
+    };
+
+    const confirmDeleteServerEntity = (name?: string) => {
+        if (name !== undefined) {
+            dialog.show({
+                type: 'warning',
+                message: t("confirmation.delete", { name: name }),
+                onConfirm: () => deleteServerEntity(name),
+            });
+        } else {
+            if (serverDirectoryCheckBoxTableArray.length > 0) {
+                dialog.show({
+                    type: 'warning',
+                    message: t("confirmation.delete", { name: t("text.amountItem", { amount: serverDirectoryCheckBoxTableArray.length }) }),
+                    onConfirm: () => deleteServerEntity(),
+                });
+            } else {
+                dialog.show({
+                    type: 'alert',
+                    message: t("validate.pleaseTickAtLeastAnItem")
+                });
+            }
+        }
+    };
+
+    const deleteServerEntity = async (name?: string) => {
+        if (name === undefined) {
+            setServerDirectoryBulkOptionLoadingFlag(true);
+        }
+
+        const response = await apiRequest(
+            'patch',
+            `/external/${serverId}/server-entity-remove.json`,
+            {
+                "name": name !== undefined ? [name] : serverDirectoryCheckBoxTableArray,
+                "directory": serverDirectoryCurrent
+            }
+        );
+
+        if (HttpStatusCode.NoContent === response.status) {
+            setServerDirectoryCheckBoxTableArray([]);
+            getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
+        } else {
+            toast.show({ type: "error", message: response.message });
+        }
+
+        if (name === undefined) {
+            setServerDirectoryBulkOptionLoadingFlag(false);
+        }
+    };
 
     type ServerUploadData = {
         file: File[];
@@ -806,12 +941,12 @@ export default function Server() {
                             {
                                 label: t("button.clone"),
                                 icon: "fa-solid fa-clone",
-                                onClick: () => { },
+                                onClick: () => confirmCloneServerEntity(),
                             },
                             {
                                 label: t("button.delete"),
                                 icon: "fa-solid fa-trash",
-                                onClick: () => { },
+                                onClick: () => confirmDeleteServerEntity(),
                             }
                         ]}
 
@@ -842,7 +977,7 @@ export default function Server() {
                                                     onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}
                                                 />
                                                 {/* <label role="button" onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}>
-                                                    <i className={`${row.directoryFlag ? "bi-folder-fill" : "bi-file"}`} />&nbsp;&nbsp;{data}
+                                                    <i className={`${ row.directoryFlag ? "bi-folder-fill" : "bi-file" }`} />&nbsp;&nbsp;{data}
                                                 </label>
                                                 &nbsp;|&nbsp;<label className="sm-1" role="button" onClick={() => entryServerDirectoryFile(data)}>
                                                     <i className="bi-arrow-repeat" />
@@ -934,20 +1069,24 @@ export default function Server() {
                 <Modal
                     show={modalServerFile}
                     size="lg"
-                    title={`${serverConnectModalTitle} | ${serverFileModalTitle}`}
+                    title={serverFileEntryModal.title}
                     onClose={() => setModalServerFile(false)}
                     buttonArray={[
                         {
-                            label: t("button.create"),
+                            label: serverFileEntryModal.submitLabel,
                             type: "primary",
-                            icon: 'fa-solid fa-bookmark',
+                            icon: serverFileEntryModal.submitIcon,
                             onClick: () => confirmStoreServerFile(),
-                            loadingFlag: serverFileSubmitModalLoadingFlag
+                            loadingFlag: serverFileEntryModal.submitLoadingFlag
                         }
                     ]}
+                    loadingFlag={serverFileEntryModal.loadingFlag}
                 >
                     <div className="grid grid-cols-1 gap-4">
-                        <InputText autoFocus={true} label={t("text.name")} name="name" value={serverFileForm.name} onChange={onServerFileFormChange} error={serverFileFormError.name} />
+                        {
+                            "new" === serverFileStateModal &&
+                            <InputText autoFocus={true} label={t("text.name")} name="name" value={serverFileForm.name} onChange={onServerFileFormChange} error={serverFileFormError.name} />
+                        }
                         <TextArea label={t("text.content")} name="content" rows={10} value={serverFileForm.content} onChange={onServerFileFormChange} error={serverFileFormError.content} />
                     </div>
                 </Modal>
