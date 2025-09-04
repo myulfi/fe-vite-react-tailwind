@@ -12,6 +12,7 @@ interface ButtonProps {
         label?: string;
         icon?: string;
         onClick: () => void;
+        autoCloseMenu?: boolean;
     }[];
     loadingFlag?: boolean;
 }
@@ -120,7 +121,12 @@ export default function Button({
                         <button
                             key={index}
                             className="w-full text-left px-4 py-2 hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer first:rounded-tl-md last:rounded-b-md flex items-center gap-2"
-                            onClick={menu.onClick}
+                            onClick={() => {
+                                menu.onClick();
+                                if (menu.autoCloseMenu) {
+                                    setMenuOpenFlag(false);
+                                }
+                            }}
                         >
                             <i className={menu.icon}></i> {menu.label}
                         </button>

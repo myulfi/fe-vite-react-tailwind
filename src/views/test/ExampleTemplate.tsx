@@ -63,7 +63,7 @@ export default function ExampleTemplate() {
     };
 
     const [exampleTemplateBulkOptionLoadingFlag, setExampleTemplateBulkOptionLoadingFlag] = useState(false);
-    const [exampleTemplateCheckBoxTableArray, setExampleTemplateCheckBoxTableArray] = useState<number[]>([]);
+    const [exampleTemplateCheckBoxTableArray, setExampleTemplateCheckBoxTableArray] = useState<(string | number)[]>([]);
     const [exampleTemplateOptionColumnTable, setExampleTemplateOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
     const [exampleTemplateAttributeTable, setExampleTemplateAttributeTable] = useState<TableOptions>({
         page: 1,

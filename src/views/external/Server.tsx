@@ -304,6 +304,8 @@ export default function Server() {
         const response = await apiRequest('get', `/external/${id}/server-connect.json`);
         if (HttpStatusCode.Ok === response.status) {
             setServerDirectoryCurrent(response.data);
+            setServerDirectoryEntityClipboardArray([]);
+            setServerDirectoryClipboard([]);
             setServerConnectModalTitle(name);
             setModalServerConnect(true);
         } else {
@@ -324,12 +326,15 @@ export default function Server() {
     const [serverDirectoryCurrentText, setServerDirectoryCurrentText] = useState<string>();
 
     const [serverDirectoryBulkOptionLoadingFlag, setServerDirectoryBulkOptionLoadingFlag] = useState(false);
-    const [serverDirectoryCheckBoxTableArray, setServerDirectoryCheckBoxTableArray] = useState<number[]>([]);
+    const [serverDirectoryCheckBoxTableArray, setServerDirectoryCheckBoxTableArray] = useState<(string | number)[]>([]);
     const [serverDirectoryOptionColumnTable, setServerDirectoryOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
     const [serverDirectoryAttributeTable, setServerDirectoryAttributeTable] = useState<TableOptions>({ page: 1, length: 10 });
     const [serverDirectoryDataTotalTable, setServerDirectoryDataTotalTable] = useState(0);
     const [serverDirectoryTableLoadingFlag, setServerDirectoryTableLoadingFlag] = useState(false);
     const [serverDirectoryRefreshTable, setServerDirectoryRefreshTable] = useState<boolean>(false);
+
+    const [serverDirectoryEntityClipboardArray, setServerDirectoryEntityClipboardArray] = useState<(string | number)[]>([]);
+    const [serverDirectoryClipboard, setServerDirectoryClipboard] = useState<string[]>([]);
 
     const [serverDirectoryDataArray, setServerDirectoryDataArray] = useState([]);
 
@@ -680,6 +685,66 @@ export default function Server() {
         }
     };
 
+    const confirmClipboardServerEntity = (name?: string) => {
+        if (name !== undefined) {
+            setServerDirectoryEntityClipboardArray([name]);
+            setServerDirectoryClipboard([...serverDirectoryCurrent]);
+            setServerDirectoryCheckBoxTableArray([]);
+            toast.show({ type: "done", message: t("confirmation.clipboard", { name: name }) });
+        } else {
+            if (serverDirectoryCheckBoxTableArray.length > 0) {
+                setServerDirectoryEntityClipboardArray([...serverDirectoryCheckBoxTableArray]);
+                setServerDirectoryClipboard([...serverDirectoryCurrent]);
+                setServerDirectoryCheckBoxTableArray([]);
+                toast.show({ type: "done", message: t("confirmation.clipboard", { name: t("text.amountItem", { amount: serverDirectoryCheckBoxTableArray.length }) }) });
+            } else {
+                dialog.show({
+                    type: 'alert',
+                    message: t("validate.pleaseTickAtLeastAnItem")
+                });
+            }
+        }
+    };
+
+    const confirmPasteServerEntity = () => {
+        if (serverDirectoryEntityClipboardArray.length > 0) {
+            dialog.show({
+                type: 'confirmation',
+                message: t("confirmation.paste", { name: t("text.amountItem", { amount: serverDirectoryEntityClipboardArray.length }) }),
+                onConfirm: () => pasteServerEntity(),
+            });
+        } else {
+            dialog.show({
+                type: 'alert',
+                message: t("validate.pleaseClipboardFirst")
+            });
+        }
+    };
+
+    const pasteServerEntity = async () => {
+        // setServerDirectoryBulkOptionLoadingFlag(true);
+
+        const response = await apiRequest(
+            'patch',
+            `/external/${serverId}/server-entity-copy.json`,
+            {
+                "name": serverDirectoryEntityClipboardArray,
+                "sourceDirectory": serverDirectoryClipboard,
+                "targetDirectory": serverDirectoryCurrent
+            }
+        );
+
+        if (HttpStatusCode.NoContent === response.status) {
+            setServerDirectoryEntityClipboardArray([]);
+            setServerDirectoryClipboard([]);
+            getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
+        } else {
+            toast.show({ type: "error", message: response.message });
+        }
+
+        // setServerDirectoryBulkOptionLoadingFlag(false);
+    };
+
     const confirmDeleteServerEntity = (name?: string) => {
         if (name !== undefined) {
             dialog.show({
@@ -912,25 +977,33 @@ export default function Server() {
                         additionalButtonArray={[
                             {
                                 label: t("button.addToShortcut"),
-                                type: 'primary',
+                                type: 'primary' as const,
                                 icon: "fa-solid fa-up-right-from-square",
                                 onClick: () => toast.show({ type: "done", message: "hahah" })
                             },
                             {
                                 label: t("button.createFolder"),
-                                type: 'primary',
+                                type: 'primary' as const,
                                 icon: "fa-solid fa-folder-plus",
                                 onClick: () => entryServerFolder()
                             },
                             {
                                 label: t("button.addFile"),
-                                type: 'primary',
+                                type: 'primary' as const,
                                 icon: "fa-solid fa-file-circle-plus",
                                 onClick: () => entryServerFile()
                             },
+                            ...(serverDirectoryClipboard.length > 0
+                                ? [{
+                                    label: t("button.paste"),
+                                    type: 'primary' as const,
+                                    icon: "fa-solid fa-paste",
+                                    onClick: () => confirmPasteServerEntity()
+                                }]
+                                : []),
                             {
                                 label: t("button.upload"),
-                                type: 'primary',
+                                type: 'primary' as const,
                                 icon: "fa-solid fa-upload",
                                 onClick: () => entryServerUpload()
                             }
@@ -942,6 +1015,12 @@ export default function Server() {
                                 label: t("button.clone"),
                                 icon: "fa-solid fa-clone",
                                 onClick: () => confirmCloneServerEntity(),
+                            },
+                            {
+                                label: t("button.clipboard"),
+                                icon: "fa-solid fa-clipboard",
+                                autoCloseMenu: true,
+                                onClick: () => confirmClipboardServerEntity(),
                             },
                             {
                                 label: t("button.delete"),

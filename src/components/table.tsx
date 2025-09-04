@@ -16,6 +16,7 @@ interface TableProps {
         label: string;
         icon: string;
         onClick: () => void;
+        autoCloseMenu?: boolean;
     }[];
     lengthFlag?: boolean;
     searchFlag?: boolean;
@@ -32,8 +33,8 @@ interface TableProps {
         orderable?: boolean;
     }[];
     order?: [string, 'asc' | 'desc'];
-    checkBoxArray?: number[] | undefined;
-    onCheckBox?: (ids: number[]) => void;
+    checkBoxArray?: (string | number)[] | undefined;
+    onCheckBox?: (ids: (string | number)[]) => void;
     dataTotal?: number;
     dataLoadMoreFlag?: number;
     initialSizePage?: number;
@@ -169,7 +170,7 @@ export default function Table({
         }
     }
 
-    const onCheckBoxSingle = (id: number) => {
+    const onCheckBoxSingle = (id: string | number) => {
         if (checkBoxArray !== undefined) {
             if (checkBoxArray.includes(id)) {
                 checkBoxArray.splice(checkBoxArray.indexOf(id), 1)
@@ -269,7 +270,15 @@ export default function Table({
                         {
                             additionalButtonArray.map((additionalButton, index) => (
                                 <div key={index} className="w-full sm:w-auto">
-                                    <Button key={index} label={additionalButton.label} className={`w-full text-nowrap ${additionalButton.className}`} size="md" type={additionalButton.type} icon={additionalButton.icon} onClick={additionalButton.onClick} loadingFlag={additionalButton.loadingFlag} />
+                                    <Button
+                                        key={index}
+                                        label={additionalButton.label}
+                                        className={`w-full text-nowrap ${additionalButton.className}`}
+                                        size="md"
+                                        type={additionalButton.type}
+                                        icon={additionalButton.icon}
+                                        onClick={additionalButton.onClick}
+                                        loadingFlag={additionalButton.loadingFlag} />
                                 </div>
                             ))
                         }
