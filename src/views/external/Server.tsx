@@ -16,7 +16,7 @@ import InputPassword from "../../components/form/InputPassword";
 import Radio from "../../components/form/Radio";
 import LabelBig from "../../components/form/LabelBig";
 import Switch from "../../components/form/Switch";
-import { formatBytes, yesNo } from "../../function/commonHelper";
+import { formatBytes, jsonToFormData, yesNo } from "../../function/commonHelper";
 import BreadCrumb from "../../components/BreadCrumb";
 import Span from "../../components/Span";
 import { useClickOutside } from "../../hook/useClickOutside";
@@ -428,75 +428,98 @@ export default function Server() {
         getServerDirectory({ ...serverDirectoryAttributeTable, page: 1, search: "" }, path!.split("/"));
     }
 
-    type ServerFolderData = {
+    type ServerEntityData = {
         name: string;
+        oldName: string;
     }
 
-    type ServerFolderFormError = Partial<Record<keyof ServerFolderData, string>>;
+    type ServerEntityFormError = Partial<Record<keyof ServerEntityData, string>>;
 
-    const serverFolderInitial: ServerFolderData = {
+    const serverEntityInitial: ServerEntityData = {
         name: "",
+        oldName: "",
     }
 
-    const [serverFolderModalTitle, setServerFolderModalTitle] = useState("");
-    const [serverFolderSubmitModalLoadingFlag, setServerFolderSubmitModalLoadingFlag] = useState(false);
+    const [serverEntityModal, setServerEntityModal] = useState<ModalType>({
+        title: "",
+        submitLabel: "",
+        submitClass: "",
+        submitIcon: "",
+        submitLoadingFlag: false,
+    });
 
-    const [serverFolderForm, setServerFolderForm] = useState<ServerFolderData>(serverFolderInitial);
-    const [serverFolderFormError, setServerFolderFormError] = useState<ServerFolderFormError>({});
+    const [serverEntityForm, setServerEntityForm] = useState<ServerEntityData>(serverEntityInitial);
+    const [serverEntityFormError, setServerEntityFormError] = useState<ServerEntityFormError>({});
 
-    const onServerFolderFormChange = (e: { target: { name: string; value: any } }) => {
+    const onServerEntityFormChange = (e: { target: { name: string; value: any } }) => {
         const { name, value } = e.target;
-        setServerFolderForm({ ...serverFolderForm, [name]: value });
-        setServerFolderFormError({ ...serverFolderFormError, [name]: undefined });
+        setServerEntityForm({ ...serverEntityForm, [name]: value });
+        setServerEntityFormError({ ...serverEntityFormError, [name]: undefined });
     };
 
-    const serverFolderValidate = (data: ServerFolderData) => {
-        const error: ServerFolderFormError = {};
+    const serverEntityValidate = (data: ServerEntityData) => {
+        const error: ServerEntityFormError = {};
         if (!data.name?.trim()) error.name = t("validate.required", { name: t("text.name") });
-        setServerFolderFormError(error);
+        setServerEntityFormError(error);
         return Object.keys(error).length === 0;
     };
 
-    const entryServerFolder = () => {
-        setServerFolderFormError({});
-        setServerFolderForm(serverFolderInitial);
-        setServerFolderModalTitle(serverDirectoryCurrent.join("/"));
-        setServerFolderSubmitModalLoadingFlag(false);
-        setModalServerFolder(true);
+    const entryServerEntity = (name?: string) => {
+        setServerEntityFormError({});
+        if (name) {
+            setServerEntityForm({ ...serverEntityInitial, "name": name, "oldName": name });
+            setServerEntityModal({
+                ...serverEntityModal,
+                title: `${serverDirectoryCurrent.join("/")}/${name}`,
+                submitLabel: t("button.rename"),
+                submitIcon: "fa-solid fa-refresh",
+                submitLoadingFlag: false,
+            });
+        } else {
+            setServerEntityForm(serverEntityInitial);
+            setServerEntityModal({
+                ...serverEntityModal,
+                title: serverDirectoryCurrent.join("/"),
+                submitLabel: t("button.save"),
+                submitIcon: "fa-solid fa-bookmark",
+                submitLoadingFlag: false,
+            });
+        }
+        setModalServerEntity(true);
     };
 
-    const confirmStoreServerFolder = async () => {
-        if (serverFolderValidate(serverFolderForm)) {
+    const confirmStoreServerEntity = async () => {
+        if (serverEntityValidate(serverEntityForm)) {
             dialog.show({
                 type: 'confirmation',
-                message: t("confirmation.create", { name: serverFolderForm.name }),
-                onConfirm: () => storeServerFolder(),
+                message: t(serverEntityForm.oldName.length > 0 ? "confirmation.rename" : "confirmation.create", { name: serverEntityForm.name }),
+                onConfirm: () => storeServerEntity(),
             });
         }
     };
 
-    const storeServerFolder = async () => {
-        if (serverFolderValidate(serverFolderForm)) {
-            setServerFolderSubmitModalLoadingFlag(true);
+    const storeServerEntity = async () => {
+        if (serverEntityValidate(serverEntityForm)) {
+            setServerEntityModal({ ...serverEntityModal, submitLoadingFlag: true });
 
             const response = await apiRequest(
-                'post'
-                , `/external/${serverId}/server-folder.json`,
+                serverEntityForm.oldName.length ? 'patch' : 'post'
+                , `/external/${serverId}/server-entity.json`,
                 {
-                    ...serverFolderForm,
+                    ...serverEntityForm,
                     directory: serverDirectoryCurrent,
                 },
             );
 
-            if (HttpStatusCode.NoContent === response.status) {
+            if (HttpStatusCode.Created === response.status || HttpStatusCode.NoContent === response.status) {
                 getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
-                toast.show({ type: "done", message: "information.created" });
-                setModalServerFolder(false);
+                toast.show({ type: "done", message: HttpStatusCode.Created === response.status ? "information.created" : "information.updated" });
+                setModalServerEntity(false);
             } else {
                 toast.show({ type: "error", message: response.message });
             }
 
-            setServerFolderSubmitModalLoadingFlag(false);
+            setServerEntityModal({ ...serverEntityModal, submitLoadingFlag: false });
         }
     }
 
@@ -621,10 +644,10 @@ export default function Server() {
                 }
             );
 
-            if (HttpStatusCode.NoContent === response.status) {
+            if (HttpStatusCode.Created === response.status || HttpStatusCode.NoContent === response.status) {
                 getServerDirectory(serverDirectoryAttributeTable, serverDirectoryCurrent);
-                toast.show({ type: "done", message: "information.created" });
-                setModalServerFile(false);
+                toast.show({ type: "done", message: HttpStatusCode.Created === response.status ? "information.created" : "information.updated" });
+                setModalServerEntity(false);
             } else {
                 toast.show({ type: "error", message: response.message });
             }
@@ -795,13 +818,13 @@ export default function Server() {
     };
 
     type ServerUploadData = {
-        file: File[];
+        files: File[];
     }
 
     type ServerUploadFormError = Partial<Record<keyof ServerUploadData, string>>;
 
     const serverUploadInitial: ServerUploadData = {
-        file: [],
+        files: [],
     }
 
     const [serverUploadModalTitle, setServerUploadModalTitle] = useState("");
@@ -818,7 +841,7 @@ export default function Server() {
 
     const serverUploadValidate = (data: ServerUploadData) => {
         const error: ServerUploadFormError = {};
-        if (data.file.length === 0) error.file = t("validate.required", { name: t("text.name") });
+        if (data.files.length === 0) error.files = t("validate.required", { name: t("text.file") });
         setServerUploadFormError(error);
         return Object.keys(error).length === 0;
     };
@@ -835,7 +858,7 @@ export default function Server() {
         if (serverUploadValidate(serverUploadForm)) {
             dialog.show({
                 type: 'confirmation',
-                message: t("confirmation.create", { name: serverUploadForm.file.length }),
+                message: t("confirmation.create", { name: serverUploadForm.files.length }),
                 onConfirm: () => storeServerUpload(),
             });
         }
@@ -847,11 +870,11 @@ export default function Server() {
 
             const response = await apiRequest(
                 'post'
-                , `/external/${serverId}/server-upload.json`,
-                {
+                , `/external/${serverId}/server-file-upload.json`,
+                jsonToFormData({
                     ...serverUploadForm,
                     directory: serverDirectoryCurrent,
-                },
+                }),
             );
 
             if (HttpStatusCode.NoContent === response.status) {
@@ -868,7 +891,7 @@ export default function Server() {
 
     const [modalServer, setModalServer] = useState(false);
     const [modalServerConnect, setModalServerConnect] = useState(false);
-    const [modalServerFolder, setModalServerFolder] = useState(false);
+    const [modalServerEntity, setModalServerEntity] = useState(false);
     const [modalServerFile, setModalServerFile] = useState(false);
     const [modalServerUpload, setModalServerUpload] = useState(false);
 
@@ -985,7 +1008,7 @@ export default function Server() {
                                 label: t("button.createFolder"),
                                 type: 'primary' as const,
                                 icon: "fa-solid fa-folder-plus",
-                                onClick: () => entryServerFolder()
+                                onClick: () => entryServerEntity()
                             },
                             {
                                 label: t("button.addFile"),
@@ -1048,25 +1071,39 @@ export default function Server() {
                                         )
                                     } else {
                                         return (
-                                            <Fragment>
+                                            <div className="flex flex-wrap gap-2">
                                                 <Span
                                                     label={data}
                                                     icon={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file"}`}
                                                     className="hover:cursor-pointer hover:underline"
                                                     onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}
                                                 />
-                                                {/* <label role="button" onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}>
-                                                    <i className={`${ row.directoryFlag ? "bi-folder-fill" : "bi-file" }`} />&nbsp;&nbsp;{data}
-                                                </label>
-                                                &nbsp;|&nbsp;<label className="sm-1" role="button" onClick={() => entryServerDirectoryFile(data)}>
-                                                    <i className="bi-arrow-repeat" />
-                                                </label>
-                                                &nbsp;<label className="sm-1" role="button" onClick={() => confirmPasteServerDirectoryFile(data)}>
-                                                    <i className="bi-copy" />
-                                                </label>&nbsp;<label className="sm-1" role="button" onClick={() => confirmDeleteServerDirectoryFile(data)}>
-                                                    <i className="bi-trash" />
-                                                </label> */}
-                                            </Fragment>
+                                                |
+                                                <Button
+                                                    type="primary"
+                                                    size="xs"
+                                                    icon='fa-solid fa-i-cursor'
+                                                    onClick={() => entryServerEntity(data)}
+                                                />
+                                                <Button
+                                                    type="primary"
+                                                    size="xs"
+                                                    icon='fa-solid fa-download'
+                                                    onClick={() => { }}
+                                                />
+                                                <Button
+                                                    type="warning"
+                                                    size="xs"
+                                                    icon='fa-solid fa-clone'
+                                                    onClick={() => confirmCloneServerEntity(data)}
+                                                />
+                                                <Button
+                                                    type="danger"
+                                                    size="xs"
+                                                    icon='fa-solid fa-trash'
+                                                    onClick={() => confirmDeleteServerEntity(data)}
+                                                />
+                                            </div>
                                         )
                                     }
                                 }
@@ -1078,7 +1115,7 @@ export default function Server() {
                                 orderable: true,
                                 minDevice: 'mobile',
                                 render: (data, row) => {
-                                    if (row.goToParentFlag) {
+                                    if (row.goToParentFlag || row.directoryFlag) {
                                         return ""
                                     } else {
                                         return formatBytes(data)
@@ -1127,22 +1164,22 @@ export default function Server() {
                     />
                 </Modal>
                 <Modal
-                    show={modalServerFolder}
+                    show={modalServerEntity}
                     size="md"
-                    title={`${serverConnectModalTitle} | ${serverFolderModalTitle}`}
-                    onClose={() => setModalServerFolder(false)}
+                    title={`${serverConnectModalTitle} | ${serverEntityModal.title}`}
+                    onClose={() => setModalServerEntity(false)}
                     buttonArray={[
                         {
-                            label: t("button.create"),
+                            label: serverEntityModal.submitLabel,
                             type: "primary",
-                            icon: 'fa-solid fa-bookmark',
-                            onClick: () => confirmStoreServerFolder(),
-                            loadingFlag: serverFolderSubmitModalLoadingFlag
+                            icon: serverEntityModal.submitIcon,
+                            onClick: () => confirmStoreServerEntity(),
+                            loadingFlag: serverEntityModal.submitLoadingFlag
                         }
                     ]}
                 >
                     <div className="grid grid-cols-1 gap-4">
-                        <InputText autoFocus={true} label={t("text.name")} name="name" value={serverFolderForm.name} onChange={onServerFolderFormChange} error={serverFolderFormError.name} />
+                        <InputText autoFocus={true} label={t("text.name")} name="name" value={serverEntityForm.name} onChange={onServerEntityFormChange} error={serverEntityFormError.name} />
                     </div>
                 </Modal>
                 <Modal
@@ -1186,7 +1223,7 @@ export default function Server() {
                     ]}
                 >
                     <div className="grid grid-cols-1 gap-4">
-                        <InputFile label={t("text.file")} name="file" value={serverUploadForm.file} onChange={onServerUploadFormChange} error={serverUploadFormError.file} />
+                        <InputFile label={t("text.file")} name="files" value={serverUploadForm.files} onChange={onServerUploadFormChange} error={serverUploadFormError.files} />
                     </div>
                 </Modal>
             </ModalStackProvider>

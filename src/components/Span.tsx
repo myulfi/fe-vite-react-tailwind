@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface SpanProps {
     label: string;
     icon?: string;

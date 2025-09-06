@@ -18,7 +18,7 @@ interface ButtonProps {
 }
 
 const sizeClasses = {
-    xs: 'text-xs px-1 py-1',
+    xs: 'text-xs p-1 text-[8px]',
     sm: 'text-sm px-2 py-1.5',
     md: 'text-base px-3 py-2',
     lg: 'text-lg px-4 py-2',
@@ -65,7 +65,7 @@ const typeClasses = {
 };
 
 export default function Button({
-    label = 'Button',
+    label,
     className,
     size = 'sm',
     type,
@@ -94,8 +94,8 @@ export default function Button({
                 disabled={loadingFlag}
                 onClick={(e) => menuArray.length > 0 ? setMenuOpenFlag((prev) => !prev) : onClick?.(e)}
             >
-                {icon && <i className={`${icon} mr-2`} />}
-                <span>{label}</span>
+                {icon && <i className={`${icon} ${label ? 'mr-2' : ''}`} />}
+                {label && <span>{label}</span>}
                 <i
                     className={`
                         fa-solid fa-spinner fa-spin

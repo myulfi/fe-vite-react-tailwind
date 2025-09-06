@@ -154,3 +154,35 @@ export function onCopy(e: React.MouseEvent<HTMLElement>, value: string) {
 export function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function appendFormData(
+    formData: FormData,
+    key: string,
+    value: unknown
+): void {
+    if (value instanceof File || value instanceof Blob) {
+        formData.append(key, value);
+    } else if (Array.isArray(value)) {
+        for (const item of value) {
+            appendFormData(formData, key, item);
+        }
+    } else if (value !== null && typeof value === "object") {
+        for (const nestedKey in value as Record<string, unknown>) {
+            const nestedValue = (value as Record<string, unknown>)[nestedKey];
+            appendFormData(formData, `${key}[${nestedKey}]`, nestedValue);
+        }
+    } else if (value !== undefined) {
+        formData.append(key, String(value));
+    }
+}
+
+export function jsonToFormData(json: Record<string, unknown>): FormData {
+    const formData = new FormData();
+
+    for (const key in json) {
+        const value = json[key];
+        appendFormData(formData, key, value);
+    }
+
+    return formData;
+}
