@@ -769,9 +769,8 @@ export default function Database() {
             }
 
             if ("xls" === databaseExportForm.format) {
-                const response = await apiRequest('xlsx', url);
-                console.log(response);
-                downloadFile("test.xlsx", [response.data]);
+                const response = await apiRequest('blob', url);
+                downloadFile(response);
                 setModalDatabaseExport(false);
             } else {
                 const response = await apiRequest('get', url);
@@ -780,7 +779,7 @@ export default function Database() {
                         await navigator.clipboard.writeText(response.data)
                         toast.show({ type: "error", message: "Copied" });
                     } else if ("file" === databaseExportForm.saveAs) {
-                        downloadFile("test.txt", [response.data]);
+                        downloadFile(response);
                     }
                     // setModalDatabaseExport(false);
                 } else {

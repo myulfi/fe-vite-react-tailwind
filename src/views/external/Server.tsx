@@ -16,7 +16,7 @@ import InputPassword from "../../components/form/InputPassword";
 import Radio from "../../components/form/Radio";
 import LabelBig from "../../components/form/LabelBig";
 import Switch from "../../components/form/Switch";
-import { formatBytes, jsonToFormData, yesNo } from "../../function/commonHelper";
+import { downloadFile, formatBytes, jsonToFormData, yesNo } from "../../function/commonHelper";
 import BreadCrumb from "../../components/BreadCrumb";
 import Span from "../../components/Span";
 import { useClickOutside } from "../../hook/useClickOutside";
@@ -659,6 +659,55 @@ export default function Server() {
         }
     }
 
+    const confirmDownloadServerEntity = (name?: string) => {
+        if (name !== undefined) {
+            dialog.show({
+                type: 'confirmation',
+                message: t("confirmation.download", { name: name }),
+                onConfirm: () => downloadServerEntity(name),
+            });
+        } else {
+            if (serverDirectoryCheckBoxTableArray.length > 0) {
+                dialog.show({
+                    type: 'confirmation',
+                    message: t("confirmation.download", { name: t("text.amountItem", { amount: serverDirectoryCheckBoxTableArray.length }) }),
+                    onConfirm: () => downloadServerEntity(),
+                });
+            } else {
+                dialog.show({
+                    type: 'alert',
+                    message: t("validate.pleaseTickAtLeastAnItem")
+                });
+            }
+        }
+    };
+
+    const downloadServerEntity = async (name?: string) => {
+        if (name === undefined) {
+            setServerDirectoryBulkOptionLoadingFlag(true);
+        }
+
+        const response = await apiRequest(
+            'blob',
+            `/external/${serverId}/server-entity.json`,
+            {
+                "name": name !== undefined ? name : serverDirectoryCheckBoxTableArray.join("||"),
+                "directory": serverDirectoryCurrent.join("/")
+            }
+        );
+
+        if (HttpStatusCode.Ok === response.status) {
+            downloadFile(response);
+            setServerDirectoryCheckBoxTableArray([]);
+        } else {
+            toast.show({ type: "error", message: response.message });
+        }
+
+        if (name === undefined) {
+            setServerDirectoryBulkOptionLoadingFlag(false);
+        }
+    };
+
     const confirmCloneServerEntity = (name?: string) => {
         if (name !== undefined) {
             dialog.show({
@@ -1035,6 +1084,11 @@ export default function Server() {
                         bulkOptionLoadingFlag={serverDirectoryBulkOptionLoadingFlag}
                         bulkOptionArray={[
                             {
+                                label: t("button.download"),
+                                icon: "fa-solid fa-download",
+                                onClick: () => confirmDownloadServerEntity(),
+                            },
+                            {
                                 label: t("button.clone"),
                                 icon: "fa-solid fa-clone",
                                 onClick: () => confirmCloneServerEntity(),
@@ -1089,7 +1143,7 @@ export default function Server() {
                                                     type="primary"
                                                     size="xs"
                                                     icon='fa-solid fa-download'
-                                                    onClick={() => { }}
+                                                    onClick={() => confirmDownloadServerEntity(data)}
                                                 />
                                                 <Button
                                                     type="warning"

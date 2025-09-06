@@ -17,7 +17,7 @@ const getAuthHeader = (contentType: string) => ({
 })
 
 const apiRequest = async (
-    method: 'get' | 'xlsx' | 'post' | 'put' | 'patch' | 'delete',
+    method: 'get' | 'blob' | 'post' | 'put' | 'patch' | 'delete',
     url: string,
     params?: ParamsType
 ): Promise<any> => {
@@ -38,7 +38,7 @@ const apiRequest = async (
                     response = await api.get(url, { headers, params })
                     break
 
-                case 'xlsx':
+                case 'blob':
                     response = await api.get(url, {
                         headers,
                         params,
@@ -66,11 +66,8 @@ const apiRequest = async (
                     throw new Error('HTTP method not supported.')
             }
 
-            if ('xlsx' === method) {
-                result = {
-                    data: response.data,
-                    status: response.status
-                }
+            if ('blob' === method) {
+                result = response;
             } else {
                 result = {
                     ...response.data,
@@ -105,8 +102,8 @@ const apiRequest = async (
                     }
                 )
 
-                if (refreshResponse.data.status === HTTP_CODE.OK) {
-                    const { accessToken, refreshToken, user } = refreshResponse.data.data
+                if (refreshResponse.status === HTTP_CODE.OK) {
+                    const { accessToken, refreshToken, user } = refreshResponse.data
 
                     localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, accessToken)
                     localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, refreshToken)
