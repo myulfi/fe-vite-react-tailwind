@@ -123,7 +123,7 @@ export default function Database() {
     const getMasterExternalServerArray = async () => {
         const response = await apiRequest('get', '/master/external-server.json')
         if (HTTP_CODE.OK === response.status) {
-            setMasterExternalServerArray([{ key: 0, value: t("text.none") }, ...response.data]);
+            setMasterExternalServerArray([{ key: null, value: t("text.none") }, ...response.data]);
         }
     }
 
