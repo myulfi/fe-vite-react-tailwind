@@ -89,13 +89,22 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[6000]">
-            <div className="bg-white dark:bg-dark-clear rounded-lg p-6 w-[320px] shadow-lg space-y-4">
-                <div className="flex items-center gap-2 text-lg font-semibold text-dark dark:text-white">
-                    <i className={icon}></i>
-                    <span>{title}</span>
+            <div className="bg-white dark:bg-dark-clear rounded-lg w-[320px] shadow-lg space-y-4">
+                <div className="flex justify-between pt-4 pb-2 px-3.5">
+                    <div className="flex items-center gap-2 text-lg font-bold text-dark dark:text-white">
+                        <i className={icon}></i>
+                        <span>{title}</span>
+                    </div>
+                    <button
+                        className="text-light-base-line dark:text-dark-base-line hover:text-light-base-line-secondary hover:dark:text-dark-base-line-secondary cursor-pointer p-1 rounded"
+                        onClick={onClose}
+                        aria-label="Open sidebar"
+                    >
+                        <i className="fa-solid fa-xmark text-xl" />
+                    </button>
                 </div>
-                <p className="text-sm text-dark dark:text-gray-300">{message}</p>
-                <div className="flex justify-end gap-2 mt-4">
+                <p className="text-sm text-dark dark:text-gray-300 text-center px-4">{message}</p>
+                <div className="flex justify-end gap-4 mt-4 p-4 pt-2">
                     {type !== 'alert' && (
                         <Button
                             label={

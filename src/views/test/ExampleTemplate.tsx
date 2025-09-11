@@ -4,7 +4,7 @@ import { Fragment, useState } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
-import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
+import { Modal, ModalStackProvider } from "../../ModalContext";
 import Label from "../../components/form/Label";
 import { toast } from "../../ToastContext";
 import InputText from "../../components/form/InputText";
@@ -16,6 +16,7 @@ import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
 import { formatMoney, yesNo } from "../../function/commonHelper";
+import { dialog } from "../../DialogContext";
 
 export default function ExampleTemplate() {
     const { t } = useTranslation();
@@ -232,7 +233,7 @@ export default function ExampleTemplate() {
 
     const confirmStoreExampleTemplate = async () => {
         if (exampleTemplateValidate(exampleTemplateForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t(exampleTemplateId === 0 ? "confirmation.create" : "confirmation.update", { name: exampleTemplateForm.name }),
                 onConfirm: () => storeExampleTemplate(),
@@ -264,20 +265,20 @@ export default function ExampleTemplate() {
 
     const confirmDeleteExampleTemplate = (id?: number, name?: string) => {
         if (id !== undefined) {
-            confirmDialog({
+            dialog.show({
                 type: 'warning',
                 message: t("confirmation.delete", { name: name }),
                 onConfirm: () => deleteExampleTemplate(id),
             });
         } else {
             if (exampleTemplateCheckBoxTableArray.length > 0) {
-                confirmDialog({
+                dialog.show({
                     type: 'warning',
                     message: t("confirmation.delete", { name: t("text.amountItem", { amount: exampleTemplateCheckBoxTableArray.length }) }),
                     onConfirm: () => deleteExampleTemplate(),
                 });
             } else {
-                confirmDialog({
+                dialog.show({
                     type: 'alert',
                     message: t("validate.pleaseTickAtLeastAnItem")
                 });

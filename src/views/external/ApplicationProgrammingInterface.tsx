@@ -4,7 +4,7 @@ import { Fragment, useState } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
-import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
+import { Modal, ModalStackProvider } from "../../ModalContext";
 import Label from "../../components/form/Label";
 import { toast } from "../../ToastContext";
 import InputText from "../../components/form/InputText";
@@ -16,6 +16,8 @@ import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
 import { formatMoney, yesNo } from "../../function/commonHelper";
+import { dialog } from "../../DialogContext";
+import MenuTree from "../../components/containers/MenuTree";
 
 export default function ApplicationProgrammingInterface() {
     const { t } = useTranslation();
@@ -36,7 +38,13 @@ export default function ApplicationProgrammingInterface() {
 
     const [applicationProgrammingInterfaceStateModal, setApplicationProgrammingInterfaceStateModal] = useState<ModalCategory>("entry");
 
-    const [applicationProgrammingInterfaceOptionColumnTable, setApplicationProgrammingInterfaceOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
+    const [applicationProgrammingInterfaceOptionColumnTable, setApplicationProgrammingInterfaceOptionColumnTable] = useState<{
+        [id: number]: {
+            viewedButtonFlag: boolean;
+            requestButtonFlag: boolean;
+            deletedButtonFlag: boolean;
+        };
+    }>({});
     const [applicationProgrammingInterfaceAttributeTable, setApplicationProgrammingInterfaceAttributeTable] = useState<TableOptions>({
         page: 1,
         length: 10,
@@ -178,7 +186,7 @@ export default function ApplicationProgrammingInterface() {
 
     const confirmStoreApplicationProgrammingInterface = async () => {
         if (applicationProgrammingInterfaceValidate(applicationProgrammingInterfaceForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t(applicationProgrammingInterfaceId === 0 ? "confirmation.create" : "confirmation.update", { name: applicationProgrammingInterfaceForm.name }),
                 onConfirm: () => storeApplicationProgrammingInterface(),
@@ -209,7 +217,7 @@ export default function ApplicationProgrammingInterface() {
     }
 
     const confirmDeleteApplicationProgrammingInterface = (id: number, name: string) => {
-        confirmDialog({
+        dialog.show({
             type: 'warning',
             message: t("confirmation.delete", { name: name }),
             onConfirm: () => deleteApplicationProgrammingInterface(id),
@@ -243,14 +251,45 @@ export default function ApplicationProgrammingInterface() {
         }));
     };
 
+
+    const [applicationProgrammingInterfaceRequestList, setApplicationProgrammingInterfaceRequestList] = useState([]);
+
+    const viewRequestApplicationProgrammingInterface = async (id: number) => {
+        setApplicationProgrammingInterfaceId(id);
+        setApplicationProgrammingInterfaceOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                requestButtonFlag: true,
+            },
+        }));
+
+        const response = await apiRequest('get', `/external/${id}/api-request.json`);
+        if (HTTP_CODE.OK === response.status) {
+            setModalApplicationProgrammingInterfaceRequest(true);
+            setApplicationProgrammingInterfaceRequestList(response.data);
+        } else {
+            toast.show({ type: 'error', message: response.message });
+        }
+
+        setApplicationProgrammingInterfaceOptionColumnTable(prev => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                requestButtonFlag: false,
+            },
+        }));
+    };
+
     const [modalApplicationProgrammingInterface, setModalApplicationProgrammingInterface] = useState(false);
+    const [modalApplicationProgrammingInterfaceRequest, setModalApplicationProgrammingInterfaceRequest] = useState(false);
 
     return (
         <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
             <ModalStackProvider>
                 <Modal
                     show={modalApplicationProgrammingInterface}
-                    size="md"
+                    size="sm"
                     title={applicationProgrammingInterfaceEntryModal.title}
                     onClose={() => setModalApplicationProgrammingInterface(false)}
                     buttonArray={[
@@ -270,12 +309,12 @@ export default function ApplicationProgrammingInterface() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         {
                             "entry" === applicationProgrammingInterfaceStateModal
                             && <Fragment>
                                 <InputText autoFocus={true} label={t("text.name")} name="name" value={applicationProgrammingInterfaceForm.name} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.name} />
-                                <TextArea label={t("text.description")} name="description" rows={1} value={applicationProgrammingInterfaceForm.description} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.description} />
+                                <TextArea label={t("text.description")} name="description" rows={4} value={applicationProgrammingInterfaceForm.description} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.description} />
                             </Fragment>
                         }
                         {
@@ -285,6 +324,16 @@ export default function ApplicationProgrammingInterface() {
                                 <Label text={t("text.description")} value={applicationProgrammingInterfaceForm.description} />
                             </Fragment>
                         }
+                    </div>
+                </Modal>
+                <Modal
+                    show={modalApplicationProgrammingInterfaceRequest}
+                    size="xl"
+                    title={applicationProgrammingInterfaceEntryModal.title}
+                    onClose={() => setModalApplicationProgrammingInterfaceRequest(false)}
+                >
+                    <div className="grid grid-cols-1 gap-4">
+                        <MenuTree menuList={applicationProgrammingInterfaceRequestList} />
                     </div>
                 </Modal>
             </ModalStackProvider>
@@ -332,6 +381,14 @@ export default function ApplicationProgrammingInterface() {
                                         icon="fa-solid fa-list"
                                         onClick={() => viewApplicationProgrammingInterface(data)}
                                         loadingFlag={applicationProgrammingInterfaceOptionColumnTable[data]?.viewedButtonFlag}
+                                    />
+                                    <Button
+                                        label={t("button.request")}
+                                        className="max-sm:w-full"
+                                        type='primary'
+                                        icon="fa-solid fa-circle-arrow-right"
+                                        onClick={() => viewRequestApplicationProgrammingInterface(data)}
+                                        loadingFlag={applicationProgrammingInterfaceOptionColumnTable[data]?.requestButtonFlag}
                                     />
                                     <Button
                                         label={t("button.delete")}

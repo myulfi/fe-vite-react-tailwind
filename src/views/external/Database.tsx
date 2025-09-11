@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
-import { confirmDialog, Modal, ModalStackProvider } from "../../ModalContext";
+import { Modal, ModalStackProvider } from "../../ModalContext";
 import Label from "../../components/form/Label";
 import { Chart } from "react-chartjs-2"
 import 'chart.js/auto'
@@ -22,6 +22,7 @@ import Switch from "../../components/form/Switch";
 import InputDecimal from "../../components/form/InputDecimal";
 import type { ChartOptions } from "chart.js/auto";
 import Button from "../../components/form/Button";
+import { dialog } from "../../DialogContext";
 
 export default function Database() {
     const { t } = useTranslation();
@@ -62,7 +63,13 @@ export default function Database() {
 
     const [databaseStateModal, setDatabaseStateModal] = useState<ModalCategory>("entry");
 
-    const [databaseOptionColumnTable, setDatabaseOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
+    const [databaseOptionColumnTable, setDatabaseOptionColumnTable] = useState<{
+        [id: number]: {
+            viewedButtonFlag: boolean;
+            connectedButtonFlag: boolean;
+            deletedButtonFlag: boolean;
+        };
+    }>({});
     const [databaseAttributeTable, setDatabaseAttributeTable] = useState<TableOptions>({
         page: 1,
         length: 10,
@@ -241,7 +248,7 @@ export default function Database() {
 
     const confirmStoreDatabase = async () => {
         if (databaseValidate(databaseForm)) {
-            confirmDialog({
+            dialog.show({
                 type: 'confirmation',
                 message: t(databaseId === 0 ? "confirmation.create" : "confirmation.update", { name: databaseForm.code }),
                 onConfirm: () => storeDatabase(),
@@ -272,7 +279,7 @@ export default function Database() {
     }
 
     const confirmDeleteDatabase = (id: number, name: string) => {
-        confirmDialog({
+        dialog.show({
             type: 'warning',
             message: t("confirmation.delete", { name: name }),
             onConfirm: () => deleteDatabase(id),

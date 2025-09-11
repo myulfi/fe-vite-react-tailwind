@@ -5,6 +5,7 @@ export type ModalType = {
     submitClass?: string;
     submitIcon?: string,
     submitLoadingFlag?: boolean,
+    loadingFlag?: boolean
 };
 export interface OptionColumn {
     viewedButtonFlag: boolean;
@@ -13,7 +14,7 @@ export interface OptionColumn {
 export type TableOptions = {
     page: number
     length: number
-    search: string
+    search?: string
     order?: [string, 'asc' | 'desc'] | []
 };
 

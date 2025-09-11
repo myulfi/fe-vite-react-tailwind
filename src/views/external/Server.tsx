@@ -56,7 +56,13 @@ export default function Server() {
 
     const [serverStateModal, setServerStateModal] = useState<ModalCategory>("entry");
 
-    const [serverOptionColumnTable, setServerOptionColumnTable] = useState<{ [id: number]: OptionColumn; }>({});
+    const [serverOptionColumnTable, setServerOptionColumnTable] = useState<{
+        [id: number]: {
+            viewedButtonFlag: boolean;
+            connectedButtonFlag: boolean;
+            deletedButtonFlag: boolean;
+        };
+    }>({});
     const [serverAttributeTable, setServerAttributeTable] = useState<TableOptions>({
         page: 1,
         length: 10,
@@ -1128,7 +1134,7 @@ export default function Server() {
                                             <div className="flex flex-wrap gap-2">
                                                 <Span
                                                     label={data}
-                                                    icon={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file"}`}
+                                                    icon={`${row.directoryFlag ? "fa-solid fa-folder-open" : "fa-solid fa-file-lines"}`}
                                                     className="hover:cursor-pointer hover:underline"
                                                     onClick={() => row.directoryFlag ? enterFolder(data) : entryServerFile(data)}
                                                 />

@@ -5,6 +5,8 @@ import Database from "./views/external/Database";
 import ExampleTemplate from "./views/test/ExampleTemplate";
 import Server from "./views/external/Server";
 import ApplicationProgrammingInterface from "./views/external/ApplicationProgrammingInterface";
+import Language from "./views/configuration/Language";
+
 function Routes() {
     return (
         <ReactRoutes>
@@ -14,6 +16,7 @@ function Routes() {
             <Route path="/external/server.html" element={<Server />} />
             <Route path="/external/database.html" element={<Database />} />
             <Route path="/external/api.html" element={<ApplicationProgrammingInterface />} />
+            <Route path="/command/language.html" element={<Language />} />
             <Route path="/test/example-template.html" element={<ExampleTemplate />} />
         </ReactRoutes>
     );
