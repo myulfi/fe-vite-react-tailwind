@@ -18,12 +18,15 @@ export default function Language() {
         labelType: string;
         keyCode: string;
         version: number;
-        value: {
-            [key: string]: string; // atau Record<string, string>
-        };
+        value: Record<string, string>;
     }
 
-    type LanguageFormError = Partial<Record<keyof LanguageData, string>>;
+    type LanguageFormError = {
+        labelType?: string;
+        keyCode?: string;
+        version?: string;
+        value?: Record<string, string>;
+    };
 
     const languageInitial: LanguageData = {
         labelType: "text",
@@ -90,7 +93,10 @@ export default function Language() {
 
             setLanguageFormError(prev => ({
                 ...prev,
-                [name_index]: undefined,
+                [name_parameter]: {
+                    ...(prev as any)[name_parameter],
+                    [name_index]: undefined,
+                },
             }));
         } else {
             setLanguageForm({ ...languageForm, [name]: value });
@@ -107,7 +113,15 @@ export default function Language() {
 
     const languageValidate = (data: LanguageData) => {
         const error: LanguageFormError = {};
+
         if (!data.keyCode?.trim()) error.keyCode = t("validate.required", { name: t("text.keyCode") });
+        masterLanguageArray.forEach((masterLanguage) => {
+            const fieldName = `lang${masterLanguage.key}`;
+            if (!data.value[fieldName]?.trim()) {
+                if (!error.value) error.value = {};
+                error.value[fieldName] = t("validate.required", { name: masterLanguage.value });
+            }
+        });
         setLanguageFormError(error);
         return Object.keys(error).length === 0;
     };
@@ -231,7 +245,6 @@ export default function Language() {
     };
 
     const confirmStoreLanguage = async () => {
-        console.log(languageForm)
         if (languageValidate(languageForm)) {
             dialog.show({
                 type: 'confirmation',
@@ -248,7 +261,13 @@ export default function Language() {
             const response = await apiRequest(
                 languageId === 0 ? 'post' : 'patch',
                 languageId === 0 ? '/command/language.json' : `/command/${languageId}/language.json`,
-                languageForm,
+                {
+                    ...languageForm,
+                    value: Object.entries(languageForm.value).map(([key, val]) => {
+                        const mt_lang_id = Number(key.replace("lang", ""));
+                        return { mt_lang_id, value: val };
+                    }),
+                },
             );
 
             if (HttpStatusCode.Ok === response.status || HttpStatusCode.Created === response.status) {
@@ -373,12 +392,10 @@ export default function Language() {
                                             <InputText
                                                 key={fieldName}
                                                 label={masterLanguage.value}
-                                                // name={fieldName}
                                                 name={`value.${fieldName}`}
                                                 value={languageForm.value[fieldName] || ''}
                                                 onChange={onLanguageFormChange}
-                                                // error={languageFormError.value[fieldName]}
-                                                error={languageFormError.keyCode}
+                                                error={languageFormError.value?.[fieldName]}
                                             />
                                         );
                                     })

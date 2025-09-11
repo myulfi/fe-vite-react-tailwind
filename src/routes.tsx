@@ -5,7 +5,7 @@ import Database from "./views/external/Database";
 import ExampleTemplate from "./views/test/ExampleTemplate";
 import Server from "./views/external/Server";
 import ApplicationProgrammingInterface from "./views/external/ApplicationProgrammingInterface";
-import Language from "./views/configuration/Language";
+import Language from "./views/command/Language";
 
 function Routes() {
     return (
