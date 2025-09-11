@@ -116,10 +116,9 @@ export default function Language() {
 
         if (!data.keyCode?.trim()) error.keyCode = t("validate.required", { name: t("text.keyCode") });
         masterLanguageArray.forEach((masterLanguage) => {
-            const fieldName = `lang${masterLanguage.key}`;
-            if (!data.value[fieldName]?.trim()) {
+            if (!data.value[`${masterLanguage.key}`]?.trim()) {
                 if (!error.value) error.value = {};
-                error.value[fieldName] = t("validate.required", { name: masterLanguage.value });
+                error.value[`${masterLanguage.key}`] = t("validate.required", { name: masterLanguage.value });
             }
         });
         setLanguageFormError(error);
@@ -264,8 +263,7 @@ export default function Language() {
                 {
                     ...languageForm,
                     value: Object.entries(languageForm.value).map(([key, val]) => {
-                        const mt_lang_id = Number(key.replace("lang", ""));
-                        return { mt_lang_id, value: val };
+                        return { mt_lang_id: key, value: val };
                     }),
                 },
             );
@@ -387,15 +385,14 @@ export default function Language() {
                                     error={languageFormError.keyCode} />
                                 {
                                     masterLanguageArray.map((masterLanguage) => {
-                                        const fieldName = `lang${masterLanguage.key}`;
                                         return (
                                             <InputText
-                                                key={fieldName}
+                                                key={`${masterLanguage.key}`}
                                                 label={masterLanguage.value}
-                                                name={`value.${fieldName}`}
-                                                value={languageForm.value[fieldName] || ''}
+                                                name={`value.${`${masterLanguage.key}`}`}
+                                                value={languageForm.value[`${masterLanguage.key}`] || ''}
                                                 onChange={onLanguageFormChange}
-                                                error={languageFormError.value?.[fieldName]}
+                                                error={languageFormError.value?.[`${masterLanguage.key}`]}
                                             />
                                         );
                                     })
