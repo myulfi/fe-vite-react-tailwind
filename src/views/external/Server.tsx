@@ -178,7 +178,7 @@ export default function Server() {
             setServerEntryModal({
                 ...serverEntryModal,
                 title: server.name,
-                submitLabel: t("button.edit"),
+                submitLabel: t("text.edit"),
                 submitIcon: "fa-solid fa-pen",
                 submitLoadingFlag: false,
             });
@@ -204,7 +204,7 @@ export default function Server() {
             setServerEntryModal({
                 ...serverEntryModal,
                 title: serverForm.code,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
             });
@@ -213,8 +213,8 @@ export default function Server() {
             setServerForm(serverInitial);
             setServerEntryModal({
                 ...serverEntryModal,
-                title: t("button.createNew"),
-                submitLabel: t("button.save"),
+                title: t("text.createNew"),
+                submitLabel: t("text.save"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
@@ -477,7 +477,7 @@ export default function Server() {
             setServerEntityModal({
                 ...serverEntityModal,
                 title: `${serverDirectoryCurrent.join("/")}/${name}`,
-                submitLabel: t("button.rename"),
+                submitLabel: t("text.rename"),
                 submitIcon: "fa-solid fa-refresh",
                 submitLoadingFlag: false,
             });
@@ -486,7 +486,7 @@ export default function Server() {
             setServerEntityModal({
                 ...serverEntityModal,
                 title: serverDirectoryCurrent.join("/"),
-                submitLabel: t("button.save"),
+                submitLabel: t("text.save"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
@@ -576,7 +576,7 @@ export default function Server() {
             setServerFileEntryModal({
                 ...serverFileEntryModal,
                 title: `${serverDirectoryCurrent.join("/")}/${name}`,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-refresh",
                 submitLoadingFlag: false,
                 loadingFlag: true,
@@ -604,7 +604,7 @@ export default function Server() {
             setServerFileEntryModal({
                 ...serverFileEntryModal,
                 title: `${serverDirectoryCurrent.join("/")}/${name}`,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-refresh",
                 submitLoadingFlag: false,
                 loadingFlag: false,
@@ -615,7 +615,7 @@ export default function Server() {
             setServerFileEntryModal({
                 ...serverFileEntryModal,
                 title: serverDirectoryCurrent.join("/"),
-                submitLabel: t("button.create"),
+                submitLabel: t("text.create"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
                 loadingFlag: false,
@@ -1054,33 +1054,33 @@ export default function Server() {
                     <Table
                         additionalButtonArray={[
                             {
-                                label: t("button.addToShortcut"),
+                                label: t("text.addToShortcut"),
                                 type: 'primary' as const,
                                 icon: "fa-solid fa-up-right-from-square",
                                 onClick: () => toast.show({ type: "done", message: "hahah" })
                             },
                             {
-                                label: t("button.createFolder"),
+                                label: t("text.createFolder"),
                                 type: 'primary' as const,
                                 icon: "fa-solid fa-folder-plus",
                                 onClick: () => entryServerEntity()
                             },
                             {
-                                label: t("button.addFile"),
+                                label: t("text.addFile"),
                                 type: 'primary' as const,
                                 icon: "fa-solid fa-file-circle-plus",
                                 onClick: () => entryServerFile()
                             },
                             ...(serverDirectoryClipboard.length > 0
                                 ? [{
-                                    label: t("button.paste"),
+                                    label: t("text.paste"),
                                     type: 'primary' as const,
                                     icon: "fa-solid fa-paste",
                                     onClick: () => confirmPasteServerEntity()
                                 }]
                                 : []),
                             {
-                                label: t("button.upload"),
+                                label: t("text.upload"),
                                 type: 'primary' as const,
                                 icon: "fa-solid fa-upload",
                                 onClick: () => entryServerUpload()
@@ -1090,23 +1090,23 @@ export default function Server() {
                         bulkOptionLoadingFlag={serverDirectoryBulkOptionLoadingFlag}
                         bulkOptionArray={[
                             {
-                                label: t("button.download"),
+                                label: t("text.download"),
                                 icon: "fa-solid fa-download",
                                 onClick: () => confirmDownloadServerEntity(),
                             },
                             {
-                                label: t("button.clone"),
+                                label: t("text.clone"),
                                 icon: "fa-solid fa-clone",
                                 onClick: () => confirmCloneServerEntity(),
                             },
                             {
-                                label: t("button.clipboard"),
+                                label: t("text.clipboard"),
                                 icon: "fa-solid fa-clipboard",
                                 autoCloseMenu: true,
                                 onClick: () => confirmClipboardServerEntity(),
                             },
                             {
-                                label: t("button.delete"),
+                                label: t("text.delete"),
                                 icon: "fa-solid fa-trash",
                                 onClick: () => confirmDeleteServerEntity(),
                             }
@@ -1274,7 +1274,7 @@ export default function Server() {
                     onClose={() => setModalServerUpload(false)}
                     buttonArray={[
                         {
-                            label: t("button.upload"),
+                            label: t("text.upload"),
                             type: "primary",
                             icon: 'fa-solid fa-upload',
                             onClick: () => confirmStoreServerUpload(),
@@ -1288,7 +1288,7 @@ export default function Server() {
                 </Modal>
             </ModalStackProvider>
             <Table
-                labelNewButton={t("button.createNew")}
+                labelNewButton={t("text.createNew")}
                 onNewButtonClick={() => entryServer(false)}
 
                 dataArray={serverArray}
@@ -1332,7 +1332,7 @@ export default function Server() {
                             return (
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
-                                        label={t("button.view")}
+                                        label={t("text.view")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
@@ -1340,7 +1340,7 @@ export default function Server() {
                                         loadingFlag={serverOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.connect")}
+                                        label={t("text.connect")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-plug"
@@ -1348,7 +1348,7 @@ export default function Server() {
                                         loadingFlag={serverOptionColumnTable[data]?.connectedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.delete")}
+                                        label={t("text.delete")}
                                         className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"

@@ -186,7 +186,7 @@ export default function ExampleTemplate() {
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
                 title: exampleTemplate.name,
-                submitLabel: t("button.edit"),
+                submitLabel: t("text.edit"),
                 submitIcon: "fa-solid fa-pen",
                 submitLoadingFlag: false,
             });
@@ -212,7 +212,7 @@ export default function ExampleTemplate() {
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
                 title: exampleTemplateForm.name,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
             });
@@ -221,8 +221,8 @@ export default function ExampleTemplate() {
             setExampleTemplateForm(exampleTemplateInitial);
             setExampleTemplateEntryModal({
                 ...exampleTemplateEntryModal,
-                title: t("button.createNew"),
-                submitLabel: t("button.save"),
+                title: t("text.createNew"),
+                submitLabel: t("text.save"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
@@ -382,18 +382,18 @@ export default function ExampleTemplate() {
                 </Modal>
             </ModalStackProvider>
             <Table
-                labelNewButton={t("button.createNew")}
+                labelNewButton={t("text.createNew")}
                 onNewButtonClick={() => entryExampleTemplate(false)}
 
                 bulkOptionLoadingFlag={exampleTemplateBulkOptionLoadingFlag}
                 bulkOptionArray={[
                     {
-                        label: t("button.delete"),
+                        label: t("text.delete"),
                         icon: "fa-solid fa-trash",
                         onClick: () => confirmDeleteExampleTemplate(),
                     },
                     {
-                        label: t("button.delete"),
+                        label: t("text.delete"),
                         icon: "fa-solid fa-trash",
                         onClick: () => confirmDeleteExampleTemplate(),
                     }
@@ -475,7 +475,7 @@ export default function ExampleTemplate() {
                             return (
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
-                                        label={t("button.view")}
+                                        label={t("text.view")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
@@ -483,7 +483,7 @@ export default function ExampleTemplate() {
                                         loadingFlag={exampleTemplateOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.delete")}
+                                        label={t("text.delete")}
                                         className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"

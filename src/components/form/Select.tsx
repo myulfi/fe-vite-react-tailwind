@@ -181,14 +181,14 @@ export default function Select({
                     {multiple && map.length > dataSize && (
                         <div className="flex gap-1 mx-2 pb-1">
                             <Button
-                                label={t("button.selectAll")}
+                                label={t("text.selectAll")}
                                 className="flex-1"
                                 size="sm"
                                 type="secondary"
                                 onClick={selectAll}
                             />
                             <Button
-                                label={t("button.deselectAll")}
+                                label={t("text.deselectAll")}
                                 className="flex-1"
                                 size="sm"
                                 type="secondary"

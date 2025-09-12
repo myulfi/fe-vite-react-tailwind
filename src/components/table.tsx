@@ -286,7 +286,7 @@ export default function Table({
                             bulkOptionArray.length > 0
                             && <div className="w-full sm:w-auto sm:ml-auto">
                                 <Button
-                                    label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("button.bulkOption")}`}
+                                    label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("text.bulkOption")}`}
                                     className="w-full text-nowrap btn-primary"
                                     size="md"
                                     type="primary"
@@ -605,7 +605,7 @@ export default function Table({
                         dataLoadMoreFlag === 1
                         && <div className="text-center mt-2">
                             <Button
-                                label={t("button.loadMore")}
+                                label={t("text.loadMore")}
                                 size="sm"
                                 type="primary"
                                 icon="fa-solid fa-circle-arrow-down animate-bounce"

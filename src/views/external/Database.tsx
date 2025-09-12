@@ -200,7 +200,7 @@ export default function Database() {
                 setDatabaseEntryModal({
                     ...databaseEntryModal,
                     title: database.name,
-                    submitLabel: t("button.edit"),
+                    submitLabel: t("text.edit"),
                     submitIcon: "fa-solid fa-pen",
                     submitLoadingFlag: false,
                 });
@@ -227,7 +227,7 @@ export default function Database() {
             setDatabaseEntryModal({
                 ...databaseEntryModal,
                 title: databaseForm.code,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
             });
@@ -236,8 +236,8 @@ export default function Database() {
             setDatabaseForm(databaseInitial);
             setDatabaseEntryModal({
                 ...databaseEntryModal,
-                title: t("button.createNew"),
-                submitLabel: t("button.save"),
+                title: t("text.createNew"),
+                submitLabel: t("text.save"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
@@ -1280,7 +1280,7 @@ export default function Database() {
                                                     return (
                                                         <div className="flex justify-center max-sm:flex-col gap-4">
                                                             <Button
-                                                                label={t("button.data")}
+                                                                label={t("text.data")}
                                                                 className="max-sm:w-full"
                                                                 type='primary'
                                                                 icon="fa-solid fa-list"
@@ -1307,7 +1307,7 @@ export default function Database() {
                                     <Fragment>
                                         <div className="flex flex-col gap-5">
                                             <Button
-                                                label={t("button.run")}
+                                                label={t("text.run")}
                                                 size="xs"
                                                 type="primary"
                                                 icon="fa-solid fa-play"
@@ -1352,14 +1352,14 @@ export default function Database() {
                                             databaseQueryManualAdditionalButtonFlag &&
                                             <div className="flex flex-row gap-4">
                                                 <Button
-                                                    label={t("button.export")}
+                                                    label={t("text.export")}
                                                     size="xs"
                                                     type="primary"
                                                     icon="fa-solid fa-download"
                                                     onClick={() => setModalDatabaseExport(true)}
                                                 />
                                                 <Button
-                                                    label={t("button.chart")}
+                                                    label={t("text.chart")}
                                                     size="xs"
                                                     type="primary"
                                                     icon="fa-solid fa-chart-line"
@@ -1400,7 +1400,7 @@ export default function Database() {
                                                     return (
                                                         <div className="flex justify-center max-sm:flex-col gap-4">
                                                             <Button
-                                                                label={t("button.data")}
+                                                                label={t("text.data")}
                                                                 className="max-sm:w-full"
                                                                 type='primary'
                                                                 icon="fa-solid fa-list"
@@ -1450,7 +1450,7 @@ export default function Database() {
                     onClose={() => setModalDatabaseExport(false)}
                     buttonArray={[
                         {
-                            label: t("button.export"),
+                            label: t("text.export"),
                             type: "primary",
                             icon: "fa-solid fa-download",
                             onClick: () => { onDatabaseExport() },
@@ -1564,7 +1564,7 @@ export default function Database() {
                 </Modal>
             </ModalStackProvider>
             <Table
-                labelNewButton={t("button.createNew")}
+                labelNewButton={t("text.createNew")}
                 onNewButtonClick={() => entryDatabase(false)}
 
                 dataArray={databaseArray}
@@ -1621,7 +1621,7 @@ export default function Database() {
                             return (
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
-                                        label={t("button.view")}
+                                        label={t("text.view")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
@@ -1629,7 +1629,7 @@ export default function Database() {
                                         loadingFlag={databaseOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.connect")}
+                                        label={t("text.connect")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-plug"
@@ -1637,7 +1637,7 @@ export default function Database() {
                                         loadingFlag={databaseOptionColumnTable[data]?.connectedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.delete")}
+                                        label={t("text.delete")}
                                         className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"

@@ -139,7 +139,7 @@ export default function ApplicationProgrammingInterface() {
             setApplicationProgrammingInterfaceEntryModal({
                 ...applicationProgrammingInterfaceEntryModal,
                 title: applicationProgrammingInterface.name,
-                submitLabel: t("button.edit"),
+                submitLabel: t("text.edit"),
                 submitIcon: "fa-solid fa-pen",
                 submitLoadingFlag: false,
             });
@@ -165,7 +165,7 @@ export default function ApplicationProgrammingInterface() {
             setApplicationProgrammingInterfaceEntryModal({
                 ...applicationProgrammingInterfaceEntryModal,
                 title: applicationProgrammingInterfaceForm.name,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
             });
@@ -174,8 +174,8 @@ export default function ApplicationProgrammingInterface() {
             setApplicationProgrammingInterfaceForm(applicationProgrammingInterfaceInitial);
             setApplicationProgrammingInterfaceEntryModal({
                 ...applicationProgrammingInterfaceEntryModal,
-                title: t("button.createNew"),
-                submitLabel: t("button.save"),
+                title: t("text.createNew"),
+                submitLabel: t("text.save"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
@@ -338,7 +338,7 @@ export default function ApplicationProgrammingInterface() {
                 </Modal>
             </ModalStackProvider>
             <Table
-                labelNewButton={t("button.createNew")}
+                labelNewButton={t("text.createNew")}
                 onNewButtonClick={() => entryApplicationProgrammingInterface(false)}
 
                 dataArray={applicationProgrammingInterfaceArray}
@@ -375,7 +375,7 @@ export default function ApplicationProgrammingInterface() {
                             return (
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
-                                        label={t("button.view")}
+                                        label={t("text.view")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
@@ -383,7 +383,7 @@ export default function ApplicationProgrammingInterface() {
                                         loadingFlag={applicationProgrammingInterfaceOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.request")}
+                                        label={t("text.request")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-circle-arrow-right"
@@ -391,7 +391,7 @@ export default function ApplicationProgrammingInterface() {
                                         loadingFlag={applicationProgrammingInterfaceOptionColumnTable[data]?.requestButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.delete")}
+                                        label={t("text.delete")}
                                         className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"

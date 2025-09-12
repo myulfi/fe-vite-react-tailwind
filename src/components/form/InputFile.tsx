@@ -115,7 +115,7 @@ export default function InputFile({
                     <div className="text-center">
                         <i className="fa-solid fa-arrow-up-from-bracket" />
                         <div>
-                            {t("button.clickOrdragHere")}
+                            {t("text.clickOrdragHere")}
                         </div>
                     </div>
                 }
@@ -168,7 +168,7 @@ export default function InputFile({
                     >
                         <i className="fa-solid fa-circle-plus" />
                         <div>
-                            {t("button.add")}
+                            {t("text.add")}
                         </div>
                     </div>
                 }

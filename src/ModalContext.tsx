@@ -36,19 +36,19 @@ function ConfirmDialog({
             title={t(`text.${type}`)}
             buttonArray={[
                 'alert' === type && ({
-                    label: t("button.understood"),
+                    label: t("text.understood"),
                     type: "warning",
                     icon: "fa-solid fa-lightbulb",
                     onClick: onClose,
                 }),
                 'confirmation' === type && ({
-                    label: t("button.ok"),
+                    label: t("text.ok"),
                     type: "primary",
                     icon: "fa-solid fa-circle-check",
                     onClick: onConfirm,
                 }),
                 'warning' === type && ({
-                    label: t("button.ofCourse"),
+                    label: t("text.ofCourse"),
                     type: "danger",
                     icon: "fa-solid fa-circle-check",
                     onClick: onConfirm,
@@ -342,7 +342,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                             ))
                         }
                         <Button
-                            label={t("button.close")}
+                            label={t("text.close")}
                             className="max-sm:w-full"
                             type="secondary"
                             icon="fa-solid fa-xmark"

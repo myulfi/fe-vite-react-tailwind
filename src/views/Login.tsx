@@ -112,7 +112,7 @@ export default function Login() {
                     <form className="mt-10 flex flex-col gap-4">
                         <InputText name="username" label={t("text.username")} value={loginForm.username} onChange={onLoginFormChange} />
                         <InputPassword name="password" label={t("text.password")} value={loginForm.password} onChange={onLoginFormChange} />
-                        <Button label={t("button.login")} type="primary" icon="fa-solid fa-right-to-bracket" onClick={(e: React.MouseEvent<HTMLButtonElement>) => doLogin(e)} loadingFlag={loginLoadingFlag} />
+                        <Button label={t("text.login")} type="primary" icon="fa-solid fa-right-to-bracket" onClick={(e: React.MouseEvent<HTMLButtonElement>) => doLogin(e)} loadingFlag={loginLoadingFlag} />
                     </form>
                 </div>
                 {loginFormError && <div className="form-floating mt-3 text-danger">{loginFormError}</div>}

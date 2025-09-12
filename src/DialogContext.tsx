@@ -109,8 +109,8 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                         <Button
                             label={
                                 type === 'confirmation'
-                                    ? t('button.ok')
-                                    : t('button.ofCourse')
+                                    ? t('text.ok')
+                                    : t('text.ofCourse')
                             }
                             type={type === 'confirmation' ? 'primary' : 'danger'}
                             icon="fa-solid fa-circle-check"
@@ -120,8 +120,8 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                     <Button
                         label={
                             type === 'alert'
-                                ? t('button.understood')
-                                : t('button.close')
+                                ? t('text.understood')
+                                : t('text.close')
                         }
                         type="secondary"
                         icon="fa-solid fa-xmark"

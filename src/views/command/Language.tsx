@@ -18,7 +18,10 @@ export default function Language() {
         labelType: string;
         keyCode: string;
         version: number;
-        value: Record<string, string>;
+        value: {
+            languageId: number;
+            value: string;
+        }[];
     }
 
     type LanguageFormError = {
@@ -32,7 +35,7 @@ export default function Language() {
         labelType: "text",
         keyCode: "",
         version: 0,
-        value: {}
+        value: []
     }
 
     const [languageStateModal, setLanguageStateModal] = useState<ModalCategory>("entry");
@@ -85,10 +88,11 @@ export default function Language() {
             const [name_parameter, name_index] = name.split(".", 2);
             setLanguageForm(prev => ({
                 ...prev,
-                [name_parameter]: {
-                    ...(prev as any)[name_parameter],
-                    [name_index]: value,
-                },
+                [name_parameter]: (prev as any)[name_parameter]?.map((item: any) =>
+                    item.languageId === Number(name_index)
+                        ? { ...item, value: value }
+                        : item
+                ),
             }));
 
             setLanguageFormError(prev => ({
@@ -106,7 +110,7 @@ export default function Language() {
 
     const labelTypeMap = [
         { "key": "text", "value": "text" },
-        { "key": "datatable", "value": "datatable" },
+        { "key": "table", "value": "table" },
         { "key": "information", "value": "information" },
         { "key": "confirmation", "value": "confirmation" },
     ];
@@ -115,8 +119,8 @@ export default function Language() {
         const error: LanguageFormError = {};
 
         if (!data.keyCode?.trim()) error.keyCode = t("validate.required", { name: t("text.keyCode") });
-        masterLanguageArray.forEach((masterLanguage) => {
-            if (!data.value[`${masterLanguage.key}`]?.trim()) {
+        masterLanguageArray.forEach((masterLanguage, index) => {
+            if (!data.value[`${index}`]?.value) {
                 if (!error.value) error.value = {};
                 error.value[`${masterLanguage.key}`] = t("validate.required", { name: masterLanguage.value });
             }
@@ -198,7 +202,7 @@ export default function Language() {
             setLanguageEntryModal({
                 ...languageEntryModal,
                 title: language.name,
-                submitLabel: t("button.edit"),
+                submitLabel: t("text.edit"),
                 submitIcon: "fa-solid fa-pen",
                 submitLoadingFlag: false,
             });
@@ -224,7 +228,7 @@ export default function Language() {
             setLanguageEntryModal({
                 ...languageEntryModal,
                 title: languageForm.keyCode,
-                submitLabel: t("button.update"),
+                submitLabel: t("text.update"),
                 submitIcon: "fa-solid fa-repeat",
                 submitLoadingFlag: false,
             });
@@ -233,8 +237,8 @@ export default function Language() {
             setLanguageForm(languageInitial);
             setLanguageEntryModal({
                 ...languageEntryModal,
-                title: t("button.createNew"),
-                submitLabel: t("button.save"),
+                title: t("text.createNew"),
+                submitLabel: t("text.save"),
                 submitIcon: "fa-solid fa-bookmark",
                 submitLoadingFlag: false,
             });
@@ -260,12 +264,7 @@ export default function Language() {
             const response = await apiRequest(
                 languageId === 0 ? 'post' : 'patch',
                 languageId === 0 ? '/command/language.json' : `/command/${languageId}/language.json`,
-                {
-                    ...languageForm,
-                    value: Object.entries(languageForm.value).map(([key, val]) => {
-                        return { mt_lang_id: Number(key), value: val };
-                    }),
-                },
+                languageForm,
             );
 
             if (HttpStatusCode.Ok === response.status || HttpStatusCode.Created === response.status) {
@@ -341,6 +340,23 @@ export default function Language() {
         }
     };
 
+    const confirmImplementLanguage = () => {
+        dialog.show({
+            type: 'warning',
+            message: t("confirmation.implement", { name: t("text.language") }),
+            onConfirm: () => implementLanguage(),
+        });
+    };
+
+    const implementLanguage = async () => {
+        const response = await apiRequest('post', '/command/language-implement.json');
+        if (HttpStatusCode.Ok === response.status) {
+            toast.show({ type: "done", message: "information.implemented" });
+        } else {
+            toast.show({ type: "error", message: response.message });
+        }
+    };
+
     const [modalLanguage, setModalLanguage] = useState(false);
 
     return (
@@ -384,13 +400,13 @@ export default function Language() {
                                     onChangeUnit={onLanguageFormChange}
                                     error={languageFormError.keyCode} />
                                 {
-                                    masterLanguageArray.map((masterLanguage) => {
+                                    masterLanguageArray.map((masterLanguage, index) => {
                                         return (
                                             <InputText
                                                 key={`${masterLanguage.key}`}
                                                 label={masterLanguage.value}
                                                 name={`value.${`${masterLanguage.key}`}`}
-                                                value={languageForm.value[`${masterLanguage.key}`] || ''}
+                                                value={languageForm.value?.[index]?.value || ''}
                                                 onChange={onLanguageFormChange}
                                                 error={languageFormError.value?.[`${masterLanguage.key}`]}
                                             />
@@ -420,18 +436,18 @@ export default function Language() {
                 </Modal>
             </ModalStackProvider>
             <Table
-                labelNewButton={t("button.createNew")}
+                labelNewButton={t("text.createNew")}
                 onNewButtonClick={() => entryLanguage(false)}
 
                 bulkOptionLoadingFlag={languageBulkOptionLoadingFlag}
                 bulkOptionArray={[
                     {
-                        label: t("button.delete"),
+                        label: t("text.delete"),
                         icon: "fa-solid fa-trash",
                         onClick: () => confirmDeleteLanguage(),
                     },
                     {
-                        label: t("button.delete"),
+                        label: t("text.delete"),
                         icon: "fa-solid fa-trash",
                         onClick: () => confirmDeleteLanguage(),
                     }
@@ -439,22 +455,10 @@ export default function Language() {
 
                 additionalButtonArray={[
                     {
-                        label: "success",
-                        type: 'success',
-                        icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "done", message: "hahah" })
-                    },
-                    {
-                        label: "warning",
-                        type: 'warning',
-                        icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "done", message: "hahah" })
-                    },
-                    {
-                        label: "danger",
-                        type: 'danger',
-                        icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "done", message: "hahah" })
+                        label: t("text.implement"),
+                        type: 'primary',
+                        icon: "fa-solid fa-gears",
+                        onClick: () => confirmImplementLanguage(),
                     }
                 ]}
 
@@ -501,7 +505,7 @@ export default function Language() {
                             return (
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
-                                        label={t("button.view")}
+                                        label={t("text.view")}
                                         className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
@@ -509,7 +513,7 @@ export default function Language() {
                                         loadingFlag={languageOptionColumnTable[data]?.viewedButtonFlag}
                                     />
                                     <Button
-                                        label={t("button.delete")}
+                                        label={t("text.delete")}
                                         className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
