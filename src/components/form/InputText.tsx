@@ -4,7 +4,7 @@ import ErrorForm from './ErrorForm';
 import { decode } from '../../function/commonHelper';
 
 type UnitOption = {
-    key: string;
+    key: number | string;
     value: string;
 };
 
@@ -21,9 +21,9 @@ type InputTextProps = {
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
     positionUnit?: 'left' | 'right' | 'none';
     nameUnit?: string;
-    valueUnit?: string;
+    valueUnit?: number | string;
     valueUnitList?: UnitOption[];
-    onChangeUnit?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onChangeUnit?: (e: { target: { name: string; value: number } }) => void;
     refference?: React.Ref<HTMLInputElement>;
     error?: string;
 };
@@ -49,6 +49,17 @@ export default function InputText({
 }: InputTextProps) {
     const { t } = useTranslation();
 
+    const onInputUnitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        onChangeUnit?.({
+            target: {
+                name,
+                value: Number(value),
+            },
+        });
+    };
+
+
     const renderUnitLeft = () => {
         if (!positionUnit || positionUnit !== 'left') return null;
 
@@ -58,7 +69,7 @@ export default function InputText({
                 name={nameUnit}
                 value={valueUnit}
                 disabled={disabled}
-                onChange={onChangeUnit}
+                onChange={onInputUnitChange}
             >
                 {valueUnitList.map((object) => (
                     <option value={object.key} key={object.key}>
@@ -82,7 +93,7 @@ export default function InputText({
                 name={nameUnit}
                 value={valueUnit}
                 disabled={disabled}
-                onChange={onChangeUnit}
+                onChange={onInputUnitChange}
             >
                 {valueUnitList.map((object) => (
                     <option value={object.key} key={object.key}>

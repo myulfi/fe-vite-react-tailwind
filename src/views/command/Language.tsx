@@ -15,7 +15,7 @@ export default function Language() {
     const { t } = useTranslation();
 
     type LanguageData = {
-        labelType: string;
+        languageTypeId: number;
         keyCode: string;
         version: number;
         value: {
@@ -25,14 +25,14 @@ export default function Language() {
     }
 
     type LanguageFormError = {
-        labelType?: string;
+        languageTypeId?: string;
         keyCode?: string;
         version?: string;
         value?: Record<string, string>;
     };
 
     const languageInitial: LanguageData = {
-        labelType: "text",
+        languageTypeId: 1,
         keyCode: "",
         version: 0,
         value: []
@@ -108,13 +108,6 @@ export default function Language() {
         }
     };
 
-    const labelTypeMap = [
-        { "key": "text", "value": "text" },
-        { "key": "table", "value": "table" },
-        { "key": "information", "value": "information" },
-        { "key": "confirmation", "value": "confirmation" },
-    ];
-
     const languageValidate = (data: LanguageData) => {
         const error: LanguageFormError = {};
 
@@ -131,13 +124,22 @@ export default function Language() {
 
     useEffect(() => {
         getMasterLanguage();
+        getMasterLanguageType();
     }, []);
 
     const [masterLanguageArray, setMasterLanguageArray] = useState<Array<{ key: number; value: string }>>([]);
+    const [masterLanguageTypeArray, setMasterLanguageTypeArray] = useState<Array<{ key: number; value: string }>>([]);
     const getMasterLanguage = async () => {
         const response = await apiRequest('get', '/master/language.json')
         if (HTTP_CODE.OK === response.status) {
             setMasterLanguageArray(response.data)
+        }
+    }
+
+    const getMasterLanguageType = async () => {
+        const response = await apiRequest('get', '/master/language-type.json')
+        if (HTTP_CODE.OK === response.status) {
+            setMasterLanguageTypeArray(response.data)
         }
     }
 
@@ -193,7 +195,7 @@ export default function Language() {
 
             setLanguageId(language.id);
             setLanguageForm({
-                labelType: language.labelType,
+                languageTypeId: language.languageTypeId,
                 keyCode: language.keyCode,
                 version: language.version,
                 value: language.value,
@@ -234,7 +236,13 @@ export default function Language() {
             });
         } else {
             setLanguageId(0);
-            setLanguageForm(languageInitial);
+            setLanguageForm({
+                ...languageInitial,
+                value: masterLanguageArray.map((item: any) => ({
+                    languageId: item.key,
+                    value: ""
+                })),
+            });
             setLanguageEntryModal({
                 ...languageEntryModal,
                 title: t("text.createNew"),
@@ -395,8 +403,9 @@ export default function Language() {
                                     value={languageForm.keyCode}
                                     onChange={onLanguageFormChange}
                                     positionUnit='left'
-                                    nameUnit='labelType'
-                                    valueUnitList={labelTypeMap}
+                                    nameUnit='languageTypeId'
+                                    valueUnit={languageForm.languageTypeId}
+                                    valueUnitList={masterLanguageTypeArray}
                                     onChangeUnit={onLanguageFormChange}
                                     error={languageFormError.keyCode} />
                                 {
@@ -418,7 +427,7 @@ export default function Language() {
                         {
                             "view" === languageStateModal
                             && <Fragment>
-                                <Label text={t("text.keyCode")} value={languageForm.keyCode} />
+                                <Label text={t("text.keyCode")} value={`${masterLanguageTypeArray.getValueByKey?.(languageForm.languageTypeId)}.${languageForm.keyCode}`} />
                                 {
                                     masterLanguageArray.map((masterLanguage, index) => {
                                         return (
@@ -465,11 +474,14 @@ export default function Language() {
                 dataArray={languageArray}
                 columns={[
                     {
-                        data: "labelType",
+                        data: "languageTypeId",
                         name: t("text.type"),
                         class: "text-nowrap",
                         orderable: true,
                         minDevice: 'mobile',
+                        render: function (data) {
+                            return masterLanguageTypeArray.getValueByKey?.(data);
+                        }
                     },
                     {
                         data: "keyCode",
