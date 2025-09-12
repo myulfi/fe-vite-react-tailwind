@@ -263,7 +263,7 @@ export default function Language() {
                 {
                     ...languageForm,
                     value: Object.entries(languageForm.value).map(([key, val]) => {
-                        return { mt_lang_id: key, value: val };
+                        return { mt_lang_id: Number(key), value: val };
                     }),
                 },
             );
@@ -403,6 +403,17 @@ export default function Language() {
                             "view" === languageStateModal
                             && <Fragment>
                                 <Label text={t("text.keyCode")} value={languageForm.keyCode} />
+                                {
+                                    masterLanguageArray.map((masterLanguage, index) => {
+                                        return (
+                                            <Label
+                                                key={index}
+                                                text={masterLanguage.value}
+                                                value={languageForm.value?.[index]?.value || ''}
+                                            />
+                                        );
+                                    })
+                                }
                             </Fragment>
                         }
                     </div>
@@ -450,14 +461,14 @@ export default function Language() {
                 dataArray={languageArray}
                 columns={[
                     {
-                        data: "label_typ",
+                        data: "labelType",
                         name: t("text.type"),
                         class: "text-nowrap",
                         orderable: true,
                         minDevice: 'mobile',
                     },
                     {
-                        data: "key_cd",
+                        data: "keyCode",
                         name: t("text.code"),
                         class: "wrap text-nowrap",
                         minDevice: 'tablet',
@@ -469,7 +480,7 @@ export default function Language() {
                         width: 10,
                         minDevice: 'tablet',
                         render: function (data) {
-                            return data.getValueByParameter?.("mt_lang_id", 1, "value");
+                            return data.getValueByParameter?.("languageId", 1, "value");
                         }
                     },
                     {
@@ -479,7 +490,7 @@ export default function Language() {
                         width: 10,
                         minDevice: 'tablet',
                         render: function (data) {
-                            return data.getValueByParameter?.("mt_lang_id", 2, "value");
+                            return data.getValueByParameter?.("languageId", 2, "value");
                         }
                     },
                     {
