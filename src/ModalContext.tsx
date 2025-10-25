@@ -5,116 +5,12 @@ import React, {
     useContext,
     useRef,
 } from "react";
-import ReactDOM from "react-dom/client";
 import { createPortal } from "react-dom";
 import Button from "./components/form/Button";
 import { useTranslation } from "react-i18next";
 import type { ButtonArray } from "./constants/common-constants";
 import { decode } from "./function/commonHelper";
 
-type ConfirmDialogProps = {
-    show: boolean;
-    type: ConfirmType;
-    message: string;
-    onConfirm: () => void;
-    onClose: () => void;
-};
-
-function ConfirmDialog({
-    show,
-    type,
-    message,
-    onConfirm,
-    onClose,
-}: ConfirmDialogProps) {
-    const { t } = useTranslation();
-    return (
-        <Modal
-            show={show}
-            size="sm"
-            icon={'alert' === type ? "fa-solid fa-triangle-exclamation" : 'confirmation' === type ? "fa-solid fa-circle-question" : 'warning' === type ? "fa-solid fa-circle-exclamation" : ""}
-            title={t(`text.${type}`)}
-            buttonArray={[
-                'alert' === type && ({
-                    label: t("text.understood"),
-                    type: "warning",
-                    icon: "fa-solid fa-lightbulb",
-                    onClick: onClose,
-                }),
-                'confirmation' === type && ({
-                    label: t("text.ok"),
-                    type: "primary",
-                    icon: "fa-solid fa-circle-check",
-                    onClick: onConfirm,
-                }),
-                'warning' === type && ({
-                    label: t("text.ofCourse"),
-                    type: "danger",
-                    icon: "fa-solid fa-circle-check",
-                    onClick: onConfirm,
-                }),
-            ].filter(Boolean) as ButtonArray}
-            onClose={onClose}>
-            <div className="text-center space-y-4">
-                <p>{message}</p>
-            </div>
-        </Modal>
-    );
-}
-
-type ConfirmType = 'confirmation' | 'warning' | 'alert';
-export function confirmDialog({
-    type,
-    message,
-    onConfirm,
-}: {
-    type: ConfirmType;
-    message: string;
-    onConfirm?: () => void;
-}): void {
-    const div = document.createElement("div");
-    document.body.appendChild(div);
-
-    const root = ReactDOM.createRoot(div);
-
-    const Wrapper = () => {
-        const [show, setShow] = useState(true);
-
-        const handleConfirm = () => {
-            if (onConfirm) onConfirm();
-            setShow(false);
-        };
-
-        const handleClose = () => setShow(false);
-
-        useEffect(() => {
-            if (!show) {
-                const timer = setTimeout(() => {
-                    root.unmount();
-                    div.remove();
-                }, 200); // sesuai durasi animasi modal
-
-                return () => clearTimeout(timer);
-            }
-        }, [show]);
-
-        return (
-            <ModalStackProvider>
-                <ConfirmDialog
-                    show={show}
-                    type={type}
-                    message={message}
-                    onConfirm={handleConfirm}
-                    onClose={handleClose}
-                />
-            </ModalStackProvider>
-        );
-    };
-
-    root.render(<Wrapper />);
-}
-
-// 🧠 Modal Stack Context
 const ModalStackContext = createContext<{
     registerModal: () => number;
     unregisterModal: (z: number) => void;
@@ -163,7 +59,6 @@ function useModalStack() {
     return context;
 }
 
-// 🔳 Modal Component
 type ModalProps = {
     show: boolean;
     size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -189,7 +84,6 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
     const [isVisible, setIsVisible] = useState(false);
-    const [isLeaving, setIsLeaving] = useState(false);
     const modalRef = useRef<HTMLDivElement>(null);
     const previousActiveElement = useRef<HTMLElement | null>(null);
 
@@ -215,10 +109,8 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                 }
             }, 50);
         } else if (isVisible) {
-            setIsLeaving(true);
             timeout = setTimeout(() => {
                 setIsVisible(false);
-                setIsLeaving(false);
                 unregisterModal(zIndex);
                 previousActiveElement.current?.focus();
             }, 200);
@@ -275,7 +167,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                 fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
                 transition-[opacity] duration-200
                 overflow-y-auto 
-                ${show && !isLeaving ? "animate-fade-in-overlay" : "animate-fade-out-overlay"}`
+                ${show ? "animate-fade-in-overlay" : "animate-fade-out-overlay"}`
             }
             style={{ zIndex }}
         >
@@ -292,7 +184,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                         ${sizeClasses[size]}
                         rounded-lg shadow-xl h-fit
                         transition-[scale, opacity] duration-200 ease-out
-                        ${show && !isLeaving ? "animate-fade-in" : "animate-fade-out"}
+                        ${show ? "animate-fade-in" : "animate-fade-out"}
                         flex flex-col
                     `}
                     onClick={(e) => e.stopPropagation()}

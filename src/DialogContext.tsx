@@ -77,6 +77,7 @@ type ConfirmDialogProps = {
 
 function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps) {
     const { t } = useTranslation();
+    const [isClosing, setIsClosing] = useState(false);
 
     const icon =
         type === 'alert'
@@ -87,9 +88,30 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
 
     const title = t(`text.${type}`);
 
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            onClose();
+        }, 400);
+    };
+
     return ReactDOM.createPortal(
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[6000]">
-            <div className="bg-white dark:bg-dark-clear rounded-lg w-[320px] shadow-lg space-y-4">
+        <div className={
+            `fixed inset-0 flex items-center justify-center z-[6000] bg-black/40 p-cnt
+            ${isClosing
+                ? 'animate-fade-out-overlay'
+                : 'animate-fade-in-overlay'
+            }`
+        }
+        >
+            <div
+                className={`
+                    rounded-lg w-[320px] shadow-lg space-y-4 bg-white dark:bg-dark-clear
+                    ${isClosing
+                        ? 'animate-fade-out'
+                        : 'animate-fade-in'
+                    }
+                `}>
                 <div className="flex justify-between pt-4 pb-2 px-3.5">
                     <div className="flex items-center gap-2 text-lg font-bold text-dark dark:text-white">
                         <i className={icon}></i>
@@ -125,7 +147,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                         }
                         type="secondary"
                         icon="fa-solid fa-xmark"
-                        onClick={onClose}
+                        onClick={handleClose}
                     />
                 </div>
             </div>

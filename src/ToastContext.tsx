@@ -5,6 +5,7 @@ type ToastMessage = {
     type: ToastType;
     message: string;
     duration?: number;
+    isClosing?: boolean;
 };
 
 const styles = {
@@ -20,28 +21,51 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const show = (options: ToastOptions) => {
         const id = Date.now();
         const { message, type = 'info', duration = 3000 } = options;
-        setToasts((prev) => [...prev, { id, message, type, duration }]);
-
-        // Auto dismiss
-        setTimeout(() => {
-            setToasts((prev) => prev.filter((t) => t.id !== id));
-        }, duration);
+        setToasts((prev) => [...prev, { id, message, type }]);
+        setTimeout(() => startClosing(id), duration);
     };
 
-    // Register handler globally
+    const startClosing = (id: number) => {
+        setToasts((prev) =>
+            prev.map((t) => (t.id === id ? { ...t, isClosing: true } : t))
+        );
+
+        setTimeout(() => {
+            setToasts((prev) => prev.filter((t) => t.id !== id));
+        }, 200);
+    };
+
     useEffect(() => {
         toast._register({ show: (opts) => show(opts) });
     }, []);
 
+    const handleManualClose = (id: number) => {
+        startClosing(id);
+    };
+
     return (
         <Fragment>
             {children}
-            {/* Toast Container */}
             <div className="fixed top-4 sm:right-4 space-y-2 w-screen px-4 md:w-72 md:px-0" style={{ zIndex: 6000 }}>
                 {toasts.map((toast) => (
-                    <div key={toast.id} className={`flex ${styles[toast.type]} rounded shadow p-4`}>
+                    <div
+                        key={toast.id}
+                        className={`
+                            flex rounded shadow p-4
+                            transition-all duration-200 transform
+                            ${toast.isClosing
+                                ? 'animate-fade-out'
+                                : 'animate-fade-in'
+                            }
+                            ${styles[toast.type]}`}
+                    >
                         <span className='mr-4'>{toast.message}</span>
-                        <button className='ml-auto font-bold text-lg leading-none'>&times;</button>
+                        <button
+                            className='ml-auto font-bold text-lg leading-none'
+                            onClick={() => handleManualClose(toast.id)}
+                        >
+                            &times;
+                        </button>
                     </div>
                 ))}
             </div>
@@ -55,7 +79,7 @@ interface ToastOptions {
     type?: ToastType;
     message: string;
     duration?: number;
-};
+}
 
 type ToastHandler = {
     show: (options: ToastOptions) => void;
