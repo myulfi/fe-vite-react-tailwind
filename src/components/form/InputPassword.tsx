@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import ErrorForm from './ErrorForm';
 
 type InputPasswordProps = {
+    autoComplete?: boolean;
     label: string;
     name: string;
     value: string;
@@ -11,6 +12,7 @@ type InputPasswordProps = {
 };
 
 export default function InputPassword({
+    autoComplete = false,
     label,
     name,
     value,
@@ -30,11 +32,12 @@ export default function InputPassword({
 
             <input
                 id={name}
+                autoComplete={autoComplete ? "on" : "new-password"}
                 name={name}
                 type={showPassword ? 'text' : 'password'}
                 value={value}
                 onChange={onChange}
-                placeholder={t('common.text.inputName', { name: label })}
+                placeholder={t('text.inputName', { name: label })}
                 className={`
                     form-input w-full rounded-md pr-10 
                     ${error ? 'form-input-error' : 'form-input-normal'}

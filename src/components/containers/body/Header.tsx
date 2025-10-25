@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LOCAL_STORAGE } from "../../../constants/common-constants";
 import { apiRequest } from "../../../api";
 import { useClickOutside } from "../../../hook/useClickOutside";
+import { useTranslation } from "react-i18next";
 
 type HeaderProps = {
     sidebarOpenFlag: boolean;
@@ -15,6 +16,7 @@ export default function Header({
     setSidebarOpenFlag,
     scrollDownFlag
 }: HeaderProps) {
+    const { t } = useTranslation();
     const [darkModeFlag, setDarkModeFlag] = useState(() => {
         const stored = localStorage.getItem('darkModeFlag')
         if (stored !== null) return stored === 'true'
@@ -54,18 +56,17 @@ export default function Header({
         <div
             className={`
                 sticky top-0 z-10 shadow-inner text-sm py-6 px-4
-                bg-light-clear dark:bg-dark-clear
-                text-light-base dark:text-dark-base
+                color-main
                 flex items-center justify-between
                 transition-[translate] duration-500 ease-out
                 ${scrollDownFlag ? 'max-sm:-translate-y-full' : 'translate-y-0'}
             `}
         >
-            <div className="flex items-center gap-3 flex-1">
+            <div className="flex-1">
                 <button
-                    className="text-light-base dark:text-dark-base hover:text-light-base-secondary hover:dark:text-dark-base-secondary cursor-pointer p-1"
+                    className="color-main-link cursor-pointer p-1"
                     onClick={() => setSidebarOpenFlag(!sidebarOpenFlag)}
-                    aria-label="Open sidebar"
+                    aria-label={t("text.openSidebar")}
                 >
                     <i className="fa-solid fa-bars text-2xl" />
                 </button>
@@ -88,31 +89,29 @@ export default function Header({
             <div className="relative" ref={rightMenuRef}>
                 <button
                     onClick={() => setRightMenuOpenFlag(!rightMenuOpenFlag)}
-                    className="text-light-base dark:text-dark-base hover:text-light-base-secondary hover:dark:hover:text-dark-base-secondary cursor-pointer focus:outline-none flex items-center"
+                    className="color-main-link cursor-pointer focus:outline-none"
                 >
                     <i className="fa-solid fa-circle-user text-2xl" />
                 </button>
 
                 <div className={`
                         fixed right-4 top-20 w-48
-                        bg-light-clear dark:bg-dark-clear
-                        text-light-base dark:text-dark-base
-                        border border-t-0 border-light-divider dark:border-dark-divider
+                        color-dropdown
                         rounded-b-md shadow-md z-20
                         transition-[opacity, transform] duration-300 ease-in-out
                         ${rightMenuOpenFlag ? "translate-y-0 opacity-100 visible" : "-translate-y-5 opacity-0 invisible pointer-events-none"}
                     `}>
-                    <Link to="/profile" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
-                        <i className="fa-solid fa-circle-user" /> Profile
+                    <Link to="/profile.html" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 color-dropdown-item cursor-pointer flex items-center gap-2'>
+                        <i className="fa-solid fa-circle-user" />{t("text.profile")}
                     </Link>
-                    <Link to="/setting" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer flex items-center gap-2'>
-                        <i className="fa-solid fa-gear" /> Settings
+                    <Link to="/setting.html" onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 color-dropdown-item cursor-pointer flex items-center gap-2'>
+                        <i className="fa-solid fa-gear" />{t("text.setting")}
                     </Link>
-                    <hr className="my-1 border-t border-light-divider dark:border-dark-divider" />
+                    <hr className="color-divider" />
                     <button
-                        className="w-full text-left px-4 py-2 hover:bg-light-base hover:dark:bg-dark-base hover:text-light-clear hover:dark:text-dark-clear cursor-pointer rounded-b-md flex items-center gap-2"
+                        className="w-full text-left px-4 py-2 color-dropdown-item cursor-pointer rounded-b-md flex items-center gap-2"
                         onClick={() => doLogout()}>
-                        <i className="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                        <i className="fa-solid fa-arrow-right-from-bracket"></i>{t("text.logout")}
                     </button>
                 </div>
             </div>

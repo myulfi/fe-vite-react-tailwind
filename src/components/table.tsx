@@ -256,20 +256,24 @@ export default function Table({
     }, [filter])
 
     return (
-        <div>
-            <div>
+        <div className="color-container rounded-lg shadow-lg">
+            <div className="container-cols">
                 {
                     (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
-                    <div className="flex flex-col flex-wrap sm:flex-row md:justify-between gap-5 pb-5">
+                    <div className="flex flex-col md:flex-row md:flex-wrap gap-cnt">
                         {
                             labelNewButton != undefined
-                            && <div className="w-full sm:w-auto">
-                                <Button label={labelNewButton} className="w-full text-nowrap" size="md" type="primary" icon="fa-solid fa-plus" onClick={() => onNewButtonClick()} />
-                            </div>
+                            && <Button
+                                label={labelNewButton}
+                                className="w-full text-nowrap"
+                                size="md"
+                                type="primary"
+                                icon="fa-solid fa-plus"
+                                onClick={() => onNewButtonClick()} />
                         }
                         {
                             additionalButtonArray.map((additionalButton, index) => (
-                                <div key={index} className="w-full sm:w-auto">
+                                <Fragment key={index}>
                                     <Button
                                         key={index}
                                         label={additionalButton.label}
@@ -279,15 +283,15 @@ export default function Table({
                                         icon={additionalButton.icon}
                                         onClick={additionalButton.onClick}
                                         loadingFlag={additionalButton.loadingFlag} />
-                                </div>
+                                </Fragment>
                             ))
                         }
                         {
                             bulkOptionArray.length > 0
-                            && <div className="w-full sm:w-auto sm:ml-auto">
+                            && <div className="md:ml-auto">
                                 <Button
                                     label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("text.bulkOption")}`}
-                                    className="w-full text-nowrap btn-primary"
+                                    className="w-full text-nowrap"
                                     size="md"
                                     type="primary"
                                     icon="fa-solid fa-boxes-stacked"
@@ -299,7 +303,7 @@ export default function Table({
                     </div>
                 }
                 {(lengthFlag || searchFlag) &&
-                    <div className="flex flex-col md:flex-row items-center md:justify-between gap-5 pb-5">
+                    <div className="flex flex-col md:flex-row items-center md:justify-between gap-cnt">
                         {
                             lengthFlag
                             && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
@@ -319,7 +323,7 @@ export default function Table({
                         }
                         {
                             searchFlag
-                            && <div className="w-full md:w-auto md:ml-auto">
+                            && <div className="w-full md:w-1/3 md:ml-auto">
                                 <InputText
                                     autoFocus={true}
                                     autoComplete="off"
@@ -332,290 +336,326 @@ export default function Table({
                         }
                     </div>
                 }
-            </div>
-            <div
-                className={`
-                    overflow-x-auto w-full pb-5
-                    ${loadingFlag ? 'min-h-64' : ''}
-            `}>
-                {
-                    loadingFlag
-                    && (
-                        "pagination" === type
-                        || ("load_more" === type && itemArray.length === 0)
-                    )
-                    && <div className={`
-                        text-light-base dark:text-dark-base
+                <div
+                    className={`
+                        overflow-x-auto w-full
+                        ${loadingFlag ? 'min-h-64' : ''}
+                    `}>
+                    {
+                        loadingFlag
+                        && (
+                            "pagination" === type
+                            || ("load_more" === type && itemArray.length === 0)
+                        )
+                        && <div className={`
                         absolute top-8/12 left-1/2
+                        color-main
                         transform -translate-x-1/2 -translate-y-1/2
                         fa-solid fa-spinner fa-spin text-9xl
                     `}></div>
-                }
-                <table className="min-w-full table-auto">
-                    <thead className='text-light-base-line-secondary dark:text-dark-base-line-secondary border-y-1 border-light-divider dark:border-dark-divider'>
-                        <tr>
-                            {
-                                checkBoxArray !== undefined
-                                && <th scope="col" className="text-center px-3">
-                                    <span
-                                        className={`text-light-base dark:text-dark-base cursor-pointer ${itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === 0 ? 'fa-regular fa-square' : itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === checkBoxStateArray.length ? 'fa-solid fa-square-plus' : 'fa-solid fa-square-minus'}`}
-                                        role="button" onClick={() => onCheckBoxAll()}></span>
-                                </th>
-                            }
-                            {
-                                columnShow.map((column, index) => (
-                                    <th key={index} scope="col" className={`px-4 py-4 align-middle ${column.class} ${column.minDevice == 'desktop' ? "max-lg:hidden" : column.minDevice == 'tablet' ? "max-md:hidden" : ""}`} style={column.width != null ? { width: `${column.width}%` } : {}}>
-                                        <span className="flex items-center justify-between w-full">
-                                            <span>{column.name}</span>
-                                            {
-                                                orderColumn[index] != null &&
-                                                <i className={`cursor-pointer ${orderColumn[index]}`} role="button" onClick={() => onOrderChange(column.data, index)}></i>
+                    }
+                    <table className="min-w-full table-auto">
+                        <thead className='color-table-header'>
+                            <tr>
+                                {
+                                    checkBoxArray !== undefined
+                                    && <th scope="col" className="text-center px-3">
+                                        <span
+                                            className={`
+                                                color-main
+                                                cursor-pointer
+                                                ${itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === 0
+                                                    ? 'fa-regular fa-square'
+                                                    : itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === checkBoxStateArray.length
+                                                        ? 'fa-solid fa-square-plus'
+                                                        : 'fa-solid fa-square-minus'
+                                                }`
                                             }
-                                        </span>
+                                            role="button" onClick={() => onCheckBoxAll()}></span>
                                     </th>
-                                ))
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            itemArray.length > 0
-                                ? itemArray.map((data, indexRow) => (
-                                    <Fragment key={indexRow}>
-                                        <tr className="border-b-1 border-light-divider dark:border-dark-divider">
+                                }
+                                {
+                                    columnShow.map((column, index) => (
+                                        <th
+                                            key={index}
+                                            scope="col"
+                                            className={`
+                                                p-elem align-middle
+                                                ${column.class}
+                                                ${column.minDevice == 'desktop'
+                                                    ? "max-lg:hidden"
+                                                    : column.minDevice == 'tablet'
+                                                        ? "max-md:hidden" : ""}
+                                            `}
+                                            style={column.width != null ? { width: `${column.width}%` } : {}}
+                                        >
                                             {
-                                                checkBoxArray !== undefined
-                                                && data.id !== undefined
-                                                && <td className="text-center">
-                                                    <span className={`text-light-base dark:text-dark-base cursor-pointer ${checkBoxArray.indexOf(data.id) >= 0 ? 'fa-solid fa-square-check' : 'fa-regular fa-square'}`}
-                                                        role="button" onClick={() => onCheckBoxSingle(data.id)}></span>
-                                                </td>
+                                                orderColumn[index] !== null &&
+                                                <span className="w-full flex items-center justify-between">
+                                                    <span>{column.name}</span>
+                                                    <i
+                                                        className={`cursor-pointer ${orderColumn[index]}`}
+                                                        role="button"
+                                                        onClick={() => onOrderChange(column.data, index)}
+                                                    />
+                                                </span>
                                             }
                                             {
-                                                checkBoxArray !== undefined
-                                                && data.id === undefined
-                                                && <td className="text-center"></td>
+                                                orderColumn[index] === null &&
+                                                column.name
                                             }
-                                            {
-                                                columnShow
-                                                    .map((column, index) => (
-                                                        <td key={index} className={`px-4 py-3 ${index === 0 && column.copy !== true ? "cursor-pointer" : undefined} ${column.class} ${column.minDevice == 'desktop' ? "max-lg:hidden" : column.minDevice == 'tablet' ? "max-md:hidden" : ""}`} onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
-                                                            {
-                                                                index == 0 &&
-                                                                <span className={`cursor-pointer me-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : null}`} onClick={column.copy ? () => showDetail(indexRow) : undefined} ><i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} /></span>
-                                                            }
-                                                            {
-                                                                column.render != undefined
-                                                                    ? column.render(getNestedValue(data, column.data), data)
-                                                                    : getNestedValue(data, column.data) ?? (column.defaultContent ? column.defaultContent() : "")
-                                                            }
-                                                            {
-                                                                column.copy
-                                                                && <>
-                                                                    &nbsp;<i
-                                                                        className="fa-solid fa-copy cursor-pointer"
-                                                                        onClick={(e) => onCopy(
-                                                                            e,
-                                                                            column.render != undefined
-                                                                                ? column.render(getNestedValue(data, column.data), data)
-                                                                                : getNestedValue(data, column.data) ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                        )}
-                                                                    />
-                                                                </>
-                                                            }
-                                                        </td>
-                                                    ))
-                                            }
-                                        </tr>
-                                        {
-                                            <tr>
-                                                <td
-                                                    className={columnAlwaysHide.length === 0 ? "lg:hidden" : ''}
-                                                    colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
-                                                >
-                                                    {
-                                                        columnHide
-                                                            .map((column, index) => (
-                                                                <div
+                                        </th>
+                                    ))
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                itemArray.length > 0
+                                    ? itemArray.map((data, indexRow) => (
+                                        <Fragment key={indexRow}>
+                                            <tr className="color-table-row">
+                                                {
+                                                    checkBoxArray !== undefined
+                                                    && data.id !== undefined
+                                                    && <td className="text-center">
+                                                        <span
+                                                            className={`
+                                                                color-main
+                                                                cursor-pointer
+                                                                ${checkBoxArray.indexOf(data.id) >= 0
+                                                                    ? 'fa-solid fa-square-check'
+                                                                    : 'fa-regular fa-square'
+                                                                }
+                                                            `}
+                                                            role="button" onClick={() => onCheckBoxSingle(data.id)}></span>
+                                                    </td>
+                                                }
+                                                {
+                                                    checkBoxArray !== undefined
+                                                    && data.id === undefined
+                                                    && <td />
+                                                }
+                                                {
+                                                    columnShow
+                                                        .map((column, index) => {
+                                                            const nested_value = getNestedValue(data, column.data);
+                                                            return (
+                                                                <td
                                                                     key={index}
                                                                     className={`
-                                                                        overflow-hidden
-                                                                        ml-6 mr-2 px-2
-                                                                        border-l-1 border-light-divider dark:border-dark-divider
-                                                                        transition-[max-height, opacity, padding] duration-300 ease-in-out
-                                                                        ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-2" : "max-h-0 opacity-0 py-0"}
-                                                                        ${decode(column.minDevice, 'tablet', 'md:hidden', 'desktop', 'lg:hidden')}
-                                                                    `}>
-                                                                    <span className='row-hidden-bullet' />
-                                                                    <label className="fw-bold mx-2">{column.name}</label>
+                                                                        p-elem
+                                                                        ${index === 0 && column.copy !== true ? "cursor-pointer" : ""}
+                                                                        ${column.class}
+                                                                        ${column.minDevice === 'desktop' ? "max-lg:hidden" : column.minDevice === 'tablet' ? "max-md:hidden" : ""}
+                                                                    `}
+                                                                    onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
+                                                                    {
+                                                                        index == 0 &&
+                                                                        <span
+                                                                            className={`cursor-pointer pe-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : ""}`}
+                                                                            onClick={column.copy ? () => showDetail(indexRow) : undefined}>
+                                                                            <i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} />
+                                                                        </span>
+                                                                    }
                                                                     {
                                                                         column.render != undefined
-                                                                            ? column.render(getNestedValue(data, column.data), data)
-                                                                            : getNestedValue(data, column.data) ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                            ? column.render(nested_value, data)
+                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
                                                                     }
                                                                     {
                                                                         column.copy
-                                                                        && <>
-                                                                            &nbsp;<i
-                                                                                className="fa-solid fa-copy cursor-pointer"
-                                                                                onClick={(e) => onCopy(
-                                                                                    e,
-                                                                                    column.render != undefined
-                                                                                        ? column.render(getNestedValue(data, column.data), data)
-                                                                                        : getNestedValue(data, column.data) ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                                )}
-                                                                            />
-                                                                        </>
+                                                                        && <i
+                                                                            className="pl-2 fa-solid fa-copy cursor-pointer"
+                                                                            onClick={(e) => onCopy(
+                                                                                e,
+                                                                                column.render != undefined
+                                                                                    ? column.render(nested_value, data)
+                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                            )}
+                                                                        />
                                                                     }
-                                                                </div>
-                                                            ))
-                                                    }
-                                                </td>
-                                            </tr >
-                                        }
-                                    </Fragment>
-                                ))
-                                : <tr className="border-b-1 border-light-divider dark:border-dark-divider">
-                                    <td colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)} className="px-4 py-3">
-                                        {
-                                            !loadingFlag &&
-                                            <div className="flex flex-col items-center">
-                                                <i className={`
-                                                    text-light-base dark:text-dark-base
-                                                    fa-solid fa-inbox text-9xl
-                                                `} />
-                                                <label>{t("table.emptyTable")}</label>
-                                            </div>
-                                        }
-                                    </td>
-                                </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            {
-                'pagination' === type
-                && dataTotal > 0
-                && <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-5 pb-5">
-                    <div className="w-full sm:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
-                        {t
-                            (
-                                "table.info",
-                                {
-
-                                    start: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
-                                    end: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
-                                    total: dataTotal
-                                }
-                            )
-                        }
-                    </div>
-                    <div className="w-full sm:w-auto sm:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
-                        {
-                            pages.length > 1
-                            && <div className="inline-flex items-center -space-x-px text-sm">
-                                <button
-                                    disabled={currentPage === 1}
-                                    className={`
-                                        max-md:hidden rounded-l-md
-                                        px-3 py-2 ml-0 leading-tight border
-                                        text-light-base dark:text-dark-base
-                                        hover:text-light-base-secondary dark:hover:text-dark-base-secondary
-                                        bg-light-outline dark:bg-dark-outline/30
-                                        border-light-outline dark:border-dark-outline/30
-                                        cursor-pointer
-                                        
-                                        disabled:text-light-base-line disabled:dark:text-dark-base-line
-                                        disabled:cursor-not-allowed
-                                    `}
-                                    onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
-                                >
-                                    {t("table.previous")}
-                                </button>
-                                {
-                                    paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
-                                        <Fragment key={index}>
-                                            <button
-                                                className={`
-                                                    max-md:first:rounded-l-md max-md:last:rounded-r-md
-                                                    px-3 py-2 leading-tight border
-                                                        
-                                                        
-                                                    ${page === currentPage
-                                                        ? `
-                                                        text-light-base-line dark:text-dark-base-line
-                                                        `
-                                                        : `
-                                                        text-light-base dark:text-dark-base
-                                                        hover:text-light-base-secondary dark:hover:text-dark-base-secondary
-                                                        
-                                                        
-                                                        ${page === 0 ? 'cursor-default' : 'cursor-pointer hover:text-light-base-secondary dark:hover:text-dark-base-secondary'}
-                                                    `}
-                                                    
-                                                    bg-light-outline dark:bg-dark-outline/30
-                                                    border-light-outline dark:border-dark-outline/30
-                                                `}
-                                                onClick={() => onPageChange(page, sizePage, search)}
-                                            >
-                                                {page === 0 ? "..." : page}
-                                            </button>
+                                                                </td>
+                                                            )
+                                                        })
+                                                }
+                                            </tr>
+                                            {
+                                                <tr>
+                                                    <td
+                                                        className={columnAlwaysHide.length === 0 ? "lg:hidden" : ''}
+                                                        colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
+                                                    >
+                                                        {
+                                                            columnHide
+                                                                .map((column, index) => {
+                                                                    const nested_value = getNestedValue(data, column.data);
+                                                                    return (
+                                                                        <div
+                                                                            key={index}
+                                                                            className={`
+                                                                                overflow-hidden
+                                                                                ml-6 mr-2 px-2
+                                                                                color-table-hide-row
+                                                                                transition-[max-height, opacity, padding] duration-300 ease-in-out
+                                                                                ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-2" : "max-h-0 opacity-0 py-0"}
+                                                                                ${decode(column.minDevice, 'tablet', 'md:hidden', 'desktop', 'lg:hidden')}
+                                                                            `}>
+                                                                            <span className='row-hidden-bullet' />
+                                                                            <div className="flex flex-row">
+                                                                                <div className="color-label font-bold mx-2">{column.name}</div>
+                                                                                <div>
+                                                                                    {
+                                                                                        column.render != undefined
+                                                                                            ? column.render(nested_value, data)
+                                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                    }
+                                                                                    {
+                                                                                        column.copy
+                                                                                        && <i
+                                                                                            className="pl-2 fa-solid fa-copy cursor-pointer"
+                                                                                            onClick={(e) => onCopy(
+                                                                                                e,
+                                                                                                column.render != undefined
+                                                                                                    ? column.render(nested_value, data)
+                                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                            )}
+                                                                                        />
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                })
+                                                        }
+                                                    </td>
+                                                </tr >
+                                            }
                                         </Fragment>
                                     ))
-                                }
-                                <button
-                                    disabled={currentPage === pages.length}
-                                    className={`
-                                        max-md:hidden rounded-r-md
-                                        px-3 py-2 ml-0 leading-tight border
-                                        text-light-base dark:text-dark-base
-                                        hover:text-light-base-secondary dark:hover:text-dark-base-secondary
-                                        bg-light-outline dark:bg-dark-outline/30
-                                        border-light-outline dark:border-dark-outline/30
-                                        cursor-pointer
-                                        
-                                        disabled:text-light-base-line disabled:dark:text-dark-base-line
-                                        disabled:cursor-not-allowed
-                                    `}
-                                    onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
-                                >
-                                    {t("table.next")}
-                                </button>
+                                    : <tr className="color-table-row">
+                                        <td
+                                            className="p-cnt"
+                                            colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)}
+                                        >
+                                            {
+                                                !loadingFlag &&
+                                                <div className="flex flex-col items-center">
+                                                    <i className={`
+                                                    color-main
+                                                    fa-solid fa-inbox text-9xl
+                                                `} />
+                                                    <label>{t("table.emptyTable")}</label>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                {
+                    'pagination' === type
+                    && dataTotal > 0
+                    && <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-cnt">
+                        <div className="w-full sm:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                            {t
+                                (
+                                    "table.info",
+                                    {
+
+                                        start: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
+                                        end: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
+                                        total: dataTotal
+                                    }
+                                )
+                            }
+                        </div>
+                        <div className="w-full sm:w-auto sm:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                            {
+                                pages.length > 1
+                                && <div className="inline-flex items-center -space-x-px text-sm">
+                                    <button
+                                        disabled={currentPage === 1}
+                                        className={`
+                                            color-button-main
+                                            max-md:hidden rounded-l-md
+                                            px-3 py-2 ml-0 leading-tight border
+                                            cursor-pointer
+                                            disabled:cursor-not-allowed
+                                        `}
+                                        onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
+                                    >
+                                        {t("table.previous")}
+                                    </button>
+                                    {
+                                        paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
+                                            <Fragment key={index}>
+                                                <button
+                                                    disabled={page === currentPage}
+                                                    className={`
+                                                        color-button-main
+                                                        max-md:first:rounded-l-md max-md:last:rounded-r-md
+                                                        px-3 py-2 leading-tight border
+                                                        ${page === 0 ? 'cursor-default' : 'cursor-pointer'}
+                                                        disabled:cursor-not-allowed
+                                                    `}
+                                                    onClick={() => onPageChange(page, sizePage, search)}
+                                                >
+                                                    {page === 0 ? "..." : page}
+                                                </button>
+                                            </Fragment>
+                                        ))
+                                    }
+                                    <button
+                                        disabled={currentPage === pages.length}
+                                        className={`
+                                            color-button-main
+                                            max-md:hidden rounded-r-md
+                                            px-3 py-2 ml-0 leading-tight border
+                                            cursor-pointer
+                                            disabled:cursor-not-allowed
+                                        `}
+                                        onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
+                                    >
+                                        {t("table.next")}
+                                    </button>
+                                </div>
+                            }
+                        </div >
+                    </div >
+                }
+                {
+                    'load_more' === type
+                    && itemArray.length > 0
+                    && <div className="pb-5">
+                        {
+                            dataLoadMoreFlag === 0
+                            && <div className="flex items-center gap-cnt color-main text-sm">
+                                <div className="flex-grow color-divider"></div>
+                                <span className="whitespace-nowrap">{t("text.endData")}</span>
+                                <div className="flex-grow color-divider"></div>
                             </div>
                         }
-                    </div >
-                </div >
-            }
-            {
-                'load_more' === type
-                && itemArray.length > 0
-                && <div className="pb-5">
-                    {
-                        dataLoadMoreFlag === 0
-                        && <div className="flex items-center gap-4 text-light-base dark:text-dark-base text-sm mt-4">
-                            <div className="flex-grow border-t border-light-outline dark:border-dark-outline"></div>
-                            <span className="whitespace-nowrap">{t("text.endData")}</span>
-                            <div className="flex-grow border-t border-light-outline dark:border-dark-outline"></div>
+                        <div>
+                            {t("text.amountItem", { amount: itemArray.length })}
                         </div>
-                    }
-                    <div>
-                        {t("text.amountItem", { amount: itemArray.length })}
+                        {
+                            dataLoadMoreFlag === 1
+                            && <div className="text-center mt-2">
+                                <Button
+                                    label={t("text.loadMore")}
+                                    size="sm"
+                                    type="primary"
+                                    icon="fa-solid fa-circle-arrow-down animate-bounce"
+                                    onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}
+                                    loadingFlag={loadingFlag}
+                                />
+                            </div>
+                        }
                     </div>
-                    {
-                        dataLoadMoreFlag === 1
-                        && <div className="text-center mt-2">
-                            <Button
-                                label={t("text.loadMore")}
-                                size="sm"
-                                type="primary"
-                                icon="fa-solid fa-circle-arrow-down animate-bounce"
-                                onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}
-                                loadingFlag={loadingFlag}
-                            />
-                        </div>
-                    }
-                </div>
-            }
+                }
+            </div>
         </div>
     )
 }

@@ -34,13 +34,15 @@ export default function Body({
 
     return (
         <div className={`
-            flex flex-col flex-1 min-h-screen relative 
-            bg-light-clear-secondary dark:bg-dark-clear-secondary
-            transition-[margin] duration-500 ease-out ${sidebarOpenFlag ? `max-sm:hidden md:ml-[256px] max-md:ml-0` : 'ml-0'}
+            flex flex-col flex-1
+            min-h-screen relative 
+            color-main-secondary
+            transition-[margin] duration-500 ease-out
+            ${sidebarOpenFlag ? `max-sm:hidden md:ml-sidebar max-md:ml-0` : 'ml-0'}
         `}>
             <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
 
-            <main className={`text-light-base-line dark:text-dark-base-line z-0`}>
+            <main className="z-0">
                 <Routes />
             </main>
 

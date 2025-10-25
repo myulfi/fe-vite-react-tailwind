@@ -2,11 +2,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import ErrorForm from './ErrorForm';
 
-type UnitOption = {
-    key: string;
-    value: string;
-};
-
 type InputTextProps = {
     autoFocus?: boolean;
     label?: string;

@@ -77,7 +77,7 @@ export default function Select({
             }
             valueRef.current = value
         } else {
-            value = id
+            value = value === id ? null : id;
         }
 
         if (!multiple) {
@@ -152,7 +152,7 @@ export default function Select({
                     }
                 >
                     <div className="flex justify-between items-center">
-                        <span className={`${labelValue ? 'text-light-base-line dark:text-dark-base-line' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { name })}</span>
+                        <span className={`${labelValue ? 'text-light-base-line dark:text-dark-base-line' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { "name": label })}</span>
                         <i className="fa-solid fa-chevron-down text-sm"></i>
                     </div>
                 </button>

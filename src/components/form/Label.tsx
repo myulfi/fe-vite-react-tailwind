@@ -27,7 +27,7 @@ export default function Label({
             <label className="block mt-2 mb-1 text-md font-normal">
                 {!password || showPassword ? value : '***********'}
                 {
-                    copy && value !== undefined && new String(value).trim.length > 0
+                    copy && value !== undefined && new String(value).trim().length > 0
                     && <>
                         &nbsp;<i
                             className="fa-solid fa-copy cursor-pointer"

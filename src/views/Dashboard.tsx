@@ -20,7 +20,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <div className="bg-light-clear dark:bg-dark-clear">
+        <div>
             <SideBar tabletFlag={tabletFlag} sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
             <Body sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} />
         </div>

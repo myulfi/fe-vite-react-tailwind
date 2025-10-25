@@ -8,11 +8,24 @@
     --breakpoint-xl: 1441px;
     --breakpoint-2xl: 1601px;
 
+    --padding-elem: 16px;
+    --padding-cnt: 20px;
+    --gap-cnt: 20px;
+
+    --width-sidebar: 256px;
+    --margin-sidebar: 256px;
+
     --font-mono: Consolas, 'Courier New', monospace;
     /* https://maketintsandshades.com/#0090E7,8F5FE8 */
     /* https://dribbble.com/shots/25967158-Prop-Firms-Tech-Dashboard-Website-UI-UX-AdTrend */
 
     /* Light */
+    --color-light-base-fg: #0090E7;
+    --color-light-base-bg: #F9FAFB;
+
+    --color-light-base-fg: #8F5FE8;
+    --color-light-base-bg: #191C24;
+
     --color-light-base: #0090E7;
     --color-light-base-secondary: #26A1EB;
     --color-light-base-line: #314158;
@@ -112,6 +125,96 @@
 
     --color-dark-problem-base: rgba(255, 171, 0, 0.8);
     --color-dark-problem-base-line: #FFFFFF;
+
+    --color-light-base-fg: #0090E7;
+    --color-light-base-secondary-fg: #26A1EB;
+    --color-light-base-bg: #F9FAFB;
+    --color-light-base-secondary-bg: #E2E8F0;
+    --color-light-base-trinity-bg: #DEE2E6;
+
+    --color-dark-base-fg: #8F5FE8;
+    --color-dark-base-secondary-fg: #A077EB;
+    --color-dark-base-bg: #191C24;
+    --color-dark-base-secondary-bg: #0F1015;
+    --color-dark-base-trinity-bg: #2C2E33;
+
+    --color-light-label-fg: #314158;
+    --color-light-label-secondary-fg: #314158;
+    --color-dark-label-fg: #6C7293;
+    --color-dark-label-secondary-fg: #F8F8F9;
+
+}
+
+.color-main {
+    @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg
+}
+
+.color-main-link {
+    @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg hover:text-light-base-secondary-fg hover:dark:text-dark-base-secondary-fg
+}
+
+.color-main-secondary {
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-secondary-bg dark:bg-dark-base-secondary-bg
+}
+
+.color-container {
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg
+}
+
+.color-dropdown {
+    @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg border border-t-0 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+}
+
+.color-dropdown-item {
+    @apply hover:bg-light-base-fg hover:dark:bg-dark-base-fg hover:text-light-base-bg hover:dark:text-dark-base-bg
+}
+
+.color-divider {
+    @apply my-1 border-t border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+}
+
+.color-table-header {
+    @apply text-light-label-fg dark:text-dark-label-fg border-y-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+}
+
+.color-table-row {
+    @apply border-b-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+}
+
+.color-table-hide-row {
+    @apply border-l-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+}
+
+.color-button-main {
+    @apply text-light-base dark:text-dark-base hover:text-light-base-secondary dark:hover:text-dark-base-secondary bg-light-outline dark:bg-dark-outline/30 border-light-outline dark:border-dark-outline/30 disabled:text-light-base-line disabled:dark:text-dark-base-line
+}
+
+.color-label {
+    @apply text-light-label-fg dark:text-dark-label-fg
+}
+
+.color-label-link {
+    @apply text-light-label-fg dark:text-dark-label-fg hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg
+}
+
+.color-label-active-link {
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-secondary-bg dark:bg-dark-base-secondary-bg
+}
+
+.color-label-secondary {
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg
+}
+
+.container-grid-4 {
+    @apply p-cnt grid gap-cnt grid-cols-4
+}
+
+.container-rows {
+    @apply p-cnt flex flex-row flex-wrap gap-cnt
+}
+
+.container-cols {
+    @apply p-cnt flex flex-col gap-cnt
 }
 
 .form-input {

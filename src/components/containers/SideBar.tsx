@@ -39,9 +39,9 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
 
     return (
         <div className="relative">
-            <div className="relative text-light-base-line-secondary dark:text-dark-base-line-secondary">
+            <div className="relative color-label">
                 {level > 0 && (
-                    <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 bg-light-clear dark:bg-dark-clear rounded-full'></span>
+                    <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full'></span>
                 )}
 
                 {item.path && !hasChildrenFlag ? (
@@ -50,25 +50,22 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                         onClick={onNavigate}
                         className={`
                             flex items-center w-full p-2
-                            hover:text-light-base-line hover:dark:hover:text-dark-base-line
-                            hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary
                             cursor-pointer rounded-l-lg
-                            ${activeFlag ? 'text-light-base-line dark:text-dark-base-line bg-light-clear-secondary dark:bg-dark-clear-secondary font-semibold' : ''}`}
+                            ${activeFlag ? 'color-label-active-link font-semibold' : 'color-label-link'}`}
                     >
-                        {item.icon && <span className='mr-2'><i className={`${item.icon}`} /></span>}
+                        {item.icon && <span className='pr-2'><i className={`${item.icon}`} /></span>}
                         {t(item.name)}
                     </Link>
                 ) : (
                     <button
                         onClick={handleClick}
                         className={`
-                            flex items-center w-full p-2 pl-2
-                            hover:text-light-base-line hover:dark:hover:text-dark-base-line
-                            hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary
+                            flex items-center w-full p-2
+                            color-label-link
                             cursor-pointer rounded-l-lg`
                         }
                     >
-                        {item.icon && <span className="mr-2"><i className={`${item.icon}`} /></span>}
+                        {item.icon && <span className="pr-2"><i className={`${item.icon}`} /></span>}
                         {t(item.name)}
                         {hasChildrenFlag && <span className="ml-auto pr-4"><i className={`fa-solid text-xs ${openFlag ? 'fa-angle-down' : 'fa-angle-right'}`} /></span>}
                     </button>
@@ -77,13 +74,13 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
 
             <div
                 className={`
-                    overflow-hidden origin-top
+                    overflow-hidden
                     transition-[max-height, opacity] ${openFlag ? "duration-500" : "duration-300"} ease-in-out
                     ${openFlag ? "max-h-[1000px] opacity-100 visible" : "max-h-0 opacity-0 invisible pointer-events-none"}
                 `}
             >
                 {(
-                    <div className="ml-4 pl-4 border-l border-light-clear dark:border-dark-clear">
+                    <div className="pl-8">
                         {item.children!.map((c, i) => (
                             <SidebarItem key={i} item={c} level={level + 1} onNavigate={onNavigate} />
                         ))}
@@ -105,6 +102,7 @@ export default function SideBar({
     sidebarOpenFlag,
     setSidebarOpenFlag,
 }: SideBarProps) {
+    const { t } = useTranslation();
     const [menuList, setMenuList] = useState([]);
 
     useEffect(() => {
@@ -128,19 +126,18 @@ export default function SideBar({
             className={`
                 flex flex-col
                 fixed top-0 left-0 h-full
-                bg-light-clear dark:bg-dark-clear
-                text-light-base-line dark:text-dark-base-line
-                z-20 sm:w-[256px] max-sm:w-screen
+                color-main
+                z-20 sm:w-sidebar max-sm:w-screen
                 transition-[translate] duration-500 ease-in-out
                 ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}
             `}
         >
-            <div className='relative border-b border-light-clear dark:border-dark-clear pb-4 m-4 shrink-0'>
-                <span className='block text-center font-bold text-3xl text-light-base dark:text-dark-base'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span>
+            <div className='relative p-4 pb-7 shrink-0'>
+                <span className='block text-center font-bold text-3xl'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span>
                 <button
                     onClick={() => setSidebarOpenFlag(false)}
-                    className='absolute right-0 top-0 md:hidden cursor-pointer'
-                    aria-label='Close sidebar'
+                    className='absolute right-4 top-6 md:hidden cursor-pointer'
+                    aria-label={t("text.closeSidebar")}
                 >
                     <i className='fa-solid fa-xmark' />
                 </button>
