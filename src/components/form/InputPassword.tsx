@@ -23,9 +23,9 @@ export default function InputPassword({
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className="relative text-light-base-line dark:text-dark-base-line">
+        <div className="relative">
             {label && (
-                <label className="block mb-1 text-md font-bold">
+                <label className="block mb-1 text-md font-bold color-label">
                     {label}
                 </label>
             )}

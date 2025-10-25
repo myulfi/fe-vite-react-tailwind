@@ -1173,7 +1173,7 @@ export default function Database() {
     const [modalDatabaseChart, setModalDatabaseChart] = useState(false);
 
     return (
-        <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
+        <div className="container-cols">
             <ModalStackProvider>
                 <Modal
                     show={modalDatabase}
@@ -1197,41 +1197,43 @@ export default function Database() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {
-                            "entry" === databaseStateModal
-                            && <Fragment>
-                                <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
-                                <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
-                                <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
-                                <Select label={t("text.type")} name="databaseTypeId" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
-                                <InputText label="IP" name="ip" value={databaseForm.ip} onChange={onDatabaseFormChange} error={databaseFormError.ip} />
-                                <InputDecimal label={t("text.port")} name="port" value={databaseForm.port} onChange={onDatabaseFormChange} error={databaseFormError.port} />
-                                <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
-                                <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
-                                <InputText label={t("text.databaseName")} name="databaseName" value={databaseForm.databaseName} onChange={onDatabaseFormChange} error={databaseFormError.databaseName} />
-                                {/* <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} /> */}
-                                <Switch label={t("text.usePageFlag")} name="usePageFlag" value={databaseForm.usePageFlag} onChange={onDatabaseFormChange} />
-                                <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
-                            </Fragment>
-                        }
-                        {
-                            "view" === databaseStateModal
-                            && <Fragment>
-                                <Label text={t("text.code")} value={databaseForm.code} />
-                                <Label text={t("text.description")} value={databaseForm.description} />
-                                <Label text="SSH" value={masterExternalServerArray.getValueByKey?.(databaseForm.externalServerId)} />
-                                <Label text={t("text.type")} value={masterDatabaseTypeArray.getValueByKey?.(databaseForm.databaseTypeId)} />
-                                <Label text="IP" value={databaseForm.ip} />
-                                <Label text={t("text.port")} value={databaseForm.port} />
-                                <Label text={t("text.username")} value={databaseForm.username} />
-                                <Label text={t("text.password")} value={databaseForm.password} password={true} />
-                                <Label text={t("text.databaseName")} value={databaseForm.databaseName} />
-                                {/* <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} /> */}
-                                <Label text={t("text.usePageFlag")} value={yesNo(databaseForm.usePageFlag)} />
-                                <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
-                            </Fragment>
-                        }
+                    <div className="color-main rounded-2xl">
+                        <div className="p-cnt grid grid-cols-1 md:grid-cols-2 gap-cnt">
+                            {
+                                "entry" === databaseStateModal
+                                && <Fragment>
+                                    <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
+                                    <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
+                                    <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
+                                    <Select label={t("text.type")} name="databaseTypeId" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
+                                    <InputText label="IP" name="ip" value={databaseForm.ip} onChange={onDatabaseFormChange} error={databaseFormError.ip} />
+                                    <InputDecimal label={t("text.port")} name="port" value={databaseForm.port} onChange={onDatabaseFormChange} error={databaseFormError.port} />
+                                    <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
+                                    <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
+                                    <InputText label={t("text.databaseName")} name="databaseName" value={databaseForm.databaseName} onChange={onDatabaseFormChange} error={databaseFormError.databaseName} />
+                                    {/* <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} /> */}
+                                    <Switch label={t("text.usePageFlag")} name="usePageFlag" value={databaseForm.usePageFlag} onChange={onDatabaseFormChange} />
+                                    <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
+                                </Fragment>
+                            }
+                            {
+                                "view" === databaseStateModal
+                                && <Fragment>
+                                    <Label text={t("text.code")} value={databaseForm.code} />
+                                    <Label text={t("text.description")} value={databaseForm.description} />
+                                    <Label text="SSH" value={masterExternalServerArray.getValueByKey?.(databaseForm.externalServerId)} />
+                                    <Label text={t("text.type")} value={masterDatabaseTypeArray.getValueByKey?.(databaseForm.databaseTypeId)} />
+                                    <Label text="IP" value={databaseForm.ip} />
+                                    <Label text={t("text.port")} value={databaseForm.port} />
+                                    <Label text={t("text.username")} value={databaseForm.username} />
+                                    <Label text={t("text.password")} value={databaseForm.password} password={true} />
+                                    <Label text={t("text.databaseName")} value={databaseForm.databaseName} />
+                                    {/* <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} /> */}
+                                    <Label text={t("text.usePageFlag")} value={yesNo(databaseForm.usePageFlag)} />
+                                    <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
+                                </Fragment>
+                            }
+                        </div>
                     </div>
                 </Modal>
                 <Modal
@@ -1304,8 +1306,8 @@ export default function Database() {
                                 label: t("text.manual"),
                                 icon: "fa-solid fa-wrench",
                                 content:
-                                    <Fragment>
-                                        <div className="flex flex-col gap-5">
+                                    <div className="color-main rounded-2xl">
+                                        <div className="container-cols">
                                             <Button
                                                 label={t("text.run")}
                                                 size="xs"
@@ -1369,7 +1371,7 @@ export default function Database() {
                                             </div>
 
                                         }
-                                    </Fragment>
+                                    </div>
                             },
                             {
                                 label: t("text.whitelist"),
@@ -1458,80 +1460,82 @@ export default function Database() {
                         }
                     ]}
                 >
-                    <div className="grid md:grid-cols-1 gap-4">
-                        <Radio<string>
-                            label={t("text.format")}
-                            size='sm'
-                            name="format"
-                            value={databaseExportForm.format}
-                            map={[
-                                { key: "sql", icon: "fa-solid fa-database", value: "SQL" },
-                                { key: "xls", icon: "fa-solid fa-file-excel", value: "XLS" },
-                                { key: "csv", icon: "fa-solid fa-file-csv", value: "CSV" },
-                                { key: "json", icon: "fa-solid fa-code", value: "JSON" },
-                                { key: "xml", icon: "fa-solid fa-code", value: "XML" },
-                            ]}
-                            onChange={onDatabaseExportFormChange}
-                            error={databaseExportFormError.format}
-                        />
-                        {
-                            checkDatabaseExportFrom.header() &&
-                            <Switch label={t("text.header")} name="header" value={databaseExportForm.header} onChange={onDatabaseExportFormChange} />
-                        }
-                        {
-                            checkDatabaseExportFrom.delimiter() &&
-                            <InputText label={t("text.delimiter")} name="delimiter" value={databaseExportForm.delimiter} onChange={onDatabaseExportFormChange} error={databaseExportFormError.delimiter} />
-                        }
-                        {
-                            checkDatabaseExportFrom.statement() &&
-                            <Radio<number>
-                                label={t("text.statement")}
-                                size='sm'
-                                name="insertFlag"
-                                value={databaseExportForm.insertFlag}
-                                map={[
-                                    { key: 1, icon: "fa-solid fa-add", value: t("text.insert") },
-                                    { key: 0, icon: "fa-solid fa-pen", value: t("text.update") },
-                                ]}
-                                onChange={onDatabaseExportFormChange}
-                                error={databaseExportFormError.insertFlag}
-                            />
-                        }
-                        {
-                            checkDatabaseExportFrom.includeColumnName() &&
-                            <Switch label={t("text.includeColumnName")} name="includeColumnNameFlag" value={databaseExportForm.includeColumnNameFlag} onChange={onDatabaseExportFormChange} />
-                        }
-                        {
-                            checkDatabaseExportFrom.numberLinePerAction() &&
-                            <InputDecimal label={t("text.numberLinePerAction")} name="numberLinePerAction" value={databaseExportForm.numberLinePerAction} onChange={onDatabaseExportFormChange} error={databaseExportFormError.numberLinePerAction} />
-                        }
-                        {
-                            checkDatabaseExportFrom.multipleLine() &&
-                            <Switch label={t("text.multipleLine")} name="multipleLineFlag" value={databaseExportForm.multipleLineFlag} onChange={onDatabaseExportFormChange} />
-                        }
-                        {
-                            checkDatabaseExportFrom.firstAmountConditioned() &&
-                            <InputDecimal label={t("text.firstAmountConditioned")} name="firstAmountConditioned" value={databaseExportForm.firstAmountConditioned} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountConditioned} />
-                        }
-                        {
-                            checkDatabaseExportFrom.firstAmountCombined() &&
-                            <InputDecimal label={t("text.firstAmountCombined")} name="firstAmountCombined" value={databaseExportForm.firstAmountCombined} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
-                        }
-                        {
-                            checkDatabaseExportFrom.saveAs() &&
+                    <div className="color-main rounded-2xl">
+                        <div className="container-cols">
                             <Radio<string>
-                                label={t("text.saveAs")}
+                                label={t("text.format")}
                                 size='sm'
-                                name="saveAs"
-                                value={databaseExportForm.saveAs}
+                                name="format"
+                                value={databaseExportForm.format}
                                 map={[
-                                    { key: "clipboard", icon: "fa-solid fa-clipboard", value: t("text.clipboard") },
-                                    { key: "file", icon: "fa-solid fa-file", value: t("text.file") },
+                                    { key: "sql", icon: "fa-solid fa-database", value: "SQL" },
+                                    { key: "xls", icon: "fa-solid fa-file-excel", value: "XLS" },
+                                    { key: "csv", icon: "fa-solid fa-file-csv", value: "CSV" },
+                                    { key: "json", icon: "fa-solid fa-code", value: "JSON" },
+                                    { key: "xml", icon: "fa-solid fa-code", value: "XML" },
                                 ]}
                                 onChange={onDatabaseExportFormChange}
-                                error={databaseExportFormError.saveAs}
+                                error={databaseExportFormError.format}
                             />
-                        }
+                            {
+                                checkDatabaseExportFrom.header() &&
+                                <Switch label={t("text.header")} name="header" value={databaseExportForm.header} onChange={onDatabaseExportFormChange} />
+                            }
+                            {
+                                checkDatabaseExportFrom.delimiter() &&
+                                <InputText label={t("text.delimiter")} name="delimiter" value={databaseExportForm.delimiter} onChange={onDatabaseExportFormChange} error={databaseExportFormError.delimiter} />
+                            }
+                            {
+                                checkDatabaseExportFrom.statement() &&
+                                <Radio<number>
+                                    label={t("text.statement")}
+                                    size='sm'
+                                    name="insertFlag"
+                                    value={databaseExportForm.insertFlag}
+                                    map={[
+                                        { key: 1, icon: "fa-solid fa-add", value: t("text.insert") },
+                                        { key: 0, icon: "fa-solid fa-pen", value: t("text.update") },
+                                    ]}
+                                    onChange={onDatabaseExportFormChange}
+                                    error={databaseExportFormError.insertFlag}
+                                />
+                            }
+                            {
+                                checkDatabaseExportFrom.includeColumnName() &&
+                                <Switch label={t("text.includeColumnName")} name="includeColumnNameFlag" value={databaseExportForm.includeColumnNameFlag} onChange={onDatabaseExportFormChange} />
+                            }
+                            {
+                                checkDatabaseExportFrom.numberLinePerAction() &&
+                                <InputDecimal label={t("text.numberLinePerAction")} name="numberLinePerAction" value={databaseExportForm.numberLinePerAction} onChange={onDatabaseExportFormChange} error={databaseExportFormError.numberLinePerAction} />
+                            }
+                            {
+                                checkDatabaseExportFrom.multipleLine() &&
+                                <Switch label={t("text.multipleLine")} name="multipleLineFlag" value={databaseExportForm.multipleLineFlag} onChange={onDatabaseExportFormChange} />
+                            }
+                            {
+                                checkDatabaseExportFrom.firstAmountConditioned() &&
+                                <InputDecimal label={t("text.firstAmountConditioned")} name="firstAmountConditioned" value={databaseExportForm.firstAmountConditioned} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountConditioned} />
+                            }
+                            {
+                                checkDatabaseExportFrom.firstAmountCombined() &&
+                                <InputDecimal label={t("text.firstAmountCombined")} name="firstAmountCombined" value={databaseExportForm.firstAmountCombined} positionUnit="right" valueUnit={t("text.column")} onChange={onDatabaseExportFormChange} error={databaseExportFormError.firstAmountCombined} />
+                            }
+                            {
+                                checkDatabaseExportFrom.saveAs() &&
+                                <Radio<string>
+                                    label={t("text.saveAs")}
+                                    size='sm'
+                                    name="saveAs"
+                                    value={databaseExportForm.saveAs}
+                                    map={[
+                                        { key: "clipboard", icon: "fa-solid fa-clipboard", value: t("text.clipboard") },
+                                        { key: "file", icon: "fa-solid fa-file", value: t("text.file") },
+                                    ]}
+                                    onChange={onDatabaseExportFormChange}
+                                    error={databaseExportFormError.saveAs}
+                                />
+                            }
+                        </div>
                     </div>
                 </Modal>
                 <Modal
@@ -1657,6 +1661,6 @@ export default function Database() {
                 }}
                 loadingFlag={databaseTableLoadingFlag}
             />
-        </div>
+        </div >
     )
 }

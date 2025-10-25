@@ -285,7 +285,7 @@ export default function ApplicationProgrammingInterface() {
     const [modalApplicationProgrammingInterfaceRequest, setModalApplicationProgrammingInterfaceRequest] = useState(false);
 
     return (
-        <div className="bg-light-clear dark:bg-dark-clear m-5 p-5 pb-0 rounded-lg shadow-lg">
+        <div className="container-cols">
             <ModalStackProvider>
                 <Modal
                     show={modalApplicationProgrammingInterface}
@@ -309,21 +309,23 @@ export default function ApplicationProgrammingInterface() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="grid grid-cols-1 gap-4">
-                        {
-                            "entry" === applicationProgrammingInterfaceStateModal
-                            && <Fragment>
-                                <InputText autoFocus={true} label={t("text.name")} name="name" value={applicationProgrammingInterfaceForm.name} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.name} />
-                                <TextArea label={t("text.description")} name="description" rows={4} value={applicationProgrammingInterfaceForm.description} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.description} />
-                            </Fragment>
-                        }
-                        {
-                            "view" === applicationProgrammingInterfaceStateModal
-                            && <Fragment>
-                                <Label text={t("text.name")} value={applicationProgrammingInterfaceForm.name} />
-                                <Label text={t("text.description")} value={applicationProgrammingInterfaceForm.description} />
-                            </Fragment>
-                        }
+                    <div className="color-main rounded-2xl">
+                        <div className="container-cols">
+                            {
+                                "entry" === applicationProgrammingInterfaceStateModal
+                                && <Fragment>
+                                    <InputText autoFocus={true} label={t("text.name")} name="name" value={applicationProgrammingInterfaceForm.name} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.name} />
+                                    <TextArea label={t("text.description")} name="description" rows={4} value={applicationProgrammingInterfaceForm.description} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.description} />
+                                </Fragment>
+                            }
+                            {
+                                "view" === applicationProgrammingInterfaceStateModal
+                                && <Fragment>
+                                    <Label text={t("text.name")} value={applicationProgrammingInterfaceForm.name} />
+                                    <Label text={t("text.description")} value={applicationProgrammingInterfaceForm.description} />
+                                </Fragment>
+                            }
+                        </div>
                     </div>
                 </Modal>
                 <Modal
@@ -332,8 +334,10 @@ export default function ApplicationProgrammingInterface() {
                     title={applicationProgrammingInterfaceEntryModal.title}
                     onClose={() => setModalApplicationProgrammingInterfaceRequest(false)}
                 >
-                    <div className="grid grid-cols-1 gap-4">
-                        <MenuTree menuList={applicationProgrammingInterfaceRequestList} />
+                    <div className="color-main rounded-2xl">
+                        <div className="container-cols">
+                            <MenuTree menuList={applicationProgrammingInterfaceRequestList} />
+                        </div>
                     </div>
                 </Modal>
             </ModalStackProvider>

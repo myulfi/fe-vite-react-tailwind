@@ -202,7 +202,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                             <i className="fa-solid fa-xmark text-xl" />
                         </button>
                     </div>
-                    <div className=" py-4 px-8 border-y-1 border-light-divider dark:border-dark-divider">
+                    <div className="p-modal color-main-secondary">
                         <div className={`${loadingFlag ? 'opacity-0 pointer-events-none' : ''}`}>
                             {children}
                         </div>

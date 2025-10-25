@@ -297,7 +297,7 @@ export default function Table({
             }
             {
                 (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
-                <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-2">
+                <div className="z-20 color-container rounded-lg shadow-lg animate-fade-in-delay-2">
                     <div className="container-cols">
                         <div className="flex flex-col md:flex-row md:flex-wrap gap-cnt">
                             {

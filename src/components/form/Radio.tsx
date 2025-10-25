@@ -70,7 +70,7 @@ function Radio<T extends string | number>({
 
     return (
         <div
-            className={`text-light-base-line dark:text-dark-base-line ${decode(
+            className={`${decode(
                 columnSpan,
                 2,
                 "md:col-span-2",
@@ -80,7 +80,7 @@ function Radio<T extends string | number>({
                 "md:col-span-4"
             )}`}
         >
-            {label && <label className="block mb-1 text-md font-bold">{label}</label>}
+            {label && <label className="block mb-1 text-md font-bold color-label">{label}</label>}
 
             <div className="flex flex-wrap items-start">
                 {map.map((object) => (

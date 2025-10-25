@@ -352,33 +352,35 @@ export default function ExampleTemplate() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {
-                            "entry" === exampleTemplateStateModal
-                            && <Fragment>
-                                <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
-                                <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
-                                <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
-                                {/* <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
+                    <div className="color-main rounded-2xl">
+                        <div className="p-cnt grid grid-cols-1 md:grid-cols-2 gap-cnt">
+                            {
+                                "entry" === exampleTemplateStateModal
+                                && <Fragment>
+                                    <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
+                                    <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
+                                    <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
+                                    {/* <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
                                     dataSize={5}
                                     onChange={onExampleTemplateFormChange}
                                     error={exampleTemplateFormError.value} /> */}
-                                <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
-                                <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
-                                <Switch label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
-                            </Fragment>
-                        }
-                        {
-                            "view" === exampleTemplateStateModal
-                            && <Fragment>
-                                <Label text={t("text.name")} value={exampleTemplateForm.name} />
-                                <Label text={t("text.description")} value={exampleTemplateForm.description} />
-                                <Label text={t("text.value")} value={exampleTemplateForm.value} />
-                                <Label text={t("text.amount")} value={formatMoney(exampleTemplateForm.amount)} />
-                                <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "dd MMM yyyy")} />
-                                <Label text={t("text.activeFlag")} value={yesNo(exampleTemplateForm.activeFlag)} />
-                            </Fragment>
-                        }
+                                    <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
+                                    <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
+                                    <Switch label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
+                                </Fragment>
+                            }
+                            {
+                                "view" === exampleTemplateStateModal
+                                && <Fragment>
+                                    <Label text={t("text.name")} value={exampleTemplateForm.name} />
+                                    <Label text={t("text.description")} value={exampleTemplateForm.description} />
+                                    <Label text={t("text.value")} value={exampleTemplateForm.value} />
+                                    <Label text={t("text.amount")} value={formatMoney(exampleTemplateForm.amount)} />
+                                    <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "dd MMM yyyy")} />
+                                    <Label text={t("text.activeFlag")} value={yesNo(exampleTemplateForm.activeFlag)} />
+                                </Fragment>
+                            }
+                        </div>
                     </div>
                 </Modal>
             </ModalStackProvider>

@@ -123,9 +123,9 @@ export default function Select({
     };
 
     return (
-        <div className="text-light-base-line dark:text-dark-base-line">
+        <div>
             {label && (
-                <label className="block mb-1 text-md font-bold">
+                <label className="block mb-1 text-md font-bold color-label">
                     {label}
                 </label>
             )}

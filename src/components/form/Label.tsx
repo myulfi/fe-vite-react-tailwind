@@ -20,11 +20,11 @@ export default function Label({
 
     return (
         <div className={`
-            relative text-dark dark:text-tertiary
+            relative
             ${columnSpan > 1 ? `col-span-${columnSpan}` : ''}
         `}>
-            <label className="block mb-1 text-md font-bold">{text}</label>
-            <label className="block mt-2 mb-1 text-md font-normal">
+            <label className="block mb-1 text-md font-bold color-label">{text}</label>
+            <label className="block mt-2 mb-1 text-md color-value">
                 {!password || showPassword ? value : '***********'}
                 {
                     copy && value !== undefined && new String(value).trim().length > 0

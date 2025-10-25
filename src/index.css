@@ -12,6 +12,8 @@
     --padding-cnt: 20px;
     --gap-cnt: 20px;
 
+    --padding-modal: 24px;
+
     --width-sidebar: 256px;
     --margin-sidebar: 256px;
 
@@ -161,6 +163,10 @@
     @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg
 }
 
+.border-container {
+    @apply border-light-base-bg dark:border-dark-base-bg
+}
+
 .color-dropdown {
     @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg border border-t-0 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
 }
@@ -202,6 +208,10 @@
 }
 
 .color-label-secondary {
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg
+}
+
+.color-value {
     @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg
 }
 
