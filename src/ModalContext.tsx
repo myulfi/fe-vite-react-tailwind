@@ -275,7 +275,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                 fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
                 transition-[opacity] duration-200
                 overflow-y-auto 
-                ${show && !isLeaving ? "opacity-100" : "opacity-0 pointer-events-none"}`
+                ${show && !isLeaving ? "animate-fade-in-overlay" : "animate-fade-out-overlay"}`
             }
             style={{ zIndex }}
         >
@@ -292,7 +292,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                         ${sizeClasses[size]}
                         rounded-lg shadow-xl h-fit
                         transition-[scale, opacity] duration-200 ease-out
-                        ${show && !isLeaving ? "scale-100 opacity-100" : "scale-95 opacity-0"}
+                        ${show && !isLeaving ? "animate-fade-in" : "animate-fade-out"}
                         flex flex-col
                     `}
                     onClick={(e) => e.stopPropagation()}

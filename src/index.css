@@ -233,6 +233,40 @@
     @apply absolute -translate-x-3 translate-y-2 w-2 h-2 bg-light-divider dark:bg-dark-divider rounded-full
 }
 
+.animate-fade-in-delay-1 {
+    @apply opacity-0 animate-[fade-in_0.8s_ease-out_forwards] [animation-delay:0ms]
+}
+
+.animate-fade-in-delay-2 {
+    @apply opacity-0 animate-[fade-in_0.8s_ease-out_forwards] [animation-delay:300ms]
+}
+
+.animate-fade-in-delay-3 {
+    @apply opacity-0 animate-[fade-in_0.8s_ease-out_forwards] [animation-delay:600ms]
+}
+
+.animate-fade-in-delay-4 {
+    @apply opacity-0 animate-[fade-in_0.8s_ease-out_forwards] [animation-delay:900ms]
+}
+
+.animate-fade-in {
+    @apply animate-[fade-in_0.4s_ease-out_forwards]
+}
+
+.animate-fade-in-overlay {
+    @apply animate-[fade-in-overlay_0.3s_ease-out_forwards]
+}
+
+.animate-fade-out {
+    @apply animate-[fade-out_0.4s_ease-out_forwards]
+}
+
+.animate-fade-out-overlay {
+    @apply animate-[fade-out-overlay_0.4s_ease-out_forwards]
+}
+
+
+
 /* 
 .modal-primary {
     @apply bg-white dark:bg-zinc-900 text-black dark:text-white
@@ -243,6 +277,50 @@
 } */
 
 @layer utilities {
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fade-in-overlay {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fade-out {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+    }
+
+    @keyframes fade-out-overlay {
+        0% {
+            opacity: 0.9;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
     .custom-scrollbar {
         scrollbar-width: thin;
         scrollbar-color: #9ca3af transparent;

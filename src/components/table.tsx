@@ -51,7 +51,6 @@ interface TableProps {
 }
 
 export default function Table({
-    showFlag = true,
     type = 'pagination',
     labelNewButton,
     onNewButtonClick = () => { alert("Please define your function!") },
@@ -256,244 +255,253 @@ export default function Table({
     }, [filter])
 
     return (
-        <div className="color-container rounded-lg shadow-lg">
-            <div className="container-cols">
-                {
-                    (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
-                    <div className="flex flex-col md:flex-row md:flex-wrap gap-cnt">
-                        {
-                            labelNewButton != undefined
-                            && <Button
-                                label={labelNewButton}
-                                className="w-full text-nowrap"
-                                size="md"
-                                type="primary"
-                                icon="fa-solid fa-plus"
-                                onClick={() => onNewButtonClick()} />
-                        }
-                        {
-                            additionalButtonArray.map((additionalButton, index) => (
-                                <Fragment key={index}>
-                                    <Button
-                                        key={index}
-                                        label={additionalButton.label}
-                                        className={`w-full text-nowrap ${additionalButton.className}`}
-                                        size="md"
-                                        type={additionalButton.type}
-                                        icon={additionalButton.icon}
-                                        onClick={additionalButton.onClick}
-                                        loadingFlag={additionalButton.loadingFlag} />
-                                </Fragment>
-                            ))
-                        }
-                        {
-                            bulkOptionArray.length > 0
-                            && <div className="md:ml-auto">
-                                <Button
-                                    label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("text.bulkOption")}`}
+        <div className="flex flex-col gap-cnt">
+            {
+                (lengthFlag || searchFlag) &&
+                <div className="color-container rounded-lg shadow-lg opacity-0 animate-fade-in-delay-1">
+                    <div className="container-cols">
+                        <div className="flex flex-col md:flex-row items-center md:justify-between gap-cnt">
+                            {
+                                lengthFlag
+                                && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                                    <Trans
+                                        i18nKey="table.lengthMenu"
+                                        components={{
+                                            menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, Number(e.target.value), search)}>
+                                                {
+                                                    lengthArray.map((length) => (
+                                                        <option value={length} key={length}>{length}</option>
+                                                    ))
+                                                }
+                                            </select>
+                                        }}
+                                    />
+                                </div>
+                            }
+                            {
+                                searchFlag
+                                && <div className="w-full md:w-1/3 md:ml-auto">
+                                    <InputText
+                                        autoFocus={true}
+                                        autoComplete="off"
+                                        name="name"
+                                        value={search}
+                                        placeholder={t("text.search")}
+                                        onChange={event => setSearch(event.target.value)}
+                                        onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            {
+                (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
+                <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-2">
+                    <div className="container-cols">
+                        <div className="flex flex-col md:flex-row md:flex-wrap gap-cnt">
+                            {
+                                labelNewButton != undefined
+                                && <Button
+                                    label={labelNewButton}
                                     className="w-full text-nowrap"
                                     size="md"
                                     type="primary"
-                                    icon="fa-solid fa-boxes-stacked"
-                                    menuArray={bulkOptionArray}
-                                    loadingFlag={bulkOptionLoadingFlag}
-                                />
-                            </div>
-                        }
+                                    icon="fa-solid fa-plus"
+                                    onClick={() => onNewButtonClick()} />
+                            }
+                            {
+                                additionalButtonArray.map((additionalButton, index) => (
+                                    <Fragment key={index}>
+                                        <Button
+                                            key={index}
+                                            label={additionalButton.label}
+                                            className={`w-full text-nowrap ${additionalButton.className}`}
+                                            size="md"
+                                            type={additionalButton.type}
+                                            icon={additionalButton.icon}
+                                            onClick={additionalButton.onClick}
+                                            loadingFlag={additionalButton.loadingFlag} />
+                                    </Fragment>
+                                ))
+                            }
+                            {
+                                bulkOptionArray.length > 0
+                                && <div className="md:ml-auto">
+                                    <Button
+                                        label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("text.bulkOption")}`}
+                                        className="w-full text-nowrap"
+                                        size="md"
+                                        type="primary"
+                                        icon="fa-solid fa-boxes-stacked"
+                                        menuArray={bulkOptionArray}
+                                        loadingFlag={bulkOptionLoadingFlag}
+                                    />
+                                </div>
+                            }
+                        </div>
                     </div>
-                }
-                {(lengthFlag || searchFlag) &&
-                    <div className="flex flex-col md:flex-row items-center md:justify-between gap-cnt">
+                </div>
+            }
+            <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-3">
+                <div className="">
+                    <div className={`overflow-x-auto w-full ${loadingFlag ? 'min-h-64' : ''}`}>
                         {
-                            lengthFlag
-                            && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
-                                <Trans
-                                    i18nKey="table.lengthMenu"
-                                    components={{
-                                        menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, Number(e.target.value), search)}>
-                                            {
-                                                lengthArray.map((length) => (
-                                                    <option value={length} key={length}>{length}</option>
-                                                ))
-                                            }
-                                        </select>
-                                    }}
-                                />
-                            </div>
+                            loadingFlag
+                            && (
+                                "pagination" === type
+                                || ("load_more" === type && itemArray.length === 0)
+                            )
+                            &&
+                            <div
+                                className={`
+                                    absolute top-8/12 left-1/2
+                                    color-main
+                                    transform -translate-x-1/2 -translate-y-1/2
+                                    fa-solid fa-spinner fa-spin text-9xl
+                                `}
+                            />
                         }
-                        {
-                            searchFlag
-                            && <div className="w-full md:w-1/3 md:ml-auto">
-                                <InputText
-                                    autoFocus={true}
-                                    autoComplete="off"
-                                    name="name"
-                                    value={search}
-                                    placeholder={t("text.search")}
-                                    onChange={event => setSearch(event.target.value)}
-                                    onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
-                            </div>
-                        }
-                    </div>
-                }
-                <div
-                    className={`
-                        overflow-x-auto w-full
-                        ${loadingFlag ? 'min-h-64' : ''}
-                    `}>
-                    {
-                        loadingFlag
-                        && (
-                            "pagination" === type
-                            || ("load_more" === type && itemArray.length === 0)
-                        )
-                        && <div className={`
-                        absolute top-8/12 left-1/2
-                        color-main
-                        transform -translate-x-1/2 -translate-y-1/2
-                        fa-solid fa-spinner fa-spin text-9xl
-                    `}></div>
-                    }
-                    <table className="min-w-full table-auto">
-                        <thead className='color-table-header'>
-                            <tr>
-                                {
-                                    checkBoxArray !== undefined
-                                    && <th scope="col" className="text-center px-3">
-                                        <span
-                                            className={`
+                        <table className="min-w-full table-auto">
+                            <thead className='color-table-header'>
+                                <tr>
+                                    {
+                                        checkBoxArray !== undefined
+                                        && <th scope="col" className="text-center px-3">
+                                            <span
+                                                className={`
                                                 color-main
                                                 cursor-pointer
                                                 ${itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === 0
-                                                    ? 'fa-regular fa-square'
-                                                    : itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === checkBoxStateArray.length
-                                                        ? 'fa-solid fa-square-plus'
-                                                        : 'fa-solid fa-square-minus'
-                                                }`
-                                            }
-                                            role="button" onClick={() => onCheckBoxAll()}></span>
-                                    </th>
-                                }
-                                {
-                                    columnShow.map((column, index) => (
-                                        <th
-                                            key={index}
-                                            scope="col"
-                                            className={`
+                                                        ? 'fa-regular fa-square'
+                                                        : itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === checkBoxStateArray.length
+                                                            ? 'fa-solid fa-square-plus'
+                                                            : 'fa-solid fa-square-minus'
+                                                    }`
+                                                }
+                                                role="button" onClick={() => onCheckBoxAll()}></span>
+                                        </th>
+                                    }
+                                    {
+                                        columnShow.map((column, index) => (
+                                            <th
+                                                key={index}
+                                                scope="col"
+                                                className={`
                                                 p-elem align-middle
                                                 ${column.class}
                                                 ${column.minDevice == 'desktop'
-                                                    ? "max-lg:hidden"
-                                                    : column.minDevice == 'tablet'
-                                                        ? "max-md:hidden" : ""}
+                                                        ? "max-lg:hidden"
+                                                        : column.minDevice == 'tablet'
+                                                            ? "max-md:hidden" : ""}
                                             `}
-                                            style={column.width != null ? { width: `${column.width}%` } : {}}
-                                        >
-                                            {
-                                                orderColumn[index] !== null &&
-                                                <span className="w-full flex items-center justify-between">
-                                                    <span>{column.name}</span>
-                                                    <i
-                                                        className={`cursor-pointer ${orderColumn[index]}`}
-                                                        role="button"
-                                                        onClick={() => onOrderChange(column.data, index)}
-                                                    />
-                                                </span>
-                                            }
-                                            {
-                                                orderColumn[index] === null &&
-                                                column.name
-                                            }
-                                        </th>
-                                    ))
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                itemArray.length > 0
-                                    ? itemArray.map((data, indexRow) => (
-                                        <Fragment key={indexRow}>
-                                            <tr className="color-table-row">
+                                                style={column.width != null ? { width: `${column.width}%` } : {}}
+                                            >
                                                 {
-                                                    checkBoxArray !== undefined
-                                                    && data.id !== undefined
-                                                    && <td className="text-center">
-                                                        <span
-                                                            className={`
+                                                    orderColumn[index] !== null &&
+                                                    <span className="w-full flex items-center justify-between">
+                                                        <span>{column.name}</span>
+                                                        <i
+                                                            className={`cursor-pointer ${orderColumn[index]}`}
+                                                            role="button"
+                                                            onClick={() => onOrderChange(column.data, index)}
+                                                        />
+                                                    </span>
+                                                }
+                                                {
+                                                    orderColumn[index] === null &&
+                                                    column.name
+                                                }
+                                            </th>
+                                        ))
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    itemArray.length > 0
+                                        ? itemArray.map((data, indexRow) => (
+                                            <Fragment key={indexRow}>
+                                                <tr className="color-table-row">
+                                                    {
+                                                        checkBoxArray !== undefined
+                                                        && data.id !== undefined
+                                                        && <td className="text-center">
+                                                            <span
+                                                                className={`
                                                                 color-main
                                                                 cursor-pointer
                                                                 ${checkBoxArray.indexOf(data.id) >= 0
-                                                                    ? 'fa-solid fa-square-check'
-                                                                    : 'fa-regular fa-square'
-                                                                }
+                                                                        ? 'fa-solid fa-square-check'
+                                                                        : 'fa-regular fa-square'
+                                                                    }
                                                             `}
-                                                            role="button" onClick={() => onCheckBoxSingle(data.id)}></span>
-                                                    </td>
-                                                }
-                                                {
-                                                    checkBoxArray !== undefined
-                                                    && data.id === undefined
-                                                    && <td />
-                                                }
-                                                {
-                                                    columnShow
-                                                        .map((column, index) => {
-                                                            const nested_value = getNestedValue(data, column.data);
-                                                            return (
-                                                                <td
-                                                                    key={index}
-                                                                    className={`
+                                                                role="button" onClick={() => onCheckBoxSingle(data.id)}></span>
+                                                        </td>
+                                                    }
+                                                    {
+                                                        checkBoxArray !== undefined
+                                                        && data.id === undefined
+                                                        && <td />
+                                                    }
+                                                    {
+                                                        columnShow
+                                                            .map((column, index) => {
+                                                                const nested_value = getNestedValue(data, column.data);
+                                                                return (
+                                                                    <td
+                                                                        key={index}
+                                                                        className={`
                                                                         p-elem
                                                                         ${index === 0 && column.copy !== true ? "cursor-pointer" : ""}
                                                                         ${column.class}
                                                                         ${column.minDevice === 'desktop' ? "max-lg:hidden" : column.minDevice === 'tablet' ? "max-md:hidden" : ""}
                                                                     `}
-                                                                    onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
-                                                                    {
-                                                                        index == 0 &&
-                                                                        <span
-                                                                            className={`cursor-pointer pe-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : ""}`}
-                                                                            onClick={column.copy ? () => showDetail(indexRow) : undefined}>
-                                                                            <i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} />
-                                                                        </span>
-                                                                    }
-                                                                    {
-                                                                        column.render != undefined
-                                                                            ? column.render(nested_value, data)
-                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                    }
-                                                                    {
-                                                                        column.copy
-                                                                        && <i
-                                                                            className="pl-2 fa-solid fa-copy cursor-pointer"
-                                                                            onClick={(e) => onCopy(
-                                                                                e,
-                                                                                column.render != undefined
-                                                                                    ? column.render(nested_value, data)
-                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                            )}
-                                                                        />
-                                                                    }
-                                                                </td>
-                                                            )
-                                                        })
-                                                }
-                                            </tr>
-                                            {
-                                                <tr>
-                                                    <td
-                                                        className={columnAlwaysHide.length === 0 ? "lg:hidden" : ''}
-                                                        colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
-                                                    >
-                                                        {
-                                                            columnHide
-                                                                .map((column, index) => {
-                                                                    const nested_value = getNestedValue(data, column.data);
-                                                                    return (
-                                                                        <div
-                                                                            key={index}
-                                                                            className={`
+                                                                        onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
+                                                                        {
+                                                                            index == 0 &&
+                                                                            <span
+                                                                                className={`cursor-pointer pe-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : ""}`}
+                                                                                onClick={column.copy ? () => showDetail(indexRow) : undefined}>
+                                                                                <i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} />
+                                                                            </span>
+                                                                        }
+                                                                        {
+                                                                            column.render != undefined
+                                                                                ? column.render(nested_value, data)
+                                                                                : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                        }
+                                                                        {
+                                                                            column.copy
+                                                                            && <i
+                                                                                className="pl-2 fa-solid fa-copy cursor-pointer"
+                                                                                onClick={(e) => onCopy(
+                                                                                    e,
+                                                                                    column.render != undefined
+                                                                                        ? column.render(nested_value, data)
+                                                                                        : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                )}
+                                                                            />
+                                                                        }
+                                                                    </td>
+                                                                )
+                                                            })
+                                                    }
+                                                </tr>
+                                                {
+                                                    <tr>
+                                                        <td
+                                                            className={columnAlwaysHide.length === 0 ? "lg:hidden" : ''}
+                                                            colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
+                                                        >
+                                                            {
+                                                                columnHide
+                                                                    .map((column, index) => {
+                                                                        const nested_value = getNestedValue(data, column.data);
+                                                                        return (
+                                                                            <div
+                                                                                key={index}
+                                                                                className={`
                                                                                 overflow-hidden
                                                                                 ml-6 mr-2 px-2
                                                                                 color-table-hide-row
@@ -501,161 +509,172 @@ export default function Table({
                                                                                 ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-2" : "max-h-0 opacity-0 py-0"}
                                                                                 ${decode(column.minDevice, 'tablet', 'md:hidden', 'desktop', 'lg:hidden')}
                                                                             `}>
-                                                                            <span className='row-hidden-bullet' />
-                                                                            <div className="flex flex-row">
-                                                                                <div className="color-label font-bold mx-2">{column.name}</div>
-                                                                                <div>
-                                                                                    {
-                                                                                        column.render != undefined
-                                                                                            ? column.render(nested_value, data)
-                                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                                    }
-                                                                                    {
-                                                                                        column.copy
-                                                                                        && <i
-                                                                                            className="pl-2 fa-solid fa-copy cursor-pointer"
-                                                                                            onClick={(e) => onCopy(
-                                                                                                e,
-                                                                                                column.render != undefined
-                                                                                                    ? column.render(nested_value, data)
-                                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                                            )}
-                                                                                        />
-                                                                                    }
+                                                                                <span className='row-hidden-bullet' />
+                                                                                <div className="flex flex-row">
+                                                                                    <div className="color-label font-bold mx-2">{column.name}</div>
+                                                                                    <div>
+                                                                                        {
+                                                                                            column.render != undefined
+                                                                                                ? column.render(nested_value, data)
+                                                                                                : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                        }
+                                                                                        {
+                                                                                            column.copy
+                                                                                            && <i
+                                                                                                className="pl-2 fa-solid fa-copy cursor-pointer"
+                                                                                                onClick={(e) => onCopy(
+                                                                                                    e,
+                                                                                                    column.render != undefined
+                                                                                                        ? column.render(nested_value, data)
+                                                                                                        : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                                )}
+                                                                                            />
+                                                                                        }
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                        }
-                                                    </td>
-                                                </tr >
-                                            }
-                                        </Fragment>
-                                    ))
-                                    : <tr className="color-table-row">
-                                        <td
-                                            className="p-cnt"
-                                            colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)}
-                                        >
-                                            {
-                                                !loadingFlag &&
-                                                <div className="flex flex-col items-center">
-                                                    <i className={`
+                                                                        )
+                                                                    })
+                                                            }
+                                                        </td>
+                                                    </tr >
+                                                }
+                                            </Fragment>
+                                        ))
+                                        : <tr className="color-table-row">
+                                            <td
+                                                className="p-cnt"
+                                                colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)}
+                                            >
+                                                {
+                                                    !loadingFlag &&
+                                                    <div className="flex flex-col items-center">
+                                                        <i className={`
                                                     color-main
                                                     fa-solid fa-inbox text-9xl
                                                 `} />
-                                                    <label>{t("table.emptyTable")}</label>
-                                                </div>
-                                            }
-                                        </td>
-                                    </tr>
-                            }
-                        </tbody>
-                    </table>
+                                                        <label>{t("table.emptyTable")}</label>
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                {
-                    'pagination' === type
-                    && dataTotal > 0
-                    && <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-cnt">
-                        <div className="w-full sm:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
-                            {t
-                                (
-                                    "table.info",
-                                    {
+            </div>
+            {
+                (
+                    ('pagination' === type && dataTotal > 0)
+                    || ('load_more' === type && itemArray.length > 0)
+                ) &&
+                <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-4">
+                    <div className="container-cols">
+                        {
+                            'pagination' === type
+                            && dataTotal > 0
+                            && <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-cnt">
+                                <div className="w-full sm:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                                    {t
+                                        (
+                                            "table.info",
+                                            {
 
-                                        start: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
-                                        end: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
-                                        total: dataTotal
+                                                start: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
+                                                end: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (currentPage * sizePage > dataTotal ? dataTotal : (currentPage * sizePage)),
+                                                total: dataTotal
+                                            }
+                                        )
                                     }
-                                )
-                            }
-                        </div>
-                        <div className="w-full sm:w-auto sm:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
-                            {
-                                pages.length > 1
-                                && <div className="inline-flex items-center -space-x-px text-sm">
-                                    <button
-                                        disabled={currentPage === 1}
-                                        className={`
+                                </div>
+                                <div className="w-full sm:w-auto sm:ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                                    {
+                                        pages.length > 1
+                                        && <div className="inline-flex items-center -space-x-px text-sm">
+                                            <button
+                                                disabled={currentPage === 1}
+                                                className={`
                                             color-button-main
                                             max-md:hidden rounded-l-md
                                             px-3 py-2 ml-0 leading-tight border
                                             cursor-pointer
                                             disabled:cursor-not-allowed
                                         `}
-                                        onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
-                                    >
-                                        {t("table.previous")}
-                                    </button>
-                                    {
-                                        paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
-                                            <Fragment key={index}>
-                                                <button
-                                                    disabled={page === currentPage}
-                                                    className={`
+                                                onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
+                                            >
+                                                {t("table.previous")}
+                                            </button>
+                                            {
+                                                paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
+                                                    <Fragment key={index}>
+                                                        <button
+                                                            disabled={page === currentPage}
+                                                            className={`
                                                         color-button-main
                                                         max-md:first:rounded-l-md max-md:last:rounded-r-md
                                                         px-3 py-2 leading-tight border
                                                         ${page === 0 ? 'cursor-default' : 'cursor-pointer'}
                                                         disabled:cursor-not-allowed
                                                     `}
-                                                    onClick={() => onPageChange(page, sizePage, search)}
-                                                >
-                                                    {page === 0 ? "..." : page}
-                                                </button>
-                                            </Fragment>
-                                        ))
-                                    }
-                                    <button
-                                        disabled={currentPage === pages.length}
-                                        className={`
+                                                            onClick={() => onPageChange(page, sizePage, search)}
+                                                        >
+                                                            {page === 0 ? "..." : page}
+                                                        </button>
+                                                    </Fragment>
+                                                ))
+                                            }
+                                            <button
+                                                disabled={currentPage === pages.length}
+                                                className={`
                                             color-button-main
                                             max-md:hidden rounded-r-md
                                             px-3 py-2 ml-0 leading-tight border
                                             cursor-pointer
                                             disabled:cursor-not-allowed
                                         `}
-                                        onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
-                                    >
-                                        {t("table.next")}
-                                    </button>
-                                </div>
-                            }
-                        </div >
-                    </div >
-                }
-                {
-                    'load_more' === type
-                    && itemArray.length > 0
-                    && <div className="pb-5">
-                        {
-                            dataLoadMoreFlag === 0
-                            && <div className="flex items-center gap-cnt color-main text-sm">
-                                <div className="flex-grow color-divider"></div>
-                                <span className="whitespace-nowrap">{t("text.endData")}</span>
-                                <div className="flex-grow color-divider"></div>
-                            </div>
+                                                onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
+                                            >
+                                                {t("table.next")}
+                                            </button>
+                                        </div>
+                                    }
+                                </div >
+                            </div >
                         }
-                        <div>
-                            {t("text.amountItem", { amount: itemArray.length })}
-                        </div>
                         {
-                            dataLoadMoreFlag === 1
-                            && <div className="text-center mt-2">
-                                <Button
-                                    label={t("text.loadMore")}
-                                    size="sm"
-                                    type="primary"
-                                    icon="fa-solid fa-circle-arrow-down animate-bounce"
-                                    onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}
-                                    loadingFlag={loadingFlag}
-                                />
+                            'load_more' === type
+                            && itemArray.length > 0
+                            && <div className="pb-5">
+                                {
+                                    dataLoadMoreFlag === 0
+                                    && <div className="flex items-center gap-cnt color-main text-sm">
+                                        <div className="flex-grow color-divider"></div>
+                                        <span className="whitespace-nowrap">{t("text.endData")}</span>
+                                        <div className="flex-grow color-divider"></div>
+                                    </div>
+                                }
+                                <div>
+                                    {t("text.amountItem", { amount: itemArray.length })}
+                                </div>
+                                {
+                                    dataLoadMoreFlag === 1
+                                    && <div className="text-center mt-2">
+                                        <Button
+                                            label={t("text.loadMore")}
+                                            size="sm"
+                                            type="primary"
+                                            icon="fa-solid fa-circle-arrow-down animate-bounce"
+                                            onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}
+                                            loadingFlag={loadingFlag}
+                                        />
+                                    </div>
+                                }
                             </div>
                         }
                     </div>
-                }
-            </div>
+                </div>
+            }
         </div>
     )
 }
