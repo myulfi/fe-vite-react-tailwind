@@ -1173,7 +1173,7 @@ export default function Database() {
     const [modalDatabaseChart, setModalDatabaseChart] = useState(false);
 
     return (
-        <div className="container-cols">
+        <div className="container-column">
             <ModalStackProvider>
                 <Modal
                     show={modalDatabase}
@@ -1197,48 +1197,47 @@ export default function Database() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="color-main rounded-2xl">
-                        <div className="p-cnt grid grid-cols-1 md:grid-cols-2 gap-cnt">
-                            {
-                                "entry" === databaseStateModal
-                                && <Fragment>
-                                    <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
-                                    <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
-                                    <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
-                                    <Select label={t("text.type")} name="databaseTypeId" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
-                                    <InputText label="IP" name="ip" value={databaseForm.ip} onChange={onDatabaseFormChange} error={databaseFormError.ip} />
-                                    <InputDecimal label={t("text.port")} name="port" value={databaseForm.port} onChange={onDatabaseFormChange} error={databaseFormError.port} />
-                                    <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
-                                    <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
-                                    <InputText label={t("text.databaseName")} name="databaseName" value={databaseForm.databaseName} onChange={onDatabaseFormChange} error={databaseFormError.databaseName} />
-                                    {/* <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} /> */}
-                                    <Switch label={t("text.usePageFlag")} name="usePageFlag" value={databaseForm.usePageFlag} onChange={onDatabaseFormChange} />
-                                    <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
-                                </Fragment>
-                            }
-                            {
-                                "view" === databaseStateModal
-                                && <Fragment>
-                                    <Label text={t("text.code")} value={databaseForm.code} />
-                                    <Label text={t("text.description")} value={databaseForm.description} />
-                                    <Label text="SSH" value={masterExternalServerArray.getValueByKey?.(databaseForm.externalServerId)} />
-                                    <Label text={t("text.type")} value={masterDatabaseTypeArray.getValueByKey?.(databaseForm.databaseTypeId)} />
-                                    <Label text="IP" value={databaseForm.ip} />
-                                    <Label text={t("text.port")} value={databaseForm.port} />
-                                    <Label text={t("text.username")} value={databaseForm.username} />
-                                    <Label text={t("text.password")} value={databaseForm.password} password={true} />
-                                    <Label text={t("text.databaseName")} value={databaseForm.databaseName} />
-                                    {/* <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} /> */}
-                                    <Label text={t("text.usePageFlag")} value={yesNo(databaseForm.usePageFlag)} />
-                                    <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
-                                </Fragment>
-                            }
-                        </div>
+                    <div className="container-grid-2-2-1">
+                        {
+                            "entry" === databaseStateModal
+                            && <Fragment>
+                                <InputText autoFocus={true} label={t("text.code")} name="code" value={databaseForm.code} onChange={onDatabaseFormChange} error={databaseFormError.code} />
+                                <TextArea label={t("text.description")} name="description" rows={1} value={databaseForm.description} onChange={onDatabaseFormChange} error={databaseFormError.description} />
+                                <Select label="SSH" name="externalServerId" map={masterExternalServerArray} value={databaseForm.externalServerId} onChange={onDatabaseFormChange} />
+                                <Select label={t("text.type")} name="databaseTypeId" map={masterDatabaseTypeArray} value={databaseForm.databaseTypeId} onChange={onDatabaseFormChange} error={databaseFormError.databaseTypeId} />
+                                <InputText label="IP" name="ip" value={databaseForm.ip} onChange={onDatabaseFormChange} error={databaseFormError.ip} />
+                                <InputDecimal label={t("text.port")} name="port" value={databaseForm.port} onChange={onDatabaseFormChange} error={databaseFormError.port} />
+                                <InputText label={t("text.username")} name="username" value={databaseForm.username} onChange={onDatabaseFormChange} error={databaseFormError.username} />
+                                <InputPassword label={t("text.password")} name="password" value={databaseForm.password} onChange={onDatabaseFormChange} error={databaseFormError.password} />
+                                <InputText label={t("text.databaseName")} name="databaseName" value={databaseForm.databaseName} onChange={onDatabaseFormChange} error={databaseFormError.databaseName} />
+                                {/* <TextArea label={t("text.databaseConnection")} name="databaseConnection" rows={1} value={databaseForm.databaseConnection} onChange={onDatabaseFormChange} error={databaseFormError.databaseConnection} /> */}
+                                <Switch label={t("text.usePageFlag")} name="usePageFlag" value={databaseForm.usePageFlag} onChange={onDatabaseFormChange} />
+                                <Switch label={t("text.lockFlag")} name="lockFlag" value={databaseForm.lockFlag} onChange={onDatabaseFormChange} />
+                            </Fragment>
+                        }
+                        {
+                            "view" === databaseStateModal
+                            && <Fragment>
+                                <Label text={t("text.code")} value={databaseForm.code} />
+                                <Label text={t("text.description")} value={databaseForm.description} />
+                                <Label text="SSH" value={masterExternalServerArray.getValueByKey?.(databaseForm.externalServerId)} />
+                                <Label text={t("text.type")} value={masterDatabaseTypeArray.getValueByKey?.(databaseForm.databaseTypeId)} />
+                                <Label text="IP" value={databaseForm.ip} />
+                                <Label text={t("text.port")} value={databaseForm.port} />
+                                <Label text={t("text.username")} value={databaseForm.username} />
+                                <Label text={t("text.password")} value={databaseForm.password} password={true} />
+                                <Label text={t("text.databaseName")} value={databaseForm.databaseName} />
+                                {/* <Label text={t("text.databaseConnection")} value={databaseForm.databaseConnection} /> */}
+                                <Label text={t("text.usePageFlag")} value={yesNo(databaseForm.usePageFlag)} />
+                                <Label text={t("text.lockFlag")} value={yesNo(databaseForm.lockFlag)} />
+                            </Fragment>
+                        }
                     </div>
                 </Modal>
                 <Modal
                     show={modalDatabaseConnect}
                     type="dynamic"
+                    background="secondary"
                     size="xl"
                     title={databaseConnectModalTitle}
                     onClose={() => setModalDatabaseConnect(false)}
@@ -1249,7 +1248,7 @@ export default function Database() {
                             {
                                 label: t("text.object"),
                                 icon: "fa-solid fa-table",
-                                content:
+                                content: <div className="flex flex-col gap-container">
                                     <Table
                                         searchFlag={false}
                                         dataArray={databaseQueryObjectArray}
@@ -1301,16 +1300,16 @@ export default function Database() {
                                         }}
                                         loadingFlag={databaseQueryObjectTableLoadingFlag}
                                     />
+                                </div>
                             },
                             {
                                 label: t("text.manual"),
                                 icon: "fa-solid fa-wrench",
                                 content:
                                     <div className="color-main rounded-2xl">
-                                        <div className="container-cols">
+                                        <div className="container-column">
                                             <Button
                                                 label={t("text.run")}
-                                                size="xs"
                                                 type="primary"
                                                 icon="fa-solid fa-play"
                                                 onClick={runDatabaseQueryManual}
@@ -1355,28 +1354,25 @@ export default function Database() {
                                             <div className="flex flex-row gap-4">
                                                 <Button
                                                     label={t("text.export")}
-                                                    size="xs"
                                                     type="primary"
                                                     icon="fa-solid fa-download"
                                                     onClick={() => setModalDatabaseExport(true)}
                                                 />
                                                 <Button
                                                     label={t("text.chart")}
-                                                    size="xs"
                                                     type="primary"
                                                     icon="fa-solid fa-chart-line"
                                                     onClick={() => runDatabaseQueryChart("manual")}
                                                     loadingFlag={databaseQueryManualChartLoadingFlag}
                                                 />
                                             </div>
-
                                         }
                                     </div>
                             },
                             {
                                 label: t("text.whitelist"),
                                 icon: "fa-solid fa-file-circle-check",
-                                content:
+                                content: <div className="flex flex-col gap-container">
                                     <Table
                                         searchFlag={true}
                                         dataArray={databaseQueryWhitelistArray}
@@ -1421,6 +1417,7 @@ export default function Database() {
                                         }}
                                         loadingFlag={databaseQueryWhitelistTableLoadingFlag}
                                     />
+                                </div>
                             }
                         ]}
                     />
@@ -1626,7 +1623,6 @@ export default function Database() {
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
                                         label={t("text.view")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewDatabase(data)}
@@ -1634,7 +1630,6 @@ export default function Database() {
                                     />
                                     <Button
                                         label={t("text.connect")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-plug"
                                         onClick={() => connectDatabase(data, row.code)}
@@ -1642,7 +1637,6 @@ export default function Database() {
                                     />
                                     <Button
                                         label={t("text.delete")}
-                                        className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteDatabase(data, row.code)}

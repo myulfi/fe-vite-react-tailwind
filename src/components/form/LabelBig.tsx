@@ -24,14 +24,15 @@ export default function LabelBig({
     return (
         <div
             className={`
-                relative text-dark dark:text-tertiary
+                relative
                 ${columnSpan > 1 ? `col-span-${columnSpan}` : ''}
             `}
         >
-            <label className="block mb-1 text-md font-bold">{text}</label>
+            <label className="block mb-1 text-md font-bold color-label">{text}</label>
 
             <div
                 className="
+                    color-value
                     mt-2 mb-1 text-md font-normal
                     overflow-auto
                     max-h-32 max-w-full

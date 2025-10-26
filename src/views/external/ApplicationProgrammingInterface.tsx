@@ -285,7 +285,7 @@ export default function ApplicationProgrammingInterface() {
     const [modalApplicationProgrammingInterfaceRequest, setModalApplicationProgrammingInterfaceRequest] = useState(false);
 
     return (
-        <div className="container-cols">
+        <div className="container-column">
             <ModalStackProvider>
                 <Modal
                     show={modalApplicationProgrammingInterface}
@@ -309,23 +309,21 @@ export default function ApplicationProgrammingInterface() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="color-main rounded-2xl">
-                        <div className="container-cols">
-                            {
-                                "entry" === applicationProgrammingInterfaceStateModal
-                                && <Fragment>
-                                    <InputText autoFocus={true} label={t("text.name")} name="name" value={applicationProgrammingInterfaceForm.name} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.name} />
-                                    <TextArea label={t("text.description")} name="description" rows={4} value={applicationProgrammingInterfaceForm.description} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.description} />
-                                </Fragment>
-                            }
-                            {
-                                "view" === applicationProgrammingInterfaceStateModal
-                                && <Fragment>
-                                    <Label text={t("text.name")} value={applicationProgrammingInterfaceForm.name} />
-                                    <Label text={t("text.description")} value={applicationProgrammingInterfaceForm.description} />
-                                </Fragment>
-                            }
-                        </div>
+                    <div className="container-column">
+                        {
+                            "entry" === applicationProgrammingInterfaceStateModal
+                            && <Fragment>
+                                <InputText autoFocus={true} label={t("text.name")} name="name" value={applicationProgrammingInterfaceForm.name} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.name} />
+                                <TextArea label={t("text.description")} name="description" rows={4} value={applicationProgrammingInterfaceForm.description} onChange={onApplicationProgrammingInterfaceFormChange} error={applicationProgrammingInterfaceFormError.description} />
+                            </Fragment>
+                        }
+                        {
+                            "view" === applicationProgrammingInterfaceStateModal
+                            && <Fragment>
+                                <Label text={t("text.name")} value={applicationProgrammingInterfaceForm.name} />
+                                <Label text={t("text.description")} value={applicationProgrammingInterfaceForm.description} />
+                            </Fragment>
+                        }
                     </div>
                 </Modal>
                 <Modal
@@ -380,7 +378,6 @@ export default function ApplicationProgrammingInterface() {
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
                                         label={t("text.view")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewApplicationProgrammingInterface(data)}
@@ -388,7 +385,6 @@ export default function ApplicationProgrammingInterface() {
                                     />
                                     <Button
                                         label={t("text.request")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-circle-arrow-right"
                                         onClick={() => viewRequestApplicationProgrammingInterface(data)}
@@ -396,7 +392,6 @@ export default function ApplicationProgrammingInterface() {
                                     />
                                     <Button
                                         label={t("text.delete")}
-                                        className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteApplicationProgrammingInterface(data, row.name)}

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LOCAL_STORAGE } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { useTranslation } from "react-i18next";
+import { useClickOutside } from "../../hook/useClickOutside";
 
 type MenuItem = {
     name: string
@@ -121,8 +122,16 @@ export default function SideBar({
         fetchMenu();
     }, []);
 
+    const sideBarRef = useRef<HTMLDivElement>(null);
+    useClickOutside(sideBarRef, () => {
+        if (tabletFlag) {
+            setSidebarOpenFlag(false);
+        }
+    });
+
     return (
         <div
+            ref={sideBarRef}
             className={`
                 flex flex-col
                 fixed top-0 left-0 h-full

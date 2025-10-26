@@ -17,7 +17,7 @@ const Navtab: React.FC<TabsProps> = ({ tabs, initialActiveTab = 0 }) => {
     return (
         <div className="w-full">
             <div className="color-main rounded-xl">
-                <div className="p-cnt flex flex-row flex-wrap">
+                <div className="p-container flex flex-row flex-wrap">
                     {tabs.map((tab, index) => (
                         <button
                             key={index}

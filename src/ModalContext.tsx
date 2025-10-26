@@ -63,6 +63,7 @@ type ModalProps = {
     show: boolean;
     size?: 'sm' | 'md' | 'lg' | 'xl';
     type?: 'static' | 'dynamic';
+    background?: 'primary' | 'secondary';
     title: string;
     icon?: string;
     buttonArray?: ButtonArray;
@@ -79,7 +80,7 @@ const sizeClasses = {
     xl: 'w-full',
 };
 
-export function Modal({ show, size = "xl", type = 'static', title, icon, buttonArray = [], onClose, loadingFlag = false, children }: ModalProps) {
+export function Modal({ show, size = "xl", type = 'static', background = 'primary', title, icon, buttonArray = [], onClose, loadingFlag = false, children }: ModalProps) {
     const { t } = useTranslation();
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
@@ -165,7 +166,6 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
         <div
             className={`
                 fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
-                transition-[opacity] duration-200
                 overflow-y-auto 
                 ${show ? "animate-fade-in-overlay" : "animate-fade-out-overlay"}`
             }
@@ -202,7 +202,7 @@ export function Modal({ show, size = "xl", type = 'static', title, icon, buttonA
                             <i className="fa-solid fa-xmark text-xl" />
                         </button>
                     </div>
-                    <div className="p-modal color-main-secondary">
+                    <div className={`${background === 'primary' ? 'color-main p-5 border-y-1 border-light-divider dark:border-dark-divider' : 'p-modal color-main-secondary'}`}>
                         <div className={`${loadingFlag ? 'opacity-0 pointer-events-none' : ''}`}>
                             {children}
                         </div>

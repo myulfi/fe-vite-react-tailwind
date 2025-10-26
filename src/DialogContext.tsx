@@ -96,13 +96,16 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
     };
 
     return ReactDOM.createPortal(
-        <div className={
-            `fixed inset-0 flex items-center justify-center z-[6000] bg-black/40 p-cnt
+        <div className={`
+            fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
+            flex items-center justify-center z-[6000]
+            overflow-y-auto
+            p-container
             ${isClosing
                 ? 'animate-fade-out-overlay'
                 : 'animate-fade-in-overlay'
-            }`
-        }
+            }
+        `}
         >
             <div
                 className={`
@@ -126,7 +129,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                     </button>
                 </div>
                 <p className="text-sm text-dark dark:text-gray-300 text-center px-4">{message}</p>
-                <div className="flex justify-end gap-4 mt-4 p-4 pt-2">
+                <div className="container-row-column justify-end">
                     {type !== 'alert' && (
                         <Button
                             label={

@@ -42,7 +42,7 @@ export default function CircularProgress({ progress, min = 0, max = 100 }: Circu
                 />
                 <circle
                     ref={circleRef}
-                    className="text-light-base dark:text-dark-base transition-all duration-100 ease-linear"
+                    className="color-main transition-all duration-100 ease-linear"
                     stroke="currentColor"
                     strokeWidth="10"
                     fill="transparent"
@@ -55,7 +55,7 @@ export default function CircularProgress({ progress, min = 0, max = 100 }: Circu
             </svg>
             <div
                 ref={textRef}
-                className="absolute inset-0 flex items-center justify-center text-3xl font-bold text-light-base-line dark:text-dark-base-line"
+                className="absolute inset-0 flex items-center justify-center text-3xl font-bold color-label-secondary"
             >
                 0%
             </div>

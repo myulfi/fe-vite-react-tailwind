@@ -85,6 +85,7 @@ export default function Button({
         <div ref={menuRef} className="relative">
             <button
                 className={`
+                    max-sm:w-full text-nowrap
                     rounded-t-sm
                     ${menuOpenFlag ? 'rounded-b-none' : 'rounded-b-sm'}
                     shadow border-0 disabled:opacity-60 w-auto

@@ -327,8 +327,7 @@ export default function ExampleTemplate() {
     const [modalExampleTemplate, setModalExampleTemplate] = useState(false);
 
     return (
-        <div className='container-cols'>
-            {/* <div className="color-container p-cnt rounded-lg shadow-lg"> */}
+        <div className='container-column'>
             <ModalStackProvider>
                 <Modal
                     show={modalExampleTemplate}
@@ -352,35 +351,33 @@ export default function ExampleTemplate() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="color-main rounded-2xl">
-                        <div className="p-cnt grid grid-cols-1 md:grid-cols-2 gap-cnt">
-                            {
-                                "entry" === exampleTemplateStateModal
-                                && <Fragment>
-                                    <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
-                                    <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
-                                    <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
-                                    {/* <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
+                    <div className="container-grid-2-2-1">
+                        {
+                            "entry" === exampleTemplateStateModal
+                            && <Fragment>
+                                <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
+                                <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
+                                <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
+                                {/* <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
                                     dataSize={5}
                                     onChange={onExampleTemplateFormChange}
                                     error={exampleTemplateFormError.value} /> */}
-                                    <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
-                                    <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
-                                    <Switch label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
-                                </Fragment>
-                            }
-                            {
-                                "view" === exampleTemplateStateModal
-                                && <Fragment>
-                                    <Label text={t("text.name")} value={exampleTemplateForm.name} />
-                                    <Label text={t("text.description")} value={exampleTemplateForm.description} />
-                                    <Label text={t("text.value")} value={exampleTemplateForm.value} />
-                                    <Label text={t("text.amount")} value={formatMoney(exampleTemplateForm.amount)} />
-                                    <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "dd MMM yyyy")} />
-                                    <Label text={t("text.activeFlag")} value={yesNo(exampleTemplateForm.activeFlag)} />
-                                </Fragment>
-                            }
-                        </div>
+                                <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
+                                <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
+                                <Switch label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
+                            </Fragment>
+                        }
+                        {
+                            "view" === exampleTemplateStateModal
+                            && <Fragment>
+                                <Label text={t("text.name")} value={exampleTemplateForm.name} />
+                                <Label text={t("text.description")} value={exampleTemplateForm.description} />
+                                <Label text={t("text.value")} value={exampleTemplateForm.value} />
+                                <Label text={t("text.amount")} value={formatMoney(exampleTemplateForm.amount)} />
+                                <Label text={t("text.date")} value={formatDate(new Date(exampleTemplateForm.date!), "dd MMM yyyy")} />
+                                <Label text={t("text.activeFlag")} value={yesNo(exampleTemplateForm.activeFlag)} />
+                            </Fragment>
+                        }
                     </div>
                 </Modal>
             </ModalStackProvider>
@@ -479,7 +476,6 @@ export default function ExampleTemplate() {
                                 <div className="flex justify-center max-sm:flex-col gap-4">
                                     <Button
                                         label={t("text.view")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewExampleTemplate(data)}
@@ -487,7 +483,6 @@ export default function ExampleTemplate() {
                                     />
                                     <Button
                                         label={t("text.delete")}
-                                        className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteExampleTemplate(data, row.name)}

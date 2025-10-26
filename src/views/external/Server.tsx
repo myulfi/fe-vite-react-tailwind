@@ -951,7 +951,7 @@ export default function Server() {
     const [modalServerUpload, setModalServerUpload] = useState(false);
 
     return (
-        <div className="container-cols">
+        <div className="container-column">
             <ModalStackProvider>
                 <Modal
                     show={modalServer}
@@ -976,49 +976,47 @@ export default function Server() {
                         })
                     ].filter(Boolean) as ButtonArray}
                 >
-                    <div className="color-main rounded-2xl">
-                        <div className="p-cnt grid grid-cols-1 md:grid-cols-2 gap-cnt">
-                            {
-                                "entry" === serverStateModal
-                                && <Fragment>
-                                    <InputText autoFocus={true} label={t("text.code")} name="code" value={serverForm.code} onChange={onServerFormChange} error={serverFormError.code} />
-                                    <TextArea label={t("text.description")} name="description" rows={1} value={serverForm.description} onChange={onServerFormChange} error={serverFormError.description} />
-                                    <Radio label={t("text.type")} columnSpan={2} name="serverTypeId" value={serverForm.serverTypeId} size="sm" map={masterServerTypeArray} onChange={onServerFormChange} error={serverFormError.serverTypeId} />
-                                    <InputText label="IP" name="ip" value={serverForm.ip} onChange={onServerFormChange} error={serverFormError.ip} />
-                                    <InputDecimal label={t("text.port")} name="port" value={serverForm.port} onChange={onServerFormChange} error={serverFormError.port} />
-                                    <InputText autoComplete="off" label={t("text.username")} name="username" value={serverForm.username} onChange={onServerFormChange} error={serverFormError.username} />
-                                    <Switch label={t("text.passwordless")} name="passwordlessFlag" value={serverForm.passwordlessFlag!} onChange={onServerFormChange} />
-                                    {
-                                        0 === serverForm.passwordlessFlag &&
-                                        <InputPassword label={t("text.password")} name="password" value={serverForm.password!} onChange={onServerFormChange} error={serverFormError.password} />
-                                    }
-                                    {
-                                        1 === serverForm.passwordlessFlag &&
-                                        <TextArea label={t("text.privateKey")} name="privateKey" rows={3} value={serverForm.privateKey} onChange={onServerFormChange} error={serverFormError.privateKey} />
-                                    }
-                                </Fragment>
-                            }
-                            {
-                                "view" === serverStateModal
-                                && <Fragment>
-                                    <Label text={t("text.code")} value={serverForm.code} />
-                                    <Label text={t("text.description")} value={serverForm.description} />
-                                    <Label text={t("text.type")} value={masterServerTypeArray.getValueByKey?.(serverForm.serverTypeId)} />
-                                    <Label text="IP" value={serverForm.ip} />
-                                    <Label text={t("text.port")} value={serverForm.port} />
-                                    <Label text={t("text.username")} value={serverForm.username} />
-                                    <Label text={t("text.passwordless")} value={yesNo(serverForm.passwordlessFlag!)} />
-                                    {
-                                        0 === serverForm.passwordlessFlag &&
-                                        <Label text={t("text.password")} value={serverForm.password} password={true} />
-                                    }
-                                    {
-                                        1 === serverForm.passwordlessFlag &&
-                                        <LabelBig text={t("text.privateKey")} value={serverForm.privateKey} />
-                                    }
-                                </Fragment>
-                            }
-                        </div>
+                    <div className="container-grid-2-2-1">
+                        {
+                            "entry" === serverStateModal
+                            && <Fragment>
+                                <InputText autoFocus={true} label={t("text.code")} name="code" value={serverForm.code} onChange={onServerFormChange} error={serverFormError.code} />
+                                <TextArea label={t("text.description")} name="description" rows={1} value={serverForm.description} onChange={onServerFormChange} error={serverFormError.description} />
+                                <Radio label={t("text.type")} columnSpan={2} name="serverTypeId" value={serverForm.serverTypeId} size="sm" map={masterServerTypeArray} onChange={onServerFormChange} error={serverFormError.serverTypeId} />
+                                <InputText label="IP" name="ip" value={serverForm.ip} onChange={onServerFormChange} error={serverFormError.ip} />
+                                <InputDecimal label={t("text.port")} name="port" value={serverForm.port} onChange={onServerFormChange} error={serverFormError.port} />
+                                <InputText autoComplete="off" label={t("text.username")} name="username" value={serverForm.username} onChange={onServerFormChange} error={serverFormError.username} />
+                                <Switch label={t("text.passwordless")} name="passwordlessFlag" value={serverForm.passwordlessFlag!} onChange={onServerFormChange} />
+                                {
+                                    0 === serverForm.passwordlessFlag &&
+                                    <InputPassword label={t("text.password")} name="password" value={serverForm.password!} onChange={onServerFormChange} error={serverFormError.password} />
+                                }
+                                {
+                                    1 === serverForm.passwordlessFlag &&
+                                    <TextArea label={t("text.privateKey")} name="privateKey" rows={3} value={serverForm.privateKey} onChange={onServerFormChange} error={serverFormError.privateKey} />
+                                }
+                            </Fragment>
+                        }
+                        {
+                            "view" === serverStateModal
+                            && <Fragment>
+                                <Label text={t("text.code")} value={serverForm.code} />
+                                <Label text={t("text.description")} value={serverForm.description} />
+                                <Label text={t("text.type")} value={masterServerTypeArray.getValueByKey?.(serverForm.serverTypeId)} />
+                                <Label text="IP" value={serverForm.ip} />
+                                <Label text={t("text.port")} value={serverForm.port} />
+                                <Label text={t("text.username")} value={serverForm.username} />
+                                <Label text={t("text.passwordless")} value={yesNo(serverForm.passwordlessFlag!)} />
+                                {
+                                    0 === serverForm.passwordlessFlag &&
+                                    <Label text={t("text.password")} value={serverForm.password} password={true} />
+                                }
+                                {
+                                    1 === serverForm.passwordlessFlag &&
+                                    <LabelBig text={t("text.privateKey")} value={serverForm.privateKey} />
+                                }
+                            </Fragment>
+                        }
                     </div>
                 </Modal>
                 <Modal

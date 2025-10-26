@@ -8,9 +8,9 @@
     --breakpoint-xl: 1441px;
     --breakpoint-2xl: 1601px;
 
-    --padding-elem: 16px;
-    --padding-cnt: 20px;
-    --gap-cnt: 20px;
+    --padding-element: 16px;
+    --padding-container: 20px;
+    --gap-container: 20px;
 
     --padding-modal: 24px;
 
@@ -22,19 +22,12 @@
     /* https://dribbble.com/shots/25967158-Prop-Firms-Tech-Dashboard-Website-UI-UX-AdTrend */
 
     /* Light */
-    --color-light-base-fg: #0090E7;
-    --color-light-base-bg: #F9FAFB;
-
-    --color-light-base-fg: #8F5FE8;
-    --color-light-base-bg: #191C24;
-
     --color-light-base: #0090E7;
     --color-light-base-secondary: #26A1EB;
     --color-light-base-line: #314158;
     --color-light-base-line-secondary: #314158;
     --color-light-clear: #F9FAFB;
     --color-light-clear-secondary: #E2E8F0;
-    --color-light-outline: #D1D5DC;
 
     --color-light-divider: #DEE2E6;
 
@@ -83,7 +76,6 @@
     --color-dark-base-line-secondary: #6C7293;
     --color-dark-clear: #191C24;
     --color-dark-clear-secondary: #0F1015;
-    --color-dark-outline: #311B92;
 
     --color-dark-divider: #2C2E33;
 
@@ -142,8 +134,11 @@
 
     --color-light-label-fg: #314158;
     --color-light-label-secondary-fg: #314158;
+    --color-light-outline: #D1D5DC;
     --color-dark-label-fg: #6C7293;
     --color-dark-label-secondary-fg: #F8F8F9;
+    --color-dark-outline: #311B92;
+
 
 }
 
@@ -211,21 +206,44 @@
     @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg
 }
 
+.background-color-outline {
+    @apply bg-light-outline dark:bg-dark-outline
+}
+
 .color-value {
     @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg
 }
 
-.container-grid-4 {
-    @apply p-cnt grid gap-cnt grid-cols-4
+/*Container Start*/
+.container-grid-4-2-1 {
+    @apply p-container grid gap-container grid-cols-1 md:grid-cols-2 lg:grid-cols-4
 }
 
-.container-rows {
-    @apply p-cnt flex flex-row flex-wrap gap-cnt
+.container-grid-3-2-1 {
+    @apply p-container grid gap-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3
 }
 
-.container-cols {
-    @apply p-cnt flex flex-col gap-cnt
+.container-grid-2-2-1 {
+    @apply p-container grid gap-container grid-cols-1 md:grid-cols-2 lg:grid-cols-2
 }
+
+.column-span-2 {
+    @apply col-span-1 md:col-span-2
+}
+
+.container-row {
+    @apply p-container flex flex-row flex-wrap gap-container
+}
+
+.container-row-column {
+    @apply p-container flex flex-col sm:flex-row sm:flex-wrap gap-container
+}
+
+.container-column {
+    @apply p-container flex flex-col gap-container
+}
+
+/*Container End*/
 
 .form-input {
     @apply border px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base
