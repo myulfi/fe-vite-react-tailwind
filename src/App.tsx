@@ -6,7 +6,7 @@ import Dashboard from './views/Dashboard';
 
 function App() {
   return (
-    <div className='custom-scrollbar'>
+    <div>
       {
         localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN) !== null
         && <Dashboard />
