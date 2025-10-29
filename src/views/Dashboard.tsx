@@ -8,7 +8,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         const checkMobile = () => {
-            const mobile = window.innerWidth < 321;
+            const mobile = window.innerWidth < 426;
             const tablet = window.innerWidth < 769;
             setTabletFlag(tablet);
             setSidebarOpenFlag(!mobile);

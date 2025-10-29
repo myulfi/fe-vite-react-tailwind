@@ -8,6 +8,11 @@
     --breakpoint-xl: 1441px;
     --breakpoint-2xl: 1601px;
 
+    /* --breakpoint-*: initial; */
+    --breakpoint-tablet: 426px;
+    --breakpoint-laptop: 769px;
+    --breakpoint-desktop: 1441px;
+
     --padding-element: 16px;
     --padding-container: 20px;
     --gap-container: 20px;
@@ -16,6 +21,8 @@
 
     --width-sidebar: 256px;
     --margin-sidebar: 256px;
+
+    --z-index-dropdown: 20;
 
     --font-mono: Consolas, 'Courier New', monospace;
     /* https://maketintsandshades.com/#0090E7,8F5FE8 */
@@ -141,6 +148,14 @@
 
 
 }
+
+/*Text Start*/
+.text-logo {
+    @apply font-bold text-3xl;
+}
+
+/*Text End*/
+
 
 .color-main {
     @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg
@@ -350,9 +365,9 @@
     }
 
     /* custom scrollbar start */
-    * {
+    /* * {
         scrollbar-gutter: stable both-edges;
-    }
+    } */
 
     *::-webkit-scrollbar {
         width: 10px;
