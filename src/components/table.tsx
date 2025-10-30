@@ -491,58 +491,56 @@ export default function Table({
                                                         className={columnAlwaysHide.length === 0 ? "desktop:hidden" : ''}
                                                         colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
                                                     >
-                                                        {
-                                                            columnHide
-                                                                .map((column, index) => {
-                                                                    const nested_value = getNestedValue(data, column.data);
-                                                                    return (
-                                                                        <div
-                                                                            key={index}
-                                                                            className={`
-                                                                                flex flex-col
-                                                                                transition-[max-height, opacity, padding] duration-300 ease-in-out
-                                                                                ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-0" : "max-h-0 opacity-0 py-0"}
-                                                                                ${decode(column.minDevice, 'tablet', 'tablet:hidden', 'desktop', 'desktop:hidden')}
-                                                                            `}>
-                                                                            <div className='flex flex-row color-label py-additional'>
-                                                                                <div
-                                                                                    className={`
-                                                                                        w-additional flex items-center justify-center
-                                                                                        mx-container
-                                                                                    `}
-                                                                                >
-                                                                                    <span
-                                                                                        className={`
-                                                                                            w-2 h-2 rounded-full
-                                                                                            bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
-                                                                                        `}
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="color-label font-bold mx-2">{column.name}</div>
-                                                                                <div>
-                                                                                    {
-                                                                                        column.render != undefined
-                                                                                            ? column.render(nested_value, data)
-                                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                                    }
-                                                                                    {
-                                                                                        column.copy
-                                                                                        && <i
-                                                                                            className="pl-additional fa-solid fa-copy cursor-pointer"
-                                                                                            onClick={(e) => onCopy(
-                                                                                                e,
-                                                                                                column.render != undefined
-                                                                                                    ? column.render(nested_value, data)
-                                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
-                                                                                            )}
+                                                        <div
+                                                            className={`
+                                                                overflow-hidden pb-element
+                                                                transition-[max-height, opacity]
+                                                                ${detailRow[indexRow] ? "duration-500" : "duration-300"} ease-in-out
+                                                                ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 visible" : "max-h-0 opacity-0 invisible pointer-events-none"}
+                                                            `}
+                                                        >
+                                                            <div className='ml-10 border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg'>
+                                                                {
+                                                                    columnHide
+                                                                        .map((column, index) => {
+                                                                            const nested_value = getNestedValue(data, column.data);
+                                                                            return (
+                                                                                <div key={index} className='flex flex-row color-label p-additional'>
+                                                                                    <div className='w-additional flex items-center justify-center'>
+                                                                                        <span
+                                                                                            className={`
+                                                                                                w-2 h-2 rounded-full
+                                                                                                -translate-x-3
+                                                                                                bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
+                                                                                            `}
                                                                                         />
-                                                                                    }
+                                                                                    </div>
+                                                                                    <div className="color-label font-bold mx-2">{column.name}</div>
+                                                                                    <div>
+                                                                                        {
+                                                                                            column.render != undefined
+                                                                                                ? column.render(nested_value, data)
+                                                                                                : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                        }
+                                                                                        {
+                                                                                            column.copy
+                                                                                            && <i
+                                                                                                className="pl-additional fa-solid fa-copy cursor-pointer"
+                                                                                                onClick={(e) => onCopy(
+                                                                                                    e,
+                                                                                                    column.render != undefined
+                                                                                                        ? column.render(nested_value, data)
+                                                                                                        : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                                )}
+                                                                                            />
+                                                                                        }
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    )
-                                                                })
-                                                        }
+                                                                            )
+                                                                        })
+                                                                }
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                 </tr >
                                             }
@@ -681,6 +679,6 @@ export default function Table({
                     }
                 </div>
             }
-        </Fragment>
+        </Fragment >
     )
 }
