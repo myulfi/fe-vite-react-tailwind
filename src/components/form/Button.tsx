@@ -85,9 +85,9 @@ export default function Button({
         <div ref={menuRef} className="relative">
             <button
                 className={`
-                    max-sm:w-full text-nowrap
-                    rounded-t-sm
-                    ${menuOpenFlag ? 'rounded-b-none' : 'rounded-b-sm'}
+                    w-full tablet:w-auto text-nowrap
+                    rounded-t-container
+                    ${menuOpenFlag ? 'rounded-b-none' : 'rounded-b-container'}
                     shadow border-0 disabled:opacity-60 w-auto
                     ${loadingFlag ? "cursor-not-allowed" : "cursor-pointer"}
                     ${sizeClasses[size]} ${typeClasses[type]} ${className}

@@ -10,18 +10,23 @@
 
     /* --breakpoint-*: initial; */
     --breakpoint-tablet: 426px;
-    --breakpoint-laptop: 769px;
-    --breakpoint-desktop: 1441px;
+    --breakpoint-desktop: 1024px;
+    --breakpoint-tv: 1441px;
 
-    --padding-element: 16px;
-    --padding-container: 20px;
-    --gap-container: 20px;
+    --spacing-additional: 8px;
+    --spacing-element: 16px;
+    --spacing-container: 20px;
+    --spacing-modal: 24px;
+    --spacing-sidebar: 256px;
 
-    --padding-modal: 24px;
+    --radius-element: 32px;
+    --radius-container: 16px;
 
-    --width-sidebar: 256px;
-    --margin-sidebar: 256px;
+    --font-weight-highlight: 600;
 
+    --z-index-base: 0;
+    --z-index-layout: 10;
+    --z-index-container: 20;
     --z-index-dropdown: 20;
 
     --font-mono: Consolas, 'Courier New', monospace;
@@ -231,15 +236,15 @@
 
 /*Container Start*/
 .container-grid-4-2-1 {
-    @apply p-container grid gap-container grid-cols-1 md:grid-cols-2 lg:grid-cols-4
+    @apply p-container grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4
 }
 
 .container-grid-3-2-1 {
-    @apply p-container grid gap-container grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+    @apply p-container grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3
 }
 
 .container-grid-2-2-1 {
-    @apply p-container grid gap-container grid-cols-1 md:grid-cols-2 lg:grid-cols-2
+    @apply p-container grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-2
 }
 
 .column-span-2 {
@@ -251,7 +256,7 @@
 }
 
 .container-row-column {
-    @apply p-container flex flex-col sm:flex-row sm:flex-wrap gap-container
+    @apply p-container flex flex-col tablet:flex-row tablet:flex-wrap gap-container
 }
 
 .container-column {

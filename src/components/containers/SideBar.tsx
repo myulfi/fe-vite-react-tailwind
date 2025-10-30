@@ -15,17 +15,17 @@ type MenuItem = {
 
 const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () => void }> = ({ item, level = 0, onNavigate }) => {
     const { t } = useTranslation();
-    const location = useLocation()
-    const [openFlag, setOpenFlag] = useState(false)
-    const hasChildrenFlag = !!item.children?.length
+    const location = useLocation();
+    const [openFlag, setOpenFlag] = useState(false);
+    const hasChildrenFlag = !!item.children?.length;
 
-    const activeFlag = item.path === location.pathname
+    const activeFlag = item.path === location.pathname;
 
     const hasActiveChildFlag = (children?: MenuItem[]): boolean => {
-        if (!children) return false
+        if (!children) return false;
         return children.some(child => {
-            if (child.path && location.pathname === child.path) return true
-            return hasActiveChildFlag(child.children)
+            if (child.path && location.pathname === child.path) return true;
+            return hasActiveChildFlag(child.children);
         })
     }
 
@@ -61,10 +61,10 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                             to={item.path}
                             onClick={onNavigate}
                             className={`
-                                flex flex-row w-full p-2
-                                cursor-pointer rounded-l-lg
+                                flex flex-row w-full p-additional
+                                cursor-pointer rounded-l-element
                                 ${activeFlag
-                                    ? 'color-label-active-link font-semibold'
+                                    ? 'color-label-active-link font-highlight'
                                     : 'color-label-link'
                                 }
                             `}
@@ -76,16 +76,16 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                         <button
                             onClick={handleClick}
                             className={`
-                                flex flex-row w-full p-2
+                                flex flex-row w-full p-additional
                                 color-label-link
-                                cursor-pointer rounded-l-lg
+                                cursor-pointer rounded-l-element
                             `}
                         >
                             {item.icon && <span className="mr-2"><i className={`${item.icon}`} /></span>}
                             {t(item.name)}
                             {
                                 hasChildrenFlag &&
-                                <span className='ml-auto pr-4'>
+                                <span className='ml-auto pr-element'>
                                     <i className={`fa-solid text-xs ${openFlag ? 'fa-angle-down' : 'fa-angle-right'}`} />
                                 </span>
                             }
@@ -106,7 +106,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                     <div
                         className={`
                             relative
-                            ${level === 1 ? 'ml-7' : 'ml-4'}
+                            ${level === 1 ? 'ml-7' : 'ml-element'}
                             border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg
                         `}
                     >
@@ -150,11 +150,7 @@ export default function SideBar({
     }, []);
 
     const sideBarRef = useRef<HTMLDivElement>(null);
-    useClickOutside(sideBarRef, () => {
-        if (tabletFlag) {
-            setSidebarOpenFlag(false);
-        }
-    });
+    useClickOutside(sideBarRef, () => setSidebarOpenFlag(sidebarOpenFlag => tabletFlag ? false : sidebarOpenFlag));
 
     return (
         <div
@@ -170,20 +166,20 @@ export default function SideBar({
         >
             <div className='relative p-4 py-6'>
                 <span className='block text-center text-logo'>
-                    <i className='fa-solid fa-earth-asia mr-2' />
+                    <i className='fa-solid fa-earth-asia pr-2' />
                     EasyCrazy
                 </span>
                 <button
                     onClick={() => setSidebarOpenFlag(false)}
-                    className='absolute right-4 top-6 laptop:hidden cursor-pointer'
-                    aria-label={t("text.closeSidebar")}
+                    className='absolute right-element top-container desktop:hidden cursor-pointer'
+                    aria-label={t('text.closeSidebar')}
                 >
                     <i className='fa-solid fa-xmark' />
                 </button>
             </div>
 
             <div className='flex-1 overflow-y-auto'>
-                <nav className='flex flex-col ml-4'>
+                <nav className='flex flex-col ml-element'>
                     {menuList.map((item, idx) => (
                         <SidebarItem
                             key={idx}

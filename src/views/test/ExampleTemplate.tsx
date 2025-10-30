@@ -473,7 +473,7 @@ export default function ExampleTemplate() {
                         class: "text-nowrap",
                         render: function (data, row) {
                             return (
-                                <div className="flex justify-center max-sm:flex-col gap-4">
+                                <div className="flex justify-center flex-col tablet:flex-row gap-4">
                                     <Button
                                         label={t("text.view")}
                                         type='primary'

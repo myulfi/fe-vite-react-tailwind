@@ -38,11 +38,11 @@ export default function Body({
             min-h-screen
             color-main-secondary
             transition-[margin] duration-500 ease-out
-            ${sidebarOpenFlag ? `max-sm:hidden md:ml-sidebar max-md:ml-0` : 'ml-0'}
+            ${sidebarOpenFlag ? 'hidden tablet:flex desktop:ml-sidebar' : 'ml-0'}
         `}>
             <Header sidebarOpenFlag={sidebarOpenFlag} setSidebarOpenFlag={setSidebarOpenFlag} scrollDownFlag={scrollDownFlag} />
 
-            <main className='z-0'>
+            <main className='z-base'>
                 <Routes />
             </main>
 

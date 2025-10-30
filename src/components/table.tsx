@@ -258,20 +258,21 @@ export default function Table({
         <Fragment>
             {
                 (lengthFlag || searchFlag) &&
-                <div className="color-container rounded-lg shadow-lg opacity-0 animate-fade-in-delay-1">
+                <div className="color-container rounded-container shadow-lg animate-fade-in-delay-1">
                     <div className="container-row-column items-center justify-between">
                         {
                             lengthFlag
-                            && <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                            // "w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe"
+                            && <div className="w-full tablet:w-auto flex items-center justify-center-safe">
                                 <Trans
-                                    i18nKey="table.lengthMenu"
+                                    i18nKey='table.lengthMenu'
                                     components={{
-                                        menu: <select className="p-1" value={sizePage} onChange={(e) => onPageChange(1, Number(e.target.value), search)}>
-                                            {
-                                                lengthArray.map((length) => (
-                                                    <option value={length} key={length}>{length}</option>
-                                                ))
-                                            }
+                                        menu: <select
+                                            className='p-1'
+                                            value={sizePage}
+                                            onChange={(e) => onPageChange(1, Number(e.target.value), search)}
+                                        >
+                                            {lengthArray.map((length) => <option value={length} key={length}>{length}</option>)}
                                         </select>
                                     }}
                                 />
@@ -279,7 +280,7 @@ export default function Table({
                         }
                         {
                             searchFlag
-                            && <div className="w-full md:w-auto lg:w-1/3">
+                            && <div className="w-full tablet:w-auto desktop:w-1/3">
                                 <InputText
                                     autoFocus={true}
                                     autoComplete="off"
@@ -295,16 +296,15 @@ export default function Table({
             }
             {
                 (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
-                <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-2 z-20">
+                <div className="color-container rounded-container shadow-lg animate-fade-in-delay-2 z-container">
                     <div className="container-row-column">
-
                         {
                             labelNewButton != undefined
                             && <Button
                                 label={labelNewButton}
-                                size="md"
-                                type="primary"
-                                icon="fa-solid fa-plus"
+                                size='md'
+                                type='primary'
+                                icon='fa-solid fa-plus'
                                 onClick={() => onNewButtonClick()} />
                         }
                         {
@@ -314,7 +314,7 @@ export default function Table({
                                         key={index}
                                         label={additionalButton.label}
                                         className={additionalButton.className}
-                                        size="md"
+                                        size='md'
                                         type={additionalButton.type}
                                         icon={additionalButton.icon}
                                         onClick={additionalButton.onClick}
@@ -324,12 +324,13 @@ export default function Table({
                         }
                         {
                             bulkOptionArray.length > 0
-                            && <div className="lg:ml-auto">
+                            // 'lg:ml-auto'
+                            && <div className='desktop:ml-auto'>
                                 <Button
-                                    label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t("text.bulkOption")}`}
-                                    size="md"
-                                    type="primary"
-                                    icon="fa-solid fa-boxes-stacked"
+                                    label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t('text.bulkOption')}`}
+                                    size='md'
+                                    type='primary'
+                                    icon='fa-solid fa-boxes-stacked'
                                     menuArray={bulkOptionArray}
                                     loadingFlag={bulkOptionLoadingFlag}
                                 />
@@ -338,7 +339,7 @@ export default function Table({
                     </div>
                 </div>
             }
-            <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-3">
+            <div className="color-container rounded-container shadow-lg animate-fade-in-delay-3">
                 <div className={`overflow-x-auto w-full ${loadingFlag ? 'min-h-64' : ''}`}>
                     {
                         loadingFlag
@@ -349,11 +350,11 @@ export default function Table({
                         &&
                         <div
                             className={`
-                                    absolute top-8/12 left-1/2
-                                    color-main
-                                    transform -translate-x-1/2 -translate-y-1/2
-                                    fa-solid fa-spinner fa-spin text-9xl
-                                `}
+                                absolute top-8/12 left-1/2
+                                color-main text-9xl
+                                transform -translate-x-1/2 -translate-y-1/2
+                                fa-solid fa-spinner fa-spin
+                            `}
                         />
                     }
                     <table className="min-w-full table-auto">
@@ -361,9 +362,10 @@ export default function Table({
                             <tr>
                                 {
                                     checkBoxArray !== undefined
-                                    && <th scope="col" className="text-center px-3">
+                                    && <th scope="col" className="p-container text-center">
                                         <span
                                             className={`
+                                                min-w-additional
                                                 color-main
                                                 cursor-pointer
                                                 ${itemArray.filter(datum => checkBoxArray.includes(datum.id)).length === 0
@@ -385,9 +387,9 @@ export default function Table({
                                                 p-element align-middle
                                                 ${column.class}
                                                 ${column.minDevice == 'desktop'
-                                                    ? "max-lg:hidden"
+                                                    ? "max-desktop:hidden"
                                                     : column.minDevice == 'tablet'
-                                                        ? "max-md:hidden" : ""}
+                                                        ? "max-tablet:hidden" : ""}
                                             `}
                                             style={column.width != null ? { width: `${column.width}%` } : {}}
                                         >
@@ -420,9 +422,10 @@ export default function Table({
                                                 {
                                                     checkBoxArray !== undefined
                                                     && data.id !== undefined
-                                                    && <td className="text-center">
+                                                    && <td className="p-container text-center">
                                                         <span
                                                             className={`
+                                                                min-w-additional
                                                                 color-main
                                                                 cursor-pointer
                                                                 ${checkBoxArray.indexOf(data.id) >= 0
@@ -430,7 +433,7 @@ export default function Table({
                                                                     : 'fa-regular fa-square'
                                                                 }
                                                             `}
-                                                            role="button" onClick={() => onCheckBoxSingle(data.id)}></span>
+                                                            role="button" onClick={() => onCheckBoxSingle(data.id)} />
                                                     </td>
                                                 }
                                                 {
@@ -447,28 +450,28 @@ export default function Table({
                                                                     key={index}
                                                                     className={`
                                                                         p-element
-                                                                        ${index === 0 && column.copy !== true ? "cursor-pointer" : ""}
+                                                                        ${index === 0 && column.copy !== true ? 'cursor-pointer' : ""}
                                                                         ${column.class}
-                                                                        ${column.minDevice === 'desktop' ? "max-lg:hidden" : column.minDevice === 'tablet' ? "max-md:hidden" : ""}
+                                                                        ${column.minDevice === 'desktop' ? 'max-desktop:hidden' : column.minDevice === 'tablet' ? 'max-tablet:hidden' : ''}
                                                                     `}
                                                                     onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
                                                                     {
                                                                         index == 0 &&
                                                                         <span
-                                                                            className={`cursor-pointer pe-2 ${columnAlwaysHide.length === 0 ? "lg:hidden" : ""}`}
+                                                                            className={`cursor-pointer pe-2 ${columnAlwaysHide.length === 0 ? 'lg:hidden' : ''}`}
                                                                             onClick={column.copy ? () => showDetail(indexRow) : undefined}>
-                                                                            <i className={`fa-solid ${detailRow[indexRow] ? "fa-circle-minus" : "fa-circle-plus"}`} />
+                                                                            <i className={`fa-solid ${detailRow[indexRow] ? 'fa-circle-minus' : 'fa-circle-plus'}`} />
                                                                         </span>
                                                                     }
                                                                     {
                                                                         column.render != undefined
                                                                             ? column.render(nested_value, data)
-                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
                                                                     }
                                                                     {
                                                                         column.copy
                                                                         && <i
-                                                                            className="pl-2 fa-solid fa-copy cursor-pointer"
+                                                                            className='pl-additional fa-solid fa-copy cursor-pointer'
                                                                             onClick={(e) => onCopy(
                                                                                 e,
                                                                                 column.render != undefined
@@ -485,7 +488,7 @@ export default function Table({
                                             {
                                                 <tr>
                                                     <td
-                                                        className={columnAlwaysHide.length === 0 ? "lg:hidden" : ''}
+                                                        className={columnAlwaysHide.length === 0 ? "desktop:hidden" : ''}
                                                         colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
                                                     >
                                                         {
@@ -496,15 +499,25 @@ export default function Table({
                                                                         <div
                                                                             key={index}
                                                                             className={`
-                                                                                overflow-hidden
-                                                                                ml-10 mr-2 px-2
-                                                                                color-table-hide-row
+                                                                                flex flex-col
                                                                                 transition-[max-height, opacity, padding] duration-300 ease-in-out
-                                                                                ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-2" : "max-h-0 opacity-0 py-0"}
-                                                                                ${decode(column.minDevice, 'tablet', 'md:hidden', 'desktop', 'lg:hidden')}
+                                                                                ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 py-0" : "max-h-0 opacity-0 py-0"}
+                                                                                ${decode(column.minDevice, 'tablet', 'tablet:hidden', 'desktop', 'desktop:hidden')}
                                                                             `}>
-                                                                            <span className='row-hidden-bullet' />
-                                                                            <div className="flex flex-row">
+                                                                            <div className='flex flex-row color-label py-additional'>
+                                                                                <div
+                                                                                    className={`
+                                                                                        w-additional flex items-center justify-center
+                                                                                        mx-container
+                                                                                    `}
+                                                                                >
+                                                                                    <span
+                                                                                        className={`
+                                                                                            w-2 h-2 rounded-full
+                                                                                            bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
+                                                                                        `}
+                                                                                    />
+                                                                                </div>
                                                                                 <div className="color-label font-bold mx-2">{column.name}</div>
                                                                                 <div>
                                                                                     {
@@ -515,7 +528,7 @@ export default function Table({
                                                                                     {
                                                                                         column.copy
                                                                                         && <i
-                                                                                            className="pl-2 fa-solid fa-copy cursor-pointer"
+                                                                                            className="pl-additional fa-solid fa-copy cursor-pointer"
                                                                                             onClick={(e) => onCopy(
                                                                                                 e,
                                                                                                 column.render != undefined

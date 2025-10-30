@@ -7,16 +7,16 @@ export default function Dashboard() {
     const [sidebarOpenFlag, setSidebarOpenFlag] = useState(true);
 
     useEffect(() => {
-        const checkMobile = () => {
-            const mobile = window.innerWidth < 426;
+        const checkDevice = () => {
             const tablet = window.innerWidth < 769;
+            const laptop = window.innerWidth < 1024;
             setTabletFlag(tablet);
-            setSidebarOpenFlag(!mobile);
+            setSidebarOpenFlag(!laptop);
         }
 
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
+        checkDevice();
+        window.addEventListener('resize', checkDevice);
+        return () => window.removeEventListener('resize', checkDevice);
     }, []);
 
     return (

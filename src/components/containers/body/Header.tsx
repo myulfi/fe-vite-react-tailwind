@@ -69,12 +69,12 @@ export default function Header({
         <div
             className={`
                 sticky top-0
-                z-10 shadow-inner
-                py-6 px-4
+                z-layout shadow-inner
+                py-6 px-element
                 color-main
                 flex flex-row items-center justify-between
                 transition-[translate] duration-500 ease-out
-                ${scrollDownFlag ? 'max-sm:-translate-y-full' : 'translate-y-0'}
+                ${scrollDownFlag ? '-translate-y-full tablet:translate-y-0' : 'translate-y-0'}
             `}
         >
             <div className='flex-1'>
@@ -88,7 +88,7 @@ export default function Header({
                 {/* <h1 className="text-light-base-line dark:text-dark-base-line text-2xl font-semibold max-sm:hidden">Dashboard Content</h1> */}
             </div>
 
-            <div className='mx-2'>
+            <div className='mx-additional'>
                 <button
                     onClick={() => setDarkModeFlag(!darkModeFlag)}
                     className={`
@@ -103,7 +103,7 @@ export default function Header({
                     <span className='text-xs px-1'>{darkModeFlag ? '☀️' : ''}</span>
                     <div
                         className={`
-                            bg-white w-4 h-4 rounded-full shadow-md
+                            bg-light-base-bg w-element h-element rounded-full shadow-md
                             transform transition-[translate] duration-300
                             ${darkModeFlag ? 'translate-x-1' : 'translate-x-0'}
                         `}
@@ -121,22 +121,39 @@ export default function Header({
                 </button>
 
                 <div className={`
-                        fixed right-4 top-20 w-48
+                        fixed right-element top-20 w-48
                         color-dropdown
-                        rounded-b-md shadow-md z-dropdown
+                        rounded-b-container shadow-md z-dropdown
                         transition-[opacity, transform] duration-300 ease-in-out
                         ${rightMenuOpenFlag ? 'translate-y-0 opacity-100 visible' : '-translate-y-5 opacity-0 invisible pointer-events-none'}
                     `}>
                     {
                         menu.map((item) => (
-                            <Link to={item.path} onClick={() => setRightMenuOpenFlag(false)} className='w-full text-left px-4 py-2 color-dropdown-item cursor-pointer flex items-center gap-2'>
+                            <Link
+                                to={item.path}
+                                onClick={() => setRightMenuOpenFlag(false)}
+                                className={`
+                                    flex items-center gap-additional
+                                    w-full text-left
+                                    px-element py-additional
+                                    color-dropdown-item
+                                    cursor-pointer
+                                `}
+                            >
                                 <i className={item.icon} />{t(item.name)}
                             </Link>
                         ))
                     }
                     <hr className='color-divider' />
                     <button
-                        className='w-full text-left px-4 py-2 color-dropdown-item cursor-pointer rounded-b-md flex items-center gap-2'
+                        className={`
+                            flex items-center gap-additional
+                            w-full text-left
+                            px-element py-additional
+                            color-dropdown-item
+                            cursor-pointer
+                            rounded-b-container
+                        `}
                         onClick={() => doLogout()}>
                         <i className='fa-solid fa-arrow-right-from-bracket'></i>{t('text.logout')}
                     </button>
