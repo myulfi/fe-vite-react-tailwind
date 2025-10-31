@@ -255,10 +255,10 @@ export default function Table({
     }, [filter])
 
     return (
-        <Fragment>
+        <div className='container-column p-container'>
             {
                 (lengthFlag || searchFlag) &&
-                <div className='color-container rounded-container shadow-lg animate-fade-in-delay-1'>
+                <div className='color-container p-container rounded-container shadow-lg animate-fade-in-delay-1'>
                     <div className='container-row-column items-center justify-between'>
                         {
                             lengthFlag
@@ -295,7 +295,7 @@ export default function Table({
             }
             {
                 (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
-                <div className='color-container rounded-container shadow-lg animate-fade-in-delay-2 z-container'>
+                <div className='color-container p-container rounded-container shadow-lg animate-fade-in-delay-2 z-container'>
                     <div className='container-row-column'>
                         {
                             labelNewButton != undefined
@@ -337,7 +337,7 @@ export default function Table({
                     </div>
                 </div>
             }
-            <div className='color-container rounded-container shadow-lg animate-fade-in-delay-3'>
+            <div className='color-container p-container rounded-container shadow-lg animate-fade-in-delay-3'>
                 <div className={`overflow-x-auto w-full ${loadingFlag ? 'min-h-64' : ''}`}>
                     {
                         loadingFlag
@@ -582,7 +582,7 @@ export default function Table({
                     ('pagination' === type && dataTotal > 0)
                     || ('load_more' === type && itemArray.length > 0)
                 ) &&
-                <div className='color-container rounded-container shadow-lg animate-fade-in-delay-4'>
+                <div className='color-container p-container rounded-container shadow-lg animate-fade-in-delay-4'>
                     {
                         'pagination' === type
                         && dataTotal > 0
@@ -691,6 +691,6 @@ export default function Table({
                     }
                 </div>
             }
-        </Fragment >
+        </div>
     )
 }

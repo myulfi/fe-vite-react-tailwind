@@ -1248,59 +1248,57 @@ export default function Database() {
                             {
                                 label: t("text.object"),
                                 icon: "fa-solid fa-table",
-                                content: <div className="flex flex-col gap-container">
-                                    <Table
-                                        searchFlag={false}
-                                        dataArray={databaseQueryObjectArray}
-                                        columns={[
-                                            {
-                                                data: "object_id",
-                                                name: "id",
-                                                class: "text-nowrap",
-                                                orderable: true,
-                                                minDevice: 'mobile',
-                                            },
-                                            {
-                                                data: "object_name",
-                                                name: t("text.name"),
-                                                class: "text-nowrap",
-                                                copy: true,
-                                                minDevice: 'tablet',
-                                            },
-                                            {
-                                                data: "object_type",
-                                                name: t("text.type"),
-                                                class: "text-nowrap",
-                                                minDevice: 'tablet',
-                                            },
-                                            {
-                                                data: "object_name",
-                                                name: t("text.option"),
-                                                class: "text-nowrap",
-                                                render: function (data) {
-                                                    return (
-                                                        <div className="flex justify-center max-sm:flex-col gap-4">
-                                                            <Button
-                                                                label={t("text.data")}
-                                                                className="max-sm:w-full"
-                                                                type='primary'
-                                                                icon="fa-solid fa-list"
-                                                                onClick={() => runDatabaseQueryExact(data)}
-                                                                loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
-                                                            />
-                                                        </div>
-                                                    )
-                                                }
+                                content: <Table
+                                    searchFlag={false}
+                                    dataArray={databaseQueryObjectArray}
+                                    columns={[
+                                        {
+                                            data: "object_id",
+                                            name: "id",
+                                            class: "text-nowrap",
+                                            orderable: true,
+                                            minDevice: 'mobile',
+                                        },
+                                        {
+                                            data: "object_name",
+                                            name: t("text.name"),
+                                            class: "text-nowrap",
+                                            copy: true,
+                                            minDevice: 'tablet',
+                                        },
+                                        {
+                                            data: "object_type",
+                                            name: t("text.type"),
+                                            class: "text-nowrap",
+                                            minDevice: 'tablet',
+                                        },
+                                        {
+                                            data: "object_name",
+                                            name: t("text.option"),
+                                            class: "text-nowrap",
+                                            render: function (data) {
+                                                return (
+                                                    <div className="flex justify-center max-sm:flex-col gap-4">
+                                                        <Button
+                                                            label={t("text.data")}
+                                                            className="max-sm:w-full"
+                                                            type='primary'
+                                                            icon="fa-solid fa-list"
+                                                            onClick={() => runDatabaseQueryExact(data)}
+                                                            loadingFlag={databaseQueryObjectOptionColumnTable[data]?.viewedButtonFlag}
+                                                        />
+                                                    </div>
+                                                )
                                             }
-                                        ]}
+                                        }
+                                    ]}
 
-                                        dataTotal={databaseQueryObjectDataTotalTable}
-                                        onRender={(page, length) => {
-                                            getDatabaseQueryObject({ page: page, length: length })
-                                        }}
-                                        loadingFlag={databaseQueryObjectTableLoadingFlag}
-                                    />
-                                </div>
+                                    dataTotal={databaseQueryObjectDataTotalTable}
+                                    onRender={(page, length) => {
+                                        getDatabaseQueryObject({ page: page, length: length })
+                                    }}
+                                    loadingFlag={databaseQueryObjectTableLoadingFlag}
+                                />
                             },
                             {
                                 label: t("text.manual"),

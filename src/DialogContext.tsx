@@ -97,8 +97,9 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
 
     return ReactDOM.createPortal(
         <div className={`
-            fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
-            flex items-center justify-center z-[6000]
+            flex items-center justify-center z-dialog
+            fixed inset-0
+            bg-light-base-line/50 dark:bg-dark-base-line/50
             overflow-y-auto
             p-container
             ${isClosing
@@ -109,14 +110,16 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
         >
             <div
                 className={`
-                    rounded-lg w-[320px] shadow-lg space-y-4 bg-white dark:bg-dark-clear
-                    ${isClosing
-                        ? 'animate-fade-out'
-                        : 'animate-fade-in'
-                    }
+                    p-container w-dialog
+                    container-column
+                    container-card
+                    ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}
                 `}>
-                <div className="flex justify-between pt-4 pb-2 px-3.5">
-                    <div className="flex items-center gap-2 text-lg font-bold text-dark dark:text-white">
+                <div className='flex justify-between'>
+                    <div className={`
+                        flex items-center gap-additional
+                        text-lg font-subheader text-dark dark:text-white
+                    `}>
                         <i className={icon}></i>
                         <span>{title}</span>
                     </div>
@@ -128,8 +131,8 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                         <i className="fa-solid fa-xmark text-xl" />
                     </button>
                 </div>
-                <p className="text-sm text-dark dark:text-gray-300 text-center px-4">{message}</p>
-                <div className="container-row-column justify-end">
+                <p className='text-sm text-dark dark:text-gray-300 text-center py-container'>{message}</p>
+                <div className='container-row-column justify-end'>
                     {type !== 'alert' && (
                         <Button
                             label={

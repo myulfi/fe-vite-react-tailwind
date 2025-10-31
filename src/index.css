@@ -17,17 +17,20 @@
     --spacing-element: 16px;
     --spacing-container: 20px;
     --spacing-modal: 24px;
+    --spacing-dialog: 320px;
     --spacing-sidebar: 256px;
 
-    --radius-element: 32px;
+    --radius-element: 12px;
     --radius-container: 16px;
 
     --font-weight-highlight: 600;
+    --font-weight-subheader: 700;
 
     --z-index-base: 0;
     --z-index-layout: 10;
     --z-index-container: 20;
     --z-index-dropdown: 20;
+    --z-index-dialog: 6000;
 
     --font-mono: Consolas, 'Courier New', monospace;
     /* https://maketintsandshades.com/#0090E7,8F5FE8 */
@@ -195,15 +198,15 @@
 }
 
 .color-table-header {
-    @apply text-light-label-fg dark:text-dark-label-fg border-y-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply text-light-label-fg dark:text-dark-label-fg border-b-4 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
 }
 
 .color-table-row {
-    @apply border-b-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply border-t-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
 }
 
 .color-table-hide-row {
-    @apply border-l-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply border-l-1 border-t-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
 }
 
 .color-button-main {
@@ -236,15 +239,15 @@
 
 /*Container Start*/
 .container-grid-4-2-1 {
-    @apply p-container grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4
+    @apply grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4
 }
 
 .container-grid-3-2-1 {
-    @apply p-container grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3
+    @apply grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3
 }
 
 .container-grid-2-2-1 {
-    @apply p-container grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-2
+    @apply grid gap-container grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-2
 }
 
 .column-span-2 {
@@ -252,15 +255,20 @@
 }
 
 .container-row {
-    @apply p-container flex flex-row flex-wrap gap-container
+    @apply flex flex-row flex-wrap gap-container
 }
 
 .container-row-column {
-    @apply p-container flex flex-col tablet:flex-row tablet:flex-wrap gap-container
+    @apply flex flex-col tablet:flex-row tablet:flex-wrap gap-container
 }
 
 .container-column {
-    @apply p-container flex flex-col gap-container
+    @apply flex flex-col gap-container
+}
+
+.container-card {
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg rounded-container shadow-lg
+    /* @apply color-container p-container rounded-container shadow-lg */
 }
 
 /*Container End*/
