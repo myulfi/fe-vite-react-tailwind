@@ -103,7 +103,7 @@ const apiRequest = async (
                 )
 
                 if (refreshResponse.status === HTTP_CODE.OK) {
-                    const { accessToken, refreshToken, user } = refreshResponse.data
+                    const { accessToken, refreshToken, user } = refreshResponse.data.data
 
                     localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, accessToken)
                     localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, refreshToken)

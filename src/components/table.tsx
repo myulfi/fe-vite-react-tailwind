@@ -24,7 +24,7 @@ interface TableProps {
     columns: {
         name: string;
         data: string;
-        class?: string;
+        position?: 'left' | 'center' | 'right'
         copy?: boolean;
         width?: number;
         minDevice?: 'none' | 'mobile' | 'tablet' | 'desktop' | 'tv';
@@ -359,10 +359,10 @@ export default function Table({
                     }
                     <table className="min-w-full table-auto">
                         <thead className='color-table-header'>
-                            <tr>
+                            <tr className="pr-container">
                                 {
                                     checkBoxArray !== undefined
-                                    && <th scope="col" className="p-container text-center">
+                                    && <th scope="col" className="pl-container py-element w-[0px]">
                                         <span
                                             className={`
                                                 min-w-additional
@@ -375,7 +375,7 @@ export default function Table({
                                                         : 'fa-solid fa-square-minus'
                                                 }`
                                             }
-                                            role="button" onClick={() => onCheckBoxAll()}></span>
+                                            role="button" onClick={() => onCheckBoxAll()} />
                                     </th>
                                 }
                                 {
@@ -384,8 +384,8 @@ export default function Table({
                                             key={index}
                                             scope="col"
                                             className={`
-                                                p-element align-middle
-                                                ${column.class}
+                                                pl-container py-element
+                                                ${column.position === 'right' ? 'text-right' : column.position === 'center' ? 'text-center' : 'text-left'}
                                                 ${column.minDevice == 'desktop'
                                                     ? "max-desktop:hidden"
                                                     : column.minDevice == 'tablet'
@@ -395,10 +395,10 @@ export default function Table({
                                         >
                                             {
                                                 orderColumn[index] !== null &&
-                                                <span className="w-full flex items-center justify-between">
+                                                <span className={`w-full`}>
                                                     <span>{column.name}</span>
                                                     <i
-                                                        className={`cursor-pointer ${orderColumn[index]}`}
+                                                        className={`ml-additional cursor-pointer ${orderColumn[index]}`}
                                                         role="button"
                                                         onClick={() => onOrderChange(column.data, index)}
                                                     />
@@ -422,7 +422,7 @@ export default function Table({
                                                 {
                                                     checkBoxArray !== undefined
                                                     && data.id !== undefined
-                                                    && <td className="p-container text-center">
+                                                    && <td className="pl-container py-element">
                                                         <span
                                                             className={`
                                                                 min-w-additional
@@ -449,9 +449,9 @@ export default function Table({
                                                                 <td
                                                                     key={index}
                                                                     className={`
-                                                                        p-element
+                                                                        pl-container py-element
+                                                                        ${column.position === 'right' ? 'text-right' : column.position === 'center' ? 'text-center' : 'text-left'}
                                                                         ${index === 0 && column.copy !== true ? 'cursor-pointer' : ""}
-                                                                        ${column.class}
                                                                         ${column.minDevice === 'desktop' ? 'max-desktop:hidden' : column.minDevice === 'tablet' ? 'max-tablet:hidden' : ''}
                                                                     `}
                                                                     onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
@@ -493,30 +493,41 @@ export default function Table({
                                                     >
                                                         <div
                                                             className={`
-                                                                overflow-hidden pb-element
+                                                                overflow-hidden
                                                                 transition-[max-height, opacity]
-                                                                ${detailRow[indexRow] ? "duration-500" : "duration-300"} ease-in-out
-                                                                ${detailRow[indexRow] ? "max-h-[1000px] opacity-100 visible" : "max-h-0 opacity-0 invisible pointer-events-none"}
+                                                                ${detailRow[indexRow] ? 'pb-element' : 'pb-0'}
+                                                                ${detailRow[indexRow] ? 'duration-500' : 'duration-300'} ease-in-out
+                                                                ${detailRow[indexRow] ? 'max-h-[1000px] opacity-100 visible' : 'max-h-0 opacity-0 invisible pointer-events-none'}
                                                             `}
                                                         >
-                                                            <div className='ml-10 border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg'>
+                                                            <div
+                                                                className={`
+                                                                    grid grid-cols-[auto_1fr] gap-element
+                                                                    ml-[28px]
+                                                                    ${checkBoxArray !== undefined && data.id !== undefined ? 'ml-[28px]' : ''} 
+                                                                    border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+                                                                `}
+                                                            >
                                                                 {
                                                                     columnHide
                                                                         .map((column, index) => {
                                                                             const nested_value = getNestedValue(data, column.data);
                                                                             return (
-                                                                                <div key={index} className='flex flex-row color-label p-additional'>
-                                                                                    <div className='w-additional flex items-center justify-center'>
-                                                                                        <span
-                                                                                            className={`
+                                                                                <Fragment key={index}>
+                                                                                    <div>
+                                                                                        <div className='w-additional flex items-center justify-center'>
+                                                                                            <span
+                                                                                                className={`
                                                                                                 w-2 h-2 rounded-full
-                                                                                                -translate-x-3
+                                                                                                -translate-x-1
+                                                                                                translate-y-4
                                                                                                 bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
                                                                                             `}
-                                                                                        />
+                                                                                            />
+                                                                                        </div>
+                                                                                        <div className="color-label font-bold mx-container">{column.name}</div>
                                                                                     </div>
-                                                                                    <div className="color-label font-bold mx-2">{column.name}</div>
-                                                                                    <div>
+                                                                                    <div className="flex-1 pt-2">
                                                                                         {
                                                                                             column.render != undefined
                                                                                                 ? column.render(nested_value, data)
@@ -535,7 +546,7 @@ export default function Table({
                                                                                             />
                                                                                         }
                                                                                     </div>
-                                                                                </div>
+                                                                                </Fragment>
                                                                             )
                                                                         })
                                                                 }

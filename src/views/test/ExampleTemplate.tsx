@@ -425,44 +425,39 @@ export default function ExampleTemplate() {
                     {
                         data: "name",
                         name: t("text.name"),
-                        class: "text-nowrap",
                         orderable: true,
                         minDevice: 'mobile',
                     },
                     {
                         data: "description",
                         name: t("text.description"),
-                        class: "wrap text-nowrap",
                         minDevice: 'tablet',
                     },
                     {
                         data: "value",
                         name: t("text.value"),
-                        class: "text-nowrap",
+                        position: 'right',
                         width: 10,
                         minDevice: 'tablet',
                     },
                     // {
                     //     data: "date",
                     //     name: t("text.date"),
-                    //     class: "text-nowrap",
                     //     width: 10,
                     //     minDevice: 'desktop'
                     // },
                     {
                         data: "createdBy",
                         name: t("text.createdBy"),
-                        class: "text-nowrap",
                         width: 10,
-                        minDevice: "desktop"
+                        minDevice: "none"
                     },
                     {
                         data: "createdDate",
                         name: t("text.createdDate"),
-                        class: "text-nowrap",
                         width: 15,
                         orderable: true,
-                        minDevice: "desktop",
+                        minDevice: "none",
                         render: function (data) {
                             return formatDate(new Date(data), "dd MMM yyyy HH:mm:ss")
                         }
@@ -470,7 +465,7 @@ export default function ExampleTemplate() {
                     {
                         data: "id",
                         name: t("text.option"),
-                        class: "text-nowrap",
+                        position: 'center',
                         render: function (data, row) {
                             return (
                                 <div className="flex justify-center flex-col tablet:flex-row gap-4">
