@@ -4,6 +4,7 @@ import Button from "./Button";
 import InputText from "./InputText";
 import { useClickOutside } from "../../hook/useClickOutside";
 import ErrorForm from "./ErrorForm";
+import InputLabel from "./InputLabel";
 
 type Option = {
     key: string | number;
@@ -124,12 +125,7 @@ export default function Select({
 
     return (
         <div>
-            {label && (
-                <label className="block mb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
-
+            <InputLabel label={label} />
             <div className={`relative shadow-sm ${dropdownOpen ? 'rounded-t-md' : 'rounded-md'}`} ref={dropdownRef}>
                 <button
                     type="button"
@@ -220,8 +216,7 @@ export default function Select({
                     </ul>
                 </div>
             </div>
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import ErrorForm from "./ErrorForm";
 import { decode } from "../../function/commonHelper";
 import { LabelValueUnit, SelectValueUnit } from "./InputValueUnit";
+import InputLabel from "./InputLabel";
 
 type UnitOption = {
     key: string | number;
@@ -103,12 +104,7 @@ export default function InputDecimal({
 
     return (
         <div>
-            {label && (
-                <label className="block pb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
-
+            <InputLabel label={label} />
             <div className="flex shadow-sm rounded-md">
                 {renderUnit('left')}
 
@@ -132,8 +128,7 @@ export default function InputDecimal({
 
                 {renderUnit('right')}
             </div>
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

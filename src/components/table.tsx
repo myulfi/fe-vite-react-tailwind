@@ -360,7 +360,7 @@ export default function Table({
                             <tr className='pr-container'>
                                 {
                                     checkBoxArray !== undefined
-                                    && <th scope='col' className='pl-container py-element w-[0px]'>
+                                    && <th scope='col' className='px-container py-element w-[0px]'>
                                         <span
                                             className={`
                                                 min-w-additional
@@ -383,7 +383,7 @@ export default function Table({
                                             scope='col'
                                             className={`
                                                 py-element
-                                                ${columnShow.length - 1 === index ? 'px-container' : 'pl-container'}
+                                                ${checkBoxArray === undefined && index === 0 ? 'px-container' : 'pr-container'}
                                                 ${column.position === 'right' ? 'text-right' : column.position === 'center' ? 'text-center' : 'text-left'}
                                                 ${column.minDevice == 'desktop'
                                                     ? 'max-desktop:hidden'
@@ -421,7 +421,7 @@ export default function Table({
                                                 {
                                                     checkBoxArray !== undefined
                                                     && data.id !== undefined
-                                                    && <td className='pl-container py-element'>
+                                                    && <td className='px-container py-element'>
                                                         <span
                                                             className={`
                                                                 min-w-additional
@@ -449,7 +449,7 @@ export default function Table({
                                                                     key={index}
                                                                     className={`
                                                                         py-element
-                                                                        ${columnShow.length - 1 === index ? 'px-container' : 'pl-container'}
+                                                                        ${checkBoxArray === undefined && index === 0 ? 'px-container' : 'pr-container'}
                                                                         ${column.position === 'right' ? 'text-right' : column.position === 'center' ? 'text-center' : 'text-left'}
                                                                         ${index === 0 && column.copy !== true ? 'cursor-pointer' : ''}
                                                                         ${column.minDevice === 'desktop' ? 'max-desktop:hidden' : column.minDevice === 'tablet' ? 'max-tablet:hidden' : ''}
@@ -485,14 +485,13 @@ export default function Table({
                                                         })
                                                 }
                                             </tr>
-                                            {
-                                                <tr>
-                                                    <td
-                                                        className={columnAlwaysHide.length === 0 ? 'desktop:hidden' : ''}
-                                                        colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
-                                                    >
-                                                        <div
-                                                            className={`
+                                            <tr>
+                                                <td
+                                                    className={columnAlwaysHide.length === 0 ? 'desktop:hidden' : ''}
+                                                    colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
+                                                >
+                                                    <div
+                                                        className={`
                                                                 color-table-hide-row
                                                                 overflow-hidden
                                                                 transition-[max-height, opacity]
@@ -500,62 +499,61 @@ export default function Table({
                                                                 ${detailRow[indexRow] ? 'duration-500' : 'duration-300'} ease-in-out
                                                                 ${detailRow[indexRow] ? 'max-h-[1000px] opacity-100 visible' : 'max-h-0 opacity-0 invisible pointer-events-none'}
                                                             `}
-                                                        >
-                                                            <div
-                                                                className={`
+                                                    >
+                                                        <div
+                                                            className={`
                                                                     grid grid-cols-[auto_1fr]
                                                                     ml-[28px]
                                                                     ${checkBoxArray !== undefined && data.id !== undefined ? 'ml-[28px]' : ''} 
                                                                     border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg
                                                                 `}
-                                                            >
-                                                                {
-                                                                    columnHide
-                                                                        .map((column, index) => {
-                                                                            const nested_value = getNestedValue(data, column.data);
-                                                                            return (
-                                                                                <Fragment key={index}>
-                                                                                    <div>
-                                                                                        <div className='w-additional flex items-center justify-center'>
-                                                                                            <span
-                                                                                                className={`
+                                                        >
+                                                            {
+                                                                columnHide
+                                                                    .map((column, index) => {
+                                                                        const nested_value = getNestedValue(data, column.data);
+                                                                        return (
+                                                                            <Fragment key={index}>
+                                                                                <div>
+                                                                                    <div className='w-additional flex items-center justify-center'>
+                                                                                        <span
+                                                                                            className={`
                                                                                                 w-2 h-2 rounded-full
                                                                                                 -translate-x-1
                                                                                                 translate-y-4
                                                                                                 bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
                                                                                             `}
-                                                                                            />
-                                                                                        </div>
-                                                                                        <div className='color-label font-bold mx-container'>{column.name}</div>
+                                                                                        />
                                                                                     </div>
-                                                                                    <div className='flex-1 pt-2'>
-                                                                                        {
-                                                                                            column.render != undefined
-                                                                                                ? column.render(nested_value, data)
-                                                                                                : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
-                                                                                        }
-                                                                                        {
-                                                                                            column.copy
-                                                                                            && <i
-                                                                                                className='pl-additional fa-solid fa-copy cursor-pointer'
-                                                                                                onClick={(e) => onCopy(
-                                                                                                    e,
-                                                                                                    column.render != undefined
-                                                                                                        ? column.render(nested_value, data)
-                                                                                                        : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
-                                                                                                )}
-                                                                                            />
-                                                                                        }
-                                                                                    </div>
-                                                                                </Fragment>
-                                                                            )
-                                                                        })
-                                                                }
-                                                            </div>
+                                                                                    <div className='color-label font-bold mx-container'>{column.name}</div>
+                                                                                </div>
+                                                                                <div className='flex-1 pt-2'>
+                                                                                    {
+                                                                                        column.render != undefined
+                                                                                            ? column.render(nested_value, data)
+                                                                                            : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
+                                                                                    }
+                                                                                    {
+                                                                                        column.copy
+                                                                                        && <i
+                                                                                            className='pl-additional fa-solid fa-copy cursor-pointer'
+                                                                                            onClick={(e) => onCopy(
+                                                                                                e,
+                                                                                                column.render != undefined
+                                                                                                    ? column.render(nested_value, data)
+                                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
+                                                                                            )}
+                                                                                        />
+                                                                                    }
+                                                                                </div>
+                                                                            </Fragment>
+                                                                        )
+                                                                    })
+                                                            }
                                                         </div>
-                                                    </td>
-                                                </tr >
-                                            }
+                                                    </div>
+                                                </td>
+                                            </tr >
                                         </Fragment>
                                     ))
                                     : <tr className='color-table-row'>

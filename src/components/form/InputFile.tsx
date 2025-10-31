@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorForm from "./ErrorForm";
 import { reduceInMiddleText } from "../../function/commonHelper";
+import InputLabel from "./InputLabel";
 
 type InputFileProps = {
     label: string;
@@ -75,11 +76,7 @@ export default function InputFile({
 
     return (
         <div>
-            {label && (
-                <label className="block mb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
+            <InputLabel label={label} />
             <div
                 className={`
                     w-full border rounded-md min-h-[120px]
@@ -173,8 +170,7 @@ export default function InputFile({
                     </div>
                 }
             </div>
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

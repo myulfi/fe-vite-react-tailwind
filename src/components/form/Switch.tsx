@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import InputLabel from "./InputLabel";
 
 type SwitchProps = {
     label: string;
@@ -26,12 +27,7 @@ export default function Switch({
 
     return (
         <div>
-            {label && (
-                <label className="block mb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
-
+            <InputLabel label={label} />
             <div>
                 <button
                     onClick={() => setValueFlag(Math.abs(valueFlag - 1))}

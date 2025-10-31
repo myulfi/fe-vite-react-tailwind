@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import ErrorForm from "./ErrorForm";
+import InputLabel from "./InputLabel";
 
 type InputDateProps = {
     label: string;
@@ -22,11 +23,7 @@ export default function InputDate({
 
     return (
         <div>
-            {label && (
-                <label className="block mb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
+            <InputLabel label={label} />
             <input
                 className={`
                     form-input w-full rounded-md shadow-sm cursor-pointer
@@ -40,7 +37,7 @@ export default function InputDate({
                 onChange={onChange}
                 placeholder={t("text.selectName", { name: label })}
             />
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

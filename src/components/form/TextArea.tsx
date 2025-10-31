@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import ErrorForm from './ErrorForm';
+import InputLabel from './InputLabel';
 
 type InputTextProps = {
     autoFocus?: boolean;
@@ -31,12 +32,7 @@ export default function TextArea({
 
     return (
         <div>
-            {label && (
-                <label className="block pb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
-
+            <InputLabel label={label} />
             <textarea
                 autoFocus={autoFocus}
                 className={`
@@ -51,8 +47,7 @@ export default function TextArea({
                 onKeyDown={onKeyDown}
                 placeholder={placeholder ?? t('text.inputName', { name: label })}
             />
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

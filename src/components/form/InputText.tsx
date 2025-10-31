@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import ErrorForm from './ErrorForm';
 import { decode } from '../../function/commonHelper';
 import { LabelValueUnit, SelectValueUnit } from './InputValueUnit';
+import InputLabel from './InputLabel';
 
 type UnitOption = {
     key: number | string;
@@ -67,15 +68,9 @@ export default function InputText({
 
     return (
         <div>
-            {label && (
-                <label className="block pb-1 ml-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
-
+            <InputLabel label={label} />
             <div className="flex shadow-sm rounded-element">
                 {renderUnit('left')}
-
                 <input
                     ref={refference}
                     autoFocus={autoFocus}
@@ -94,11 +89,9 @@ export default function InputText({
                     onBlur={onBlur}
                     placeholder={placeholder ?? t('text.inputName', { name: label })}
                 />
-
                 {renderUnit('right')}
             </div>
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

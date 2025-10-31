@@ -206,7 +206,7 @@
 }
 
 .color-table-hide-row {
-    @apply border-l-1 border-t-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply border-t-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
 }
 
 .color-button-main {

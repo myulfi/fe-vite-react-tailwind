@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ErrorForm from './ErrorForm';
+import InputLabel from './InputLabel';
 
 type InputPasswordProps = {
     autoComplete?: boolean;
@@ -24,12 +25,7 @@ export default function InputPassword({
 
     return (
         <div className="relative">
-            {label && (
-                <label className="block mb-1 text-md font-bold color-label">
-                    {label}
-                </label>
-            )}
-
+            <InputLabel label={label} />
             <input
                 id={name}
                 autoComplete={autoComplete ? "on" : "new-password"}
@@ -52,8 +48,7 @@ export default function InputPassword({
             >
                 <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
             </button>
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }

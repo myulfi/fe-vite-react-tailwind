@@ -2,6 +2,7 @@ import { useEffect, useState, type ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import ErrorForm from "./ErrorForm";
 import { decode } from "../../function/commonHelper";
+import InputLabel from "./InputLabel";
 
 type Option<T extends string | number> = {
     key: T;
@@ -18,7 +19,6 @@ type RadioProps<T extends string | number> = {
     map: Option<T>[];
     customFlag?: boolean;
     onChange: (e: { target: { name: string; value: T } }) => void;
-    className?: string;
     error?: string;
 };
 
@@ -31,8 +31,7 @@ function Radio<T extends string | number>({
     map,
     customFlag = false,
     onChange,
-    className = "",
-    error,
+    error
 }: RadioProps<T>) {
     const { t } = useTranslation();
     const [valueInput, setValueInput] = useState<T | -1>();
@@ -80,8 +79,7 @@ function Radio<T extends string | number>({
                 "md:col-span-4"
             )}`}
         >
-            {label && <label className="block mb-1 text-md font-bold color-label">{label}</label>}
-
+            <InputLabel label={label} />
             <div className="flex flex-wrap items-start">
                 {map.map((object) => (
                     <div
@@ -138,8 +136,7 @@ function Radio<T extends string | number>({
                     </div>
                 )}
             </div>
-
-            {error && <ErrorForm text={error} />}
+            <ErrorForm text={error} />
         </div>
     );
 }
