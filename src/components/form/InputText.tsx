@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import ErrorForm from './ErrorForm';
 import { decode } from '../../function/commonHelper';
+import { LabelValueUnit, SelectValueUnit } from './InputValueUnit';
 
 type UnitOption = {
     key: number | string;
@@ -49,47 +50,19 @@ export default function InputText({
 }: InputTextProps) {
     const { t } = useTranslation();
 
-    const onInputUnitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        onChangeUnit?.({
-            target: {
-                name,
-                value: Number(value),
-            },
-        });
-    };
-
     const renderUnit = (position: string) => {
         if (position !== positionUnit) return null;
-        return valueUnitList ? (
-            <select
-                className={`
-                    ${position === 'left' ? 'rounded-l-element' : 'rounded-r-element'}
-                    px-2 text-sm
-                    border border-gray-300 bg-gray-100 
-                    text-gray-700 focus:outline-none`}
-                name={nameUnit}
+        return valueUnitList
+            ? <SelectValueUnit
+                position={position}
+                name={nameUnit!}
                 value={valueUnit}
-                disabled={disabled}
-                onChange={onInputUnitChange}
-            >
-                {valueUnitList.map((object) => (
-                    <option value={object.key} key={object.key}>
-                        {object.value}
-                    </option>
-                ))}
-            </select>
-        ) : valueUnit ? (
-            <span className={`
-                inline-flex items-center
-                 ${position === 'left' ? 'rounded-l-element' : 'rounded-r-element'}
-                px-3 text-sm
-                border border-gray-300 bg-gray-100
-                text-gray-700
-            `}>
-                {valueUnit}
-            </span>
-        ) : null;
+                valueList={valueUnitList}
+                onChange={onChangeUnit}
+            />
+            : valueUnit
+                ? <LabelValueUnit position={position} value={valueUnit} />
+                : null;
     };
 
     return (
