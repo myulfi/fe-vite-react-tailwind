@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useState } from "react";
-import { decode, getNestedValue, onCopy } from "../function/commonHelper";
-import { Trans, useTranslation } from "react-i18next";
-import Button from "./form/Button";
-import InputText from "./form/InputText";
-import type { ButtonArray } from "../constants/common-constants";
+import { Fragment, useEffect, useState } from 'react';
+import { decode, getNestedValue, onCopy } from '../function/commonHelper';
+import { Trans, useTranslation } from 'react-i18next';
+import Button from './form/Button';
+import InputText from './form/InputText';
+import type { ButtonArray } from '../constants/common-constants';
 
 interface TableProps {
     showFlag?: boolean;
@@ -53,7 +53,7 @@ interface TableProps {
 export default function Table({
     type = 'pagination',
     labelNewButton,
-    onNewButtonClick = () => { alert("Please define your function!") },
+    onNewButtonClick = () => { alert('Please define your function!') },
     additionalButtonArray = [],
     bulkOptionLoadingFlag = false,
     bulkOptionArray = [],
@@ -63,7 +63,7 @@ export default function Table({
     columns,
     order = undefined,
     checkBoxArray = undefined,
-    onCheckBox = () => { alert("Please define your function!") },
+    onCheckBox = () => { alert('Please define your function!') },
     dataTotal = 0,
     dataLoadMoreFlag = 0,
     initialSizePage = 10,
@@ -75,7 +75,7 @@ export default function Table({
 }: TableProps) {
     const { t } = useTranslation()
     const [itemArray, setItemArray] = useState(dataArray)
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState('')
     const [currentOrder, setCurrentOrder] = useState(order)
     const [orderColumn, setOrderColumn] = useState<(string | null)[]>([])
     const [detailRow, setDetailRow] = useState(itemArray.map(() => false))
@@ -95,7 +95,7 @@ export default function Table({
         setItemArray([]);
         setCurrentPage(1);
         // setDetailRow(itemArray.map(() => false));
-        setSearch("");
+        setSearch('');
     }, [refresh])
 
     const checkBoxStateArray = itemArray.map(function (obj) {
@@ -131,17 +131,17 @@ export default function Table({
         for (var i = 0; i < orderColumn.length; i++) {
             if (index === i) {
                 setDetailRow(itemArray.map(() => false))
-                if (orderColumn[i] === "fa-solid fa-arrow-down-wide-short") {
-                    array.push("fa-solid fa-arrow-down-short-wide")
-                    setCurrentOrder([data, "asc"])
-                    onRender(currentPage, sizePage, search, [data, "asc"])
+                if (orderColumn[i] === 'fa-solid fa-arrow-down-wide-short') {
+                    array.push('fa-solid fa-arrow-down-short-wide')
+                    setCurrentOrder([data, 'asc'])
+                    onRender(currentPage, sizePage, search, [data, 'asc'])
                 } else {
-                    array.push("fa-solid fa-arrow-down-wide-short")
-                    setCurrentOrder([data, "desc"])
-                    onRender(currentPage, sizePage, search, [data, "desc"])
+                    array.push('fa-solid fa-arrow-down-wide-short')
+                    setCurrentOrder([data, 'desc'])
+                    onRender(currentPage, sizePage, search, [data, 'desc'])
                 }
             } else {
-                array.push(orderColumn[i] !== null ? "fa-solid fa-ellipsis-vertical" : null)
+                array.push(orderColumn[i] !== null ? 'fa-solid fa-ellipsis-vertical' : null)
             }
         }
         setOrderColumn(array)
@@ -231,19 +231,19 @@ export default function Table({
 
             for (var i = 0; i < columnShow.length; i++) {
                 if (order?.length === 2 && columnShow[i].data === order[0]) {
-                    array.push("asc" === order[1] ? "fa-solid fa-arrow-down-short-wide" : "fa-solid fa-arrow-down-wide-short")
+                    array.push('asc' === order[1] ? 'fa-solid fa-arrow-down-short-wide' : 'fa-solid fa-arrow-down-wide-short')
                 } else {
-                    array.push(columnShow[i].orderable ? "fa-solid fa-ellipsis-vertical" : null);
+                    array.push(columnShow[i].orderable ? 'fa-solid fa-ellipsis-vertical' : null);
                 }
             }
 
             if (order?.length === 2) {
-                if ("asc" === order[1]) {
-                    setCurrentOrder([order[0], "asc"])
-                    onRender(currentPage, sizePage, search, [order[0], "asc"])
-                } else if ("desc" === order[1]) {
-                    setCurrentOrder([order[0], "desc"])
-                    onRender(currentPage, sizePage, search, [order[0], "desc"])
+                if ('asc' === order[1]) {
+                    setCurrentOrder([order[0], 'asc'])
+                    onRender(currentPage, sizePage, search, [order[0], 'asc'])
+                } else if ('desc' === order[1]) {
+                    setCurrentOrder([order[0], 'desc'])
+                    onRender(currentPage, sizePage, search, [order[0], 'desc'])
                 }
             } else {
                 onRender(currentPage, sizePage, search)
@@ -258,12 +258,11 @@ export default function Table({
         <Fragment>
             {
                 (lengthFlag || searchFlag) &&
-                <div className="color-container rounded-container shadow-lg animate-fade-in-delay-1">
-                    <div className="container-row-column items-center justify-between">
+                <div className='color-container rounded-container shadow-lg animate-fade-in-delay-1'>
+                    <div className='container-row-column items-center justify-between'>
                         {
                             lengthFlag
-                            // "w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe"
-                            && <div className="w-full tablet:w-auto flex items-center justify-center-safe">
+                            && <div className='w-full tablet:w-auto flex items-center justify-center-safe'>
                                 <Trans
                                     i18nKey='table.lengthMenu'
                                     components={{
@@ -280,15 +279,15 @@ export default function Table({
                         }
                         {
                             searchFlag
-                            && <div className="w-full tablet:w-auto desktop:w-1/3">
+                            && <div className='w-full tablet:w-auto desktop:w-1/3'>
                                 <InputText
                                     autoFocus={true}
-                                    autoComplete="off"
-                                    name="name"
+                                    autoComplete='off'
+                                    name='name'
                                     value={search}
-                                    placeholder={t("text.search")}
+                                    placeholder={t('text.search')}
                                     onChange={event => setSearch(event.target.value)}
-                                    onKeyDown={event => { if (event.key === "Enter") { onPageChange(1, sizePage, search) } }} />
+                                    onKeyDown={event => { if (event.key === 'Enter') { onPageChange(1, sizePage, search) } }} />
                             </div>
                         }
                     </div>
@@ -296,8 +295,8 @@ export default function Table({
             }
             {
                 (labelNewButton != undefined || additionalButtonArray.length > 0 || bulkOptionArray.length > 0) &&
-                <div className="color-container rounded-container shadow-lg animate-fade-in-delay-2 z-container">
-                    <div className="container-row-column">
+                <div className='color-container rounded-container shadow-lg animate-fade-in-delay-2 z-container'>
+                    <div className='container-row-column'>
                         {
                             labelNewButton != undefined
                             && <Button
@@ -324,7 +323,6 @@ export default function Table({
                         }
                         {
                             bulkOptionArray.length > 0
-                            // 'lg:ml-auto'
                             && <div className='desktop:ml-auto'>
                                 <Button
                                     label={`${checkBoxArray !== undefined && checkBoxArray?.length > 0 ? `(${checkBoxArray?.length}) ` : ''}${t('text.bulkOption')}`}
@@ -339,13 +337,13 @@ export default function Table({
                     </div>
                 </div>
             }
-            <div className="color-container rounded-container shadow-lg animate-fade-in-delay-3">
+            <div className='color-container rounded-container shadow-lg animate-fade-in-delay-3'>
                 <div className={`overflow-x-auto w-full ${loadingFlag ? 'min-h-64' : ''}`}>
                     {
                         loadingFlag
                         && (
-                            "pagination" === type
-                            || ("load_more" === type && itemArray.length === 0)
+                            'pagination' === type
+                            || ('load_more' === type && itemArray.length === 0)
                         )
                         &&
                         <div
@@ -357,12 +355,12 @@ export default function Table({
                             `}
                         />
                     }
-                    <table className="min-w-full table-auto">
+                    <table className='min-w-full table-auto'>
                         <thead className='color-table-header'>
-                            <tr className="pr-container">
+                            <tr className='pr-container'>
                                 {
                                     checkBoxArray !== undefined
-                                    && <th scope="col" className="pl-container py-element w-[0px]">
+                                    && <th scope='col' className='pl-container py-element w-[0px]'>
                                         <span
                                             className={`
                                                 min-w-additional
@@ -375,31 +373,32 @@ export default function Table({
                                                         : 'fa-solid fa-square-minus'
                                                 }`
                                             }
-                                            role="button" onClick={() => onCheckBoxAll()} />
+                                            role='button' onClick={() => onCheckBoxAll()} />
                                     </th>
                                 }
                                 {
                                     columnShow.map((column, index) => (
                                         <th
                                             key={index}
-                                            scope="col"
+                                            scope='col'
                                             className={`
-                                                pl-container py-element
+                                                py-element
+                                                ${columnShow.length - 1 === index ? 'px-container' : 'pl-container'}
                                                 ${column.position === 'right' ? 'text-right' : column.position === 'center' ? 'text-center' : 'text-left'}
                                                 ${column.minDevice == 'desktop'
-                                                    ? "max-desktop:hidden"
+                                                    ? 'max-desktop:hidden'
                                                     : column.minDevice == 'tablet'
-                                                        ? "max-tablet:hidden" : ""}
+                                                        ? 'max-tablet:hidden' : ''}
                                             `}
                                             style={column.width != null ? { width: `${column.width}%` } : {}}
                                         >
                                             {
                                                 orderColumn[index] !== null &&
-                                                <span className={`w-full`}>
+                                                <span >
                                                     <span>{column.name}</span>
                                                     <i
                                                         className={`ml-additional cursor-pointer ${orderColumn[index]}`}
-                                                        role="button"
+                                                        role='button'
                                                         onClick={() => onOrderChange(column.data, index)}
                                                     />
                                                 </span>
@@ -418,11 +417,11 @@ export default function Table({
                                 itemArray.length > 0
                                     ? itemArray.map((data, indexRow) => (
                                         <Fragment key={indexRow}>
-                                            <tr className="color-table-row">
+                                            <tr className='color-table-row'>
                                                 {
                                                     checkBoxArray !== undefined
                                                     && data.id !== undefined
-                                                    && <td className="pl-container py-element">
+                                                    && <td className='pl-container py-element'>
                                                         <span
                                                             className={`
                                                                 min-w-additional
@@ -433,7 +432,7 @@ export default function Table({
                                                                     : 'fa-regular fa-square'
                                                                 }
                                                             `}
-                                                            role="button" onClick={() => onCheckBoxSingle(data.id)} />
+                                                            role='button' onClick={() => onCheckBoxSingle(data.id)} />
                                                     </td>
                                                 }
                                                 {
@@ -449,16 +448,17 @@ export default function Table({
                                                                 <td
                                                                     key={index}
                                                                     className={`
-                                                                        pl-container py-element
+                                                                        py-element
+                                                                        ${columnShow.length - 1 === index ? 'px-container' : 'pl-container'}
                                                                         ${column.position === 'right' ? 'text-right' : column.position === 'center' ? 'text-center' : 'text-left'}
-                                                                        ${index === 0 && column.copy !== true ? 'cursor-pointer' : ""}
+                                                                        ${index === 0 && column.copy !== true ? 'cursor-pointer' : ''}
                                                                         ${column.minDevice === 'desktop' ? 'max-desktop:hidden' : column.minDevice === 'tablet' ? 'max-tablet:hidden' : ''}
                                                                     `}
                                                                     onClick={index === 0 && column.copy !== true ? () => showDetail(indexRow) : undefined}>
                                                                     {
                                                                         index == 0 &&
                                                                         <span
-                                                                            className={`cursor-pointer pe-2 ${columnAlwaysHide.length === 0 ? 'lg:hidden' : ''}`}
+                                                                            className={`cursor-pointer pe-additional ${columnAlwaysHide.length === 0 ? 'desktop:hidden' : ''}`}
                                                                             onClick={column.copy ? () => showDetail(indexRow) : undefined}>
                                                                             <i className={`fa-solid ${detailRow[indexRow] ? 'fa-circle-minus' : 'fa-circle-plus'}`} />
                                                                         </span>
@@ -476,7 +476,7 @@ export default function Table({
                                                                                 e,
                                                                                 column.render != undefined
                                                                                     ? column.render(nested_value, data)
-                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                    : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
                                                                             )}
                                                                         />
                                                                     }
@@ -488,11 +488,12 @@ export default function Table({
                                             {
                                                 <tr>
                                                     <td
-                                                        className={columnAlwaysHide.length === 0 ? "desktop:hidden" : ''}
+                                                        className={columnAlwaysHide.length === 0 ? 'desktop:hidden' : ''}
                                                         colSpan={columnShow.length + (checkBoxArray !== undefined ? 1 : 0)}
                                                     >
                                                         <div
                                                             className={`
+                                                                color-table-hide-row
                                                                 overflow-hidden
                                                                 transition-[max-height, opacity]
                                                                 ${detailRow[indexRow] ? 'pb-element' : 'pb-0'}
@@ -502,7 +503,7 @@ export default function Table({
                                                         >
                                                             <div
                                                                 className={`
-                                                                    grid grid-cols-[auto_1fr] gap-element
+                                                                    grid grid-cols-[auto_1fr]
                                                                     ml-[28px]
                                                                     ${checkBoxArray !== undefined && data.id !== undefined ? 'ml-[28px]' : ''} 
                                                                     border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg
@@ -525,23 +526,23 @@ export default function Table({
                                                                                             `}
                                                                                             />
                                                                                         </div>
-                                                                                        <div className="color-label font-bold mx-container">{column.name}</div>
+                                                                                        <div className='color-label font-bold mx-container'>{column.name}</div>
                                                                                     </div>
-                                                                                    <div className="flex-1 pt-2">
+                                                                                    <div className='flex-1 pt-2'>
                                                                                         {
                                                                                             column.render != undefined
                                                                                                 ? column.render(nested_value, data)
-                                                                                                : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                                : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
                                                                                         }
                                                                                         {
                                                                                             column.copy
                                                                                             && <i
-                                                                                                className="pl-additional fa-solid fa-copy cursor-pointer"
+                                                                                                className='pl-additional fa-solid fa-copy cursor-pointer'
                                                                                                 onClick={(e) => onCopy(
                                                                                                     e,
                                                                                                     column.render != undefined
                                                                                                         ? column.render(nested_value, data)
-                                                                                                        : nested_value ?? (column.defaultContent ? column.defaultContent() : "")
+                                                                                                        : nested_value ?? (column.defaultContent ? column.defaultContent() : '')
                                                                                                 )}
                                                                                             />
                                                                                         }
@@ -557,19 +558,16 @@ export default function Table({
                                             }
                                         </Fragment>
                                     ))
-                                    : <tr className="color-table-row">
+                                    : <tr className='color-table-row'>
                                         <td
-                                            className="p-container"
+                                            className='p-container'
                                             colSpan={columnShow.length + (checkBoxArray != undefined ? 1 : 0)}
                                         >
                                             {
                                                 !loadingFlag &&
-                                                <div className="flex flex-col items-center">
-                                                    <i className={`
-                                                    color-main
-                                                    fa-solid fa-inbox text-9xl
-                                                `} />
-                                                    <label>{t("table.emptyTable")}</label>
+                                                <div className='flex flex-col items-center'>
+                                                    <i className='color-main fa-solid fa-inbox text-9xl' />
+                                                    <label>{t('table.emptyTable')}</label>
                                                 </div>
                                             }
                                         </td>
@@ -584,17 +582,15 @@ export default function Table({
                     ('pagination' === type && dataTotal > 0)
                     || ('load_more' === type && itemArray.length > 0)
                 ) &&
-                <div className="color-container rounded-lg shadow-lg animate-fade-in-delay-4">
-
+                <div className='color-container rounded-container shadow-lg animate-fade-in-delay-4'>
                     {
                         'pagination' === type
                         && dataTotal > 0
-                        && <div className="container-row-column items-center justify-between">
-                            {/* w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe */}
-                            <div className="w-full md:w-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                        && <div className='container-row-column items-center justify-between'>
+                            <div className='w-full tablet:w-auto flex items-center justify-center-safe'>
                                 {t
                                     (
-                                        "table.info",
+                                        'table.info',
                                         {
 
                                             start: ((currentPage - 1) * sizePage + 1) > dataTotal && dataTotal > 0 ? 0 : (((currentPage - 1) * sizePage) + 1),
@@ -604,22 +600,24 @@ export default function Table({
                                     )
                                 }
                             </div>
-                            <div className="w-full sm:w-auto ml-auto max-sm:flex max-sm:items-center max-sm:justify-center-safe">
+                            <div className='w-full tablet:w-auto tablet:ml-auto flex items-center justify-center-safe'>
                                 {
                                     pages.length > 1
-                                    && <div className="inline-flex items-center -space-x-px text-sm">
+                                    && <div className='inline-flex items-center -space-x-px text-sm'>
                                         <button
                                             disabled={currentPage === 1}
                                             className={`
-                                            color-button-main
-                                            max-md:hidden rounded-l-md
-                                            px-3 py-2 ml-0 leading-tight border
-                                            cursor-pointer
-                                            disabled:cursor-not-allowed
-                                        `}
+                                                color-button-main
+                                                rounded-l-element
+                                                px-3 py-additional ml-0
+                                                leading-tight border
+                                                cursor-pointer
+                                                hidden desktop:block
+                                                disabled:cursor-not-allowed
+                                            `}
                                             onClick={() => currentPage === 1 ? {} : onPageChange(currentPage - 1, sizePage, search)}
                                         >
-                                            {t("table.previous")}
+                                            {t('table.previous')}
                                         </button>
                                         {
                                             paginationButton(currentPage, pages.length, limitPaginationButton).map((page, index) => (
@@ -627,15 +625,16 @@ export default function Table({
                                                     <button
                                                         disabled={page === currentPage}
                                                         className={`
-                                                        color-button-main
-                                                        max-md:first:rounded-l-md max-md:last:rounded-r-md
-                                                        px-3 py-2 leading-tight border
-                                                        ${page === 0 ? 'cursor-default' : 'cursor-pointer'}
-                                                        disabled:cursor-not-allowed
-                                                    `}
+                                                            color-button-main
+                                                            ${page === 1 ? 'rounded-l-element desktop:rounded-l-none' : ''}
+                                                            ${page === pages.length ? 'rounded-r-element desktop:rounded-r-none' : ''}
+                                                            px-3 py-additional leading-tight border
+                                                            ${page === 0 ? 'cursor-default' : 'cursor-pointer'}
+                                                            disabled:cursor-not-allowed
+                                                        `}
                                                         onClick={() => onPageChange(page, sizePage, search)}
                                                     >
-                                                        {page === 0 ? "..." : page}
+                                                        {page === 0 ? '...' : page}
                                                     </button>
                                                 </Fragment>
                                             ))
@@ -643,15 +642,17 @@ export default function Table({
                                         <button
                                             disabled={currentPage === pages.length}
                                             className={`
-                                            color-button-main
-                                            max-md:hidden rounded-r-md
-                                            px-3 py-2 ml-0 leading-tight border
-                                            cursor-pointer
-                                            disabled:cursor-not-allowed
-                                        `}
+                                                color-button-main
+                                                rounded-r-element
+                                                px-3 py-additional ml-0
+                                                leading-tight border
+                                                cursor-pointer
+                                                hidden desktop:block
+                                                disabled:cursor-not-allowed
+                                            `}
                                             onClick={() => currentPage === pages.length ? {} : onPageChange(currentPage + 1, sizePage, search)}
                                         >
-                                            {t("table.next")}
+                                            {t('table.next')}
                                         </button>
                                     </div>
                                 }
@@ -661,26 +662,26 @@ export default function Table({
                     {
                         'load_more' === type
                         && itemArray.length > 0
-                        && <div className="pb-5">
-                            {
-                                dataLoadMoreFlag === 0
-                                && <div className="flex items-center gap-container color-main text-sm">
-                                    <div className="flex-grow color-divider"></div>
-                                    <span className="whitespace-nowrap">{t("text.endData")}</span>
-                                    <div className="flex-grow color-divider"></div>
-                                </div>
-                            }
-                            <div>
-                                {t("text.amountItem", { amount: itemArray.length })}
+                        && <div className='container-column'>
+                            <div className='text-center'>
+                                {t('text.amountItem', { amount: itemArray.length })}
                             </div>
                             {
-                                dataLoadMoreFlag === 1
-                                && <div className="text-center mt-2">
+                                dataLoadMoreFlag === 0 &&
+                                <div className='flex items-center gap-container color-main text-sm'>
+                                    <div className='flex-grow color-divider'></div>
+                                    <span className='whitespace-nowrap'>{t('text.endData')}</span>
+                                    <div className='flex-grow color-divider'></div>
+                                </div>
+                            }
+                            {
+                                dataLoadMoreFlag === 1 &&
+                                <div className='text-center'>
                                     <Button
-                                        label={t("text.loadMore")}
-                                        size="sm"
-                                        type="primary"
-                                        icon="fa-solid fa-circle-arrow-down animate-bounce"
+                                        label={t('text.loadMore')}
+                                        size='sm'
+                                        type='primary'
+                                        icon='fa-solid fa-circle-arrow-down animate-bounce'
                                         onClick={() => onPageLoadMore(currentPage + 1, sizePage, search)}
                                         loadingFlag={loadingFlag}
                                     />
