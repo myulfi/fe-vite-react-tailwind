@@ -4,12 +4,12 @@ import React, {
     createContext,
     useContext,
     useRef,
-} from "react";
-import { createPortal } from "react-dom";
-import Button from "./components/form/Button";
-import { useTranslation } from "react-i18next";
-import type { ButtonArray } from "./constants/common-constants";
-import { decode } from "./function/commonHelper";
+} from 'react';
+import { createPortal } from 'react-dom';
+import Button from './components/form/Button';
+import { useTranslation } from 'react-i18next';
+import type { ButtonArray } from './constants/common-constants';
+import { decode } from './function/commonHelper';
 
 const ModalStackContext = createContext<{
     registerModal: () => number;
@@ -26,7 +26,7 @@ export function ModalStackProvider({ children }: { children: React.ReactNode }) 
         setStack((prev) => {
             const next = [...prev, z];
             if (next.length === 1) {
-                document.body.classList.add("overflow-hidden");
+                document.body.classList.add('overflow-hidden');
             }
             return next;
         });
@@ -38,7 +38,7 @@ export function ModalStackProvider({ children }: { children: React.ReactNode }) 
         setStack((prev) => {
             const next = prev.filter((val) => val !== z);
             if (next.length === 0) {
-                document.body.classList.remove("overflow-hidden");
+                document.body.classList.remove('overflow-hidden');
             }
             return next;
         });
@@ -54,7 +54,7 @@ export function ModalStackProvider({ children }: { children: React.ReactNode }) 
 function useModalStack() {
     const context = useContext(ModalStackContext);
     if (!context) {
-        throw new Error("useModalStack must be used within ModalStackProvider");
+        throw new Error('useModalStack must be used within ModalStackProvider');
     }
     return context;
 }
@@ -80,7 +80,7 @@ const sizeClasses = {
     xl: 'w-full',
 };
 
-export function Modal({ show, size = "xl", type = 'static', background = 'primary', title, icon, buttonArray = [], onClose, loadingFlag = false, children }: ModalProps) {
+export function Modal({ show, size = 'xl', type = 'static', background = 'primary', title, icon, buttonArray = [], onClose, loadingFlag = false, children }: ModalProps) {
     const { t } = useTranslation();
     const { registerModal, unregisterModal } = useModalStack();
     const [zIndex, setZIndex] = useState(5000);
@@ -134,15 +134,13 @@ export function Modal({ show, size = "xl", type = 'static', background = 'primar
             const firstElement = focusable[0];
             const lastElement = focusable[focusable.length - 1];
 
-            if (e.key === "Tab") {
+            if (e.key === 'Tab') {
                 if (e.shiftKey) {
-                    // Shift + Tab
                     if (document.activeElement === firstElement) {
                         e.preventDefault();
                         lastElement.focus();
                     }
                 } else {
-                    // Tab
                     if (document.activeElement === lastElement) {
                         e.preventDefault();
                         firstElement.focus();
@@ -152,11 +150,11 @@ export function Modal({ show, size = "xl", type = 'static', background = 'primar
         }
 
         if (isVisible) {
-            document.addEventListener("keydown", handleTabKey);
+            document.addEventListener('keydown', handleTabKey);
         }
 
         return () => {
-            document.removeEventListener("keydown", handleTabKey);
+            document.removeEventListener('keydown', handleTabKey);
         };
     }, [isVisible]);
 
@@ -165,44 +163,56 @@ export function Modal({ show, size = "xl", type = 'static', background = 'primar
     return createPortal(
         <div
             className={`
-                fixed inset-0 bg-light-base-line/50 dark:bg-dark-base-line/50
+                fixed inset-0
+                bg-light-base-line/50 dark:bg-dark-base-line/50
                 overflow-y-auto 
-                ${show ? "animate-fade-in-overlay" : "animate-fade-out-overlay"}`
+                ${show ? 'animate-fade-in-overlay' : 'animate-fade-out-overlay'}`
             }
             style={{ zIndex }}
         >
             <div
                 ref={modalRef}
-                role="dialog"
-                aria-modal="true"
-                className={`flex ${decode(type, 'static', 'items-center')} justify-center min-h-screen py-4 px-4`}
+                role='dialog'
+                aria-modal='true'
+                className={`
+                    flex ${decode(type, 'static', 'items-center')} justify-center
+                    min-h-screen p-container
+                `}
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
                     className={`
-                        bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line
-                        ${sizeClasses[size]}
-                        rounded-lg shadow-xl h-fit
+                        container-column
+                        container-card
+                        h-fit ${sizeClasses[size]}
                         transition-[scale, opacity] duration-200 ease-out
-                        ${show ? "animate-fade-in" : "animate-fade-out"}
-                        flex flex-col
+                        ${show ? 'animate-fade-in' : 'animate-fade-out'}
                     `}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <div className="flex justify-between p-4">
-                        <strong className="text-xl text-light-base-line-base dark:text-dark-base-line">
-                            {icon && <i className={`${icon} mr-2`}></i>}
-                            {title}
-                        </strong>
+                    <div className='flex justify-between'>
+                        <div className={`
+                        flex items-center gap-additional
+                        text-xl font-subheader text-dark dark:text-white
+                    `}>
+                            {icon && <i className={icon} />}
+                            <span>{title}</span>
+                        </div>
                         <button
-                            className="text-light-base-line dark:text-dark-base-line hover:text-light-base-line-secondary hover:dark:text-dark-base-line-secondary cursor-pointer p-1 rounded"
+                            className='text-light-base-line dark:text-dark-base-line hover:text-light-base-line-secondary hover:dark:text-dark-base-line-secondary cursor-pointer p-1 rounded'
                             onClick={onClose}
-                            aria-label="Open sidebar"
+                            aria-label='Open sidebar'
                         >
-                            <i className="fa-solid fa-xmark text-xl" />
+                            <i className='fa-solid fa-xmark text-xl' />
                         </button>
                     </div>
-                    <div className={`${background === 'primary' ? 'color-main p-5 border-y-1 border-light-divider dark:border-dark-divider' : 'p-modal color-main-secondary'}`}>
+                    <div className={
+                        `py-container
+                        ${background === 'primary'
+                            ? 'color-main border-y-1 border-light-divider dark:border-dark-divider'
+                            : 'p-modal color-main-secondary'
+                        }
+                    `}>
                         <div className={`${loadingFlag ? 'opacity-0 pointer-events-none' : ''}`}>
                             {children}
                         </div>
@@ -218,14 +228,13 @@ export function Modal({ show, size = "xl", type = 'static', background = 'primar
                             />
                         }
                     </div>
-                    <div className="flex max-sm:flex-col justify-end md:flex-row gap-4 p-4">
+                    <div className='container-row-column justify-end'>
                         {
                             !loadingFlag &&
                             buttonArray.map((button, index) => (
                                 <Button
                                     key={index}
                                     label={button.label}
-                                    className="max-sm:w-full"
                                     type={button.type}
                                     icon={button.icon}
                                     onClick={button.onClick}
@@ -234,10 +243,9 @@ export function Modal({ show, size = "xl", type = 'static', background = 'primar
                             ))
                         }
                         <Button
-                            label={t("text.close")}
-                            className="max-sm:w-full"
-                            type="secondary"
-                            icon="fa-solid fa-xmark"
+                            label={t('text.close')}
+                            type='secondary'
+                            icon='fa-solid fa-xmark'
                             onClick={() => onClose()}
                         />
                     </div>

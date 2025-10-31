@@ -110,7 +110,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
         >
             <div
                 className={`
-                    p-container w-dialog
+                    w-dialog
                     container-column
                     container-card
                     ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}
@@ -118,7 +118,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                 <div className='flex justify-between'>
                     <div className={`
                         flex items-center gap-additional
-                        text-lg font-subheader text-dark dark:text-white
+                        text-xl font-subheader text-dark dark:text-white
                     `}>
                         <i className={icon}></i>
                         <span>{title}</span>

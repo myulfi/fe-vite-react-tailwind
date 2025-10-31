@@ -19,7 +19,7 @@ type InputTextProps = {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-    positionUnit?: 'left' | 'right' | 'none';
+    positionUnit?: 'left' | 'right';
     nameUnit?: string;
     valueUnit?: number | string;
     valueUnitList?: UnitOption[];
@@ -39,7 +39,7 @@ export default function InputText({
     onChange,
     onKeyDown,
     onBlur,
-    positionUnit = 'none',
+    positionUnit = 'left',
     nameUnit,
     valueUnit,
     valueUnitList,
@@ -59,13 +59,15 @@ export default function InputText({
         });
     };
 
-
-    const renderUnitLeft = () => {
-        if (!positionUnit || positionUnit !== 'left') return null;
-
+    const renderUnit = (position: string) => {
+        if (position !== positionUnit) return null;
         return valueUnitList ? (
             <select
-                className="rounded-l-md border border-gray-300 bg-gray-100 px-2 text-sm text-gray-700 focus:outline-none"
+                className={`
+                    ${position === 'left' ? 'rounded-l-element' : 'rounded-r-element'}
+                    px-2 text-sm
+                    border border-gray-300 bg-gray-100 
+                    text-gray-700 focus:outline-none`}
                 name={nameUnit}
                 value={valueUnit}
                 disabled={disabled}
@@ -77,47 +79,29 @@ export default function InputText({
                     </option>
                 ))}
             </select>
-        ) : (
-            <span className="inline-flex items-center rounded-l-md border border-gray-300 bg-gray-100 px-3 text-sm text-gray-700">
+        ) : valueUnit ? (
+            <span className={`
+                inline-flex items-center
+                 ${position === 'left' ? 'rounded-l-element' : 'rounded-r-element'}
+                px-3 text-sm
+                border border-gray-300 bg-gray-100
+                text-gray-700
+            `}>
                 {valueUnit}
             </span>
-        );
-    };
-
-    const renderUnitRight = () => {
-        if (!positionUnit || positionUnit !== 'right') return null;
-
-        return valueUnitList ? (
-            <select
-                className="rounded-r-md border border-gray-300 bg-gray-100 px-2 text-sm text-gray-700 focus:outline-none"
-                name={nameUnit}
-                value={valueUnit}
-                disabled={disabled}
-                onChange={onInputUnitChange}
-            >
-                {valueUnitList.map((object) => (
-                    <option value={object.key} key={object.key}>
-                        {object.value}
-                    </option>
-                ))}
-            </select>
-        ) : (
-            <span className="inline-flex items-center rounded-r-md border border-gray-300 bg-gray-100 px-3 text-sm text-gray-700">
-                {valueUnit}
-            </span>
-        );
+        ) : null;
     };
 
     return (
         <div>
             {label && (
-                <label className="block mb-1 text-md font-bold color-label">
+                <label className="block pb-1 ml-1 text-md font-bold color-label">
                     {label}
                 </label>
             )}
 
-            <div className="flex shadow-sm rounded-md">
-                {renderUnitLeft()}
+            <div className="flex shadow-sm rounded-element">
+                {renderUnit('left')}
 
                 <input
                     ref={refference}
@@ -125,7 +109,7 @@ export default function InputText({
                     autoComplete={autoComplete}
                     className={`
                         form-input flex-1                        
-                        ${decode(positionUnit, 'left', 'rounded-r-md', 'right', 'rounded-l-md', 'rounded-md')}
+                        ${valueUnitList || valueUnit ? decode(positionUnit, 'left', 'rounded-r-element', 'right', 'rounded-l-element', 'rounded-element') : 'rounded-element'}
                         ${error ? 'form-input-error' : 'form-input-normal'}
                     `}
                     name={name}
@@ -138,7 +122,7 @@ export default function InputText({
                     placeholder={placeholder ?? t('text.inputName', { name: label })}
                 />
 
-                {renderUnitRight()}
+                {renderUnit('right')}
             </div>
 
             {error && <ErrorForm text={error} />}

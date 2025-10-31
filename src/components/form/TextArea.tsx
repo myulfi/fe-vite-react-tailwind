@@ -32,7 +32,7 @@ export default function TextArea({
     return (
         <div>
             {label && (
-                <label className="block mb-1 text-md font-bold color-label">
+                <label className="block pb-1 text-md font-bold color-label">
                     {label}
                 </label>
             )}
@@ -40,7 +40,7 @@ export default function TextArea({
             <textarea
                 autoFocus={autoFocus}
                 className={`
-                    form-input w-full rounded-md shadow-sm
+                    form-input w-full rounded-element shadow-sm
                     ${error ? 'form-input-error' : 'form-input-normal'}
                 `}
                 name={name}

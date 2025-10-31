@@ -90,7 +90,7 @@ export default function InputDecimal({
     return (
         <div>
             {label && (
-                <label className="block mb-1 text-md font-bold color-label">
+                <label className="block pb-1 text-md font-bold color-label">
                     {label}
                 </label>
             )}

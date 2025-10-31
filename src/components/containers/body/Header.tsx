@@ -128,8 +128,9 @@ export default function Header({
                         ${rightMenuOpenFlag ? 'translate-y-0 opacity-100 visible' : '-translate-y-5 opacity-0 invisible pointer-events-none'}
                     `}>
                     {
-                        menu.map((item) => (
+                        menu.map((item, index) => (
                             <Link
+                                key={index}
                                 to={item.path}
                                 onClick={() => setRightMenuOpenFlag(false)}
                                 className={`

@@ -267,7 +267,7 @@
 }
 
 .container-card {
-    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg rounded-container shadow-lg
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg p-container rounded-container shadow-lg
     /* @apply color-container p-container rounded-container shadow-lg */
 }
 
