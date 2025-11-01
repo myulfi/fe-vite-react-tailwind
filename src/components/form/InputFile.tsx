@@ -86,8 +86,8 @@ export default function InputFile({
                         ? `
                             flex flex-col items-center justify-center
                             hover:border-2    
-                            hover:text-light-base hover:dark:text-dark-base
-                            hover:border-light-base hover:dark:border-dark-base
+                            hover:text-light-base-fg hover:dark:text-dark-base-fg
+                            hover:border-light-base-fg hover:dark:border-dark-base-fg
                             cursor-pointer                   
                         `
                         : 'grid grid-cols-5 gap-1 p-2'
@@ -155,8 +155,8 @@ export default function InputFile({
                                 flex flex-col items-center justify-center
                                 text-light-base-line dark:text-dark-base-line
                                 bg-light-clear dark:bg-dark-clear
-                                hover:text-light-base hover:dark:text-dark-base
-                                hover:border-light-base hover:dark:border-dark-base
+                                hover:text-light-base-fg hover:dark:text-dark-base-fg
+                                hover:border-light-base-fg hover:dark:border-dark-base-fg
                                 hover:cursor-pointer
                                 border border-dashed
                                 rounded text-sm

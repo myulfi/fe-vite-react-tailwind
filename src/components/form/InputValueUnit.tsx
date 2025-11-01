@@ -67,8 +67,8 @@ export function LabelValueUnit({
                 inline-flex items-center
                  ${position === 'left' ? 'rounded-l-element' : 'rounded-r-element'}
                 px-3 text-sm
-                border border-light-base dark:border-dark-base
-                text-light-base dark:text-dark-base
+                border border-light-base-fg dark:border-dark-base-fg
+                text-light-base-fg dark:text-dark-base-fg
                 bg-light-clear dark:bg-dark-clear
             `}>
             {value}

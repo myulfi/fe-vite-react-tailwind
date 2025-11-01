@@ -37,7 +37,6 @@
     /* https://dribbble.com/shots/25967158-Prop-Firms-Tech-Dashboard-Website-UI-UX-AdTrend */
 
     /* Light */
-    --color-light-base: #0090E7;
     --color-light-base-secondary: #26A1EB;
     --color-light-base-line: #314158;
     --color-light-base-line-secondary: #314158;
@@ -46,7 +45,6 @@
 
     --color-light-divider: #DEE2E6;
 
-    --color-light-primary-base: #0090E7;
     --color-light-primary-base-hover: #26A1EB;
     --color-light-primary-base-line: #FFFFFF;
 
@@ -210,7 +208,7 @@
 }
 
 .color-button-main {
-    @apply text-light-base dark:text-dark-base hover:text-light-base-secondary dark:hover:text-dark-base-secondary bg-light-outline dark:bg-dark-outline/30 border-light-outline dark:border-dark-outline/30 disabled:text-light-base-line disabled:dark:text-dark-base-line
+    @apply text-light-base-fg dark:text-dark-base-fg hover:text-light-base-secondary dark:hover:text-dark-base-secondary bg-light-outline dark:bg-dark-outline/30 border-light-outline dark:border-dark-outline/30 disabled:text-light-base-line disabled:dark:text-dark-base-line
 }
 
 .color-label {
@@ -274,7 +272,7 @@
 /*Container End*/
 
 .form-input {
-    @apply border px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base focus:dark:border-dark-base focus:outline-none focus:ring-1 focus:ring-light-base focus:dark:ring-dark-base
+    @apply border px-3 py-2 text-sm text-light-base-line dark:text-dark-base-line placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base-fg focus:dark:border-dark-base-fg focus:outline-none focus:ring-1 focus:ring-light-base-fg focus:dark:ring-dark-base-fg
 }
 
 .form-input-normal {

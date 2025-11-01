@@ -109,7 +109,7 @@ function Radio<T extends string | number>({
                                 ${'sm' === size ? 'text-sm' : ''}
                                 border-light-primary-base-hover dark:border-dark-primary-base-hover
                                 peer-checked:text-light-primary-base-line dark:peer-checked:text-dark-primary-base-line
-                                peer-checked:bg-light-primary-base dark:peer-checked:bg-dark-primary-base
+                                peer-checked:bg-light-base-fg dark:peer-checked:bg-dark-primary-base
                             `}
                         >
                             <i className={`${object.icon} ${'sm' === size ? 'mr-1' : ''}`} />

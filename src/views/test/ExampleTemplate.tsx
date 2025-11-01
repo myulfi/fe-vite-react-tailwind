@@ -355,14 +355,35 @@ export default function ExampleTemplate() {
                         {
                             "entry" === exampleTemplateStateModal
                             && <Fragment>
-                                <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} />
+                                {/* <InputText autoFocus={true} label={t("text.name")} name="name" value={exampleTemplateForm.name} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.name} /> */}
+                                <InputText
+                                    autoFocus={true}
+                                    label={t("text.name")}
+                                    name="name"
+                                    value={exampleTemplateForm.name}
+                                    positionUnit="left"
+                                    // valueUnit={"Kuda"}
+                                    valueUnitList={selectValueMap}
+                                    onChange={onExampleTemplateFormChange}
+                                    error={exampleTemplateFormError.name} />
                                 <TextArea label={t("text.description")} name="description" rows={1} value={exampleTemplateForm.description} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.description} />
                                 <Select label={t("text.value")} name="value" map={selectValueMap} value={exampleTemplateForm.value} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.value} />
                                 {/* <Select label={t("common.text.value")} name="valueMultiple" map={selectValueMap} value={exampleTemplateForm.valueMultiple} multiple={true}
                                     dataSize={5}
                                     onChange={onExampleTemplateFormChange}
                                     error={exampleTemplateFormError.value} /> */}
-                                <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} />
+                                {/* <InputDecimal label={t("text.amount")} name="amount" value={exampleTemplateForm.amount} decimal={2} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.amount} /> */}
+                                <InputDecimal
+                                    label={t("text.amount")}
+                                    name="amount"
+                                    value={exampleTemplateForm.amount}
+                                    decimal={2}
+                                    positionUnit="left"
+                                    // valueUnit={"Kuda"}
+                                    valueUnitList={selectValueMap}
+                                    onChange={onExampleTemplateFormChange}
+                                    error={exampleTemplateFormError.amount} />
+
                                 <InputDate label={t("text.date")} name="date" value={formatDate(new Date(exampleTemplateForm.date ?? ""), "yyyy-MM-dd")} onChange={onExampleTemplateFormChange} error={exampleTemplateFormError.date} />
                                 <Switch label={t("text.activeFlag")} name="activeFlag" value={exampleTemplateForm.activeFlag} onChange={onExampleTemplateFormChange} />
                             </Fragment>

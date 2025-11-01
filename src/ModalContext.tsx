@@ -219,7 +219,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
                         {
                             loadingFlag &&
                             <div className={`
-                                text-light-base dark:text-dark-base
+                                text-light-base-fg dark:text-dark-base-fg
                                 absolute top-1/2 left-1/2
                                 transform -translate-x-1/2 -translate-y-1/2
                                 fa-solid fa-spinner fa-spin text-9xl

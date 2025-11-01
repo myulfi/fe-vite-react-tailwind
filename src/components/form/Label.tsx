@@ -41,7 +41,7 @@ export default function Label({
                 <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-7 text-light-base dark:text-dark-base hover:text-light-base-secondary hover:dark:text-dark-base-secondary focus:outline-none cursor-pointer"
+                    className="absolute right-3 top-7 text-light-base-fg dark:text-dark-base-fg hover:text-light-base-secondary hover:dark:text-dark-base-secondary focus:outline-none cursor-pointer"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                     <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>

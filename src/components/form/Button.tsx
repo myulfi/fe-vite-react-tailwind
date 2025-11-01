@@ -26,9 +26,9 @@ const sizeClasses = {
 
 const typeClasses = {
     primary: `
-        bg-light-primary-base dark:bg-dark-primary-base
+        bg-light-base-fg dark:bg-dark-primary-base
         hover:bg-light-primary-base-hover hover:dark:bg-dark-primary-base/60
-        border-2 border-light-primary-base dark:border-dark-primary-base
+        border-2 border-light-base-fg dark:border-dark-primary-base
         hover:border-dark-primary-base hover:dark:border-dark-primary-base-hover
         text-light-primary-base-line dark:text-dark-primary-base-line`,
     success: `
@@ -111,7 +111,7 @@ export default function Button({
                     className={`
                         absolute w-48 right-0
                         bg-light-clear dark:bg-dark-clear
-                        text-light-base dark:text-dark-base
+                        text-light-base-fg dark:text-dark-base-fg
                         border border-t-0 border-light-divider dark:border-dark-divider
                         rounded-tl-md rounded-b-md shadow-md z-20
                         transition-[opacity, transform] duration-300 ease-out origin-top
