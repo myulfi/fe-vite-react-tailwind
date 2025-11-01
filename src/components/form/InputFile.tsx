@@ -93,7 +93,7 @@ export default function InputFile({
                         : 'grid grid-cols-5 gap-1 p-2'
                     }
                     
-                    ${error ? "form-input-error" : "border-light-outline dark:border-dark-outline"}
+                    ${error ? "form-input-error" : "border-light-base-trinity dark:border-dark-base-trinity"}
                 `}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}

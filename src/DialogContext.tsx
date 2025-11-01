@@ -124,7 +124,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                         <span>{title}</span>
                     </div>
                     <button
-                        className="text-light-label dark:text-dark-label hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg cursor-pointer p-1 rounded"
+                        className="text-light-label dark:text-dark-label hover:text-light-contrast hover:dark:text-dark-contrast cursor-pointer p-1 rounded"
                         onClick={onClose}
                         aria-label="Open sidebar"
                     >

@@ -32,7 +32,7 @@ export default function CircularProgress({ progress, min = 0, max = 100 }: Circu
         <div className="relative w-40 h-40">
             <svg className="-rotate-90 w-full h-full" viewBox="0 0 120 120">
                 <circle
-                    className="text-light-outline dark:text-dark-outline"
+                    className="text-light-base-trinity dark:text-dark-base-trinity"
                     stroke="currentColor"
                     strokeWidth="10"
                     fill="transparent"

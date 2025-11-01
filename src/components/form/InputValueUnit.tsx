@@ -80,10 +80,10 @@ export function SelectValueUnit({
             <button
                 type='button'
                 className={`
-                    not-focus:border-light-outline not-focus:dark:border-dark-outline
+                    not-focus:border-light-base-trinity not-focus:dark:border-dark-base-trinity
                     w-full cursor-pointer
                     ${dropdownOpen
-                        ? `${position === 'left' ? 'rounded-tl-element' : 'rounded-tr-element'} px-3 py-2 text-sm text-light-label-secondary-fg dark:text-dark-label-secondary-fg placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover border-2 border-b-0 border-light-base-primary dark:border-dark-base-primary`
+                        ? `${position === 'left' ? 'rounded-tl-element' : 'rounded-tr-element'} px-3 py-2 text-sm text-light-contrast dark:text-dark-contrast placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover border-2 border-b-0 border-light-base-primary dark:border-dark-base-primary`
                         : `${position === 'left' ? 'rounded-l-element' : 'rounded-r-element'} form-input`
                     } 
                 `}
@@ -99,7 +99,7 @@ export function SelectValueUnit({
                 }
             >
                 <div className='flex justify-between items-center'>
-                    <span className={`${labelValue ? 'text-light-label-secondary-fg dark:text-dark-label-secondary-fg' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue}</span>
+                    <span className={`${labelValue ? 'text-light-contrast dark:text-dark-contrast' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue}</span>
                     <i className='fa-solid fa-chevron-down text-sm px-element'></i>
                 </div>
             </button>
@@ -108,7 +108,7 @@ export function SelectValueUnit({
                     absolute z-10 w-fit
                     text-light-base-primary dark:text-dark-base-primary
                     bg-light-layout-primary dark:bg-dark-layout-primary
-                    border-t-1 border-t-light-outline
+                    border-t-1 border-t-light-base-trinity
                     border-2
                     border-light-base-primary dark:border-dark-base-primary
                     rounded-b-element shadow-lg

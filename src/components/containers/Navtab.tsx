@@ -27,7 +27,7 @@ const Navtab: React.FC<TabsProps> = ({ tabs, initialActiveTab = 0 }) => {
                                 cursor-pointer
                                 ${activeTab === index
                                     ? 'text-light-base-primary dark:text-dark-base-primary border-light-base-primary dark:border-dark-base-primary'
-                                    : 'text-light-label-secondary-fg dark:text-dark-label-secondary-fg border-transparent hover:text-light-base-primary hover:dark:text-dark-base-primary hover:border-light-base-primary hover:dark:border-dark-base-primary'
+                                    : 'text-light-contrast dark:text-dark-contrast border-transparent hover:text-light-base-primary hover:dark:text-dark-base-primary hover:border-light-base-primary hover:dark:border-dark-base-primary'
                                 }
                         `}
                             onClick={() => setActiveTab(index)}

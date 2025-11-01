@@ -33,7 +33,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
 
     return (
         <div className="relative">
-            <div className="relative text-light-label-secondary-fg dark:text-dark-label-secondary-fg">
+            <div className="relative text-light-contrast dark:text-dark-contrast">
                 {level > 0 && (
                     <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 bg-light-layout-primary dark:bg-dark-layout-primary rounded-full'></span>
                 )}
