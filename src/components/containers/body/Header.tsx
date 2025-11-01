@@ -85,7 +85,7 @@ export default function Header({
                 >
                     <i className='fa-solid fa-bars text-2xl' />
                 </button>
-                {/* <h1 className="text-light-base-line dark:text-dark-base-line text-2xl font-semibold max-sm:hidden">Dashboard Content</h1> */}
+                {/* <h1 className="text-light-label-fg dark:text-dark-label-fg text-2xl font-semibold max-sm:hidden">Dashboard Content</h1> */}
             </div>
 
             <div className='mx-additional'>

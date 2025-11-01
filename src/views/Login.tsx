@@ -107,7 +107,7 @@ export default function Login() {
             >
                 {/* {import.meta.env.VITE_APP_TITLE} */}
             </div >
-            <div className="bg-light-clear dark:bg-dark-clear text-light-base-line dark:text-dark-base-line w-[360px] max-sm:w-screen flex flex-col items-center justify-center">
+            <div className="bg-light-base-bg dark:bg-dark-base-bg text-light-label-fg dark:text-dark-label-fg w-[360px] max-sm:w-screen flex flex-col items-center justify-center">
                 <h2 className="text-2xl font-bold tracking-tight">{import.meta.env.VITE_APP_TITLE}</h2>
                 <div className="px-10 w-full">
                     <form className="mt-10 flex flex-col gap-4">

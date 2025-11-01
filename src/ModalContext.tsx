@@ -164,7 +164,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
         <div
             className={`
                 fixed inset-0
-                bg-light-base-line/50 dark:bg-dark-base-line/50
+                bg-light-label-fg/50 dark:bg-dark-label-fg/50
                 overflow-y-auto 
                 ${show ? 'animate-fade-in-overlay' : 'animate-fade-out-overlay'}`
             }
@@ -199,7 +199,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
                             <span>{title}</span>
                         </div>
                         <button
-                            className='text-light-base-line dark:text-dark-base-line hover:text-light-base-line-secondary hover:dark:text-dark-base-line-secondary cursor-pointer p-1 rounded'
+                            className='text-light-label-fg dark:text-dark-label-fg hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg cursor-pointer p-1 rounded'
                             onClick={onClose}
                             aria-label='Open sidebar'
                         >
@@ -209,7 +209,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
                     <div className={
                         `py-container
                         ${background === 'primary'
-                            ? 'color-main border-y-1 border-light-divider dark:border-dark-divider'
+                            ? 'color-main border-y-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg'
                             : 'p-modal color-main-secondary'
                         }
                     `}>

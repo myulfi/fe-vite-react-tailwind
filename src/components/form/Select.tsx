@@ -148,7 +148,7 @@ export default function Select({
                     }
                 >
                     <div className="flex justify-between items-center">
-                        <span className={`${labelValue ? 'text-light-base-line dark:text-dark-base-line' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { "name": label })}</span>
+                        <span className={`${labelValue ? 'text-light-label-fg dark:text-dark-label-fg' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { "name": label })}</span>
                         <i className="fa-solid fa-chevron-down text-sm"></i>
                     </div>
                 </button>
@@ -156,8 +156,8 @@ export default function Select({
                 <div
                     className={`
                         absolute z-10 w-full
-                        bg-light-clear dark:bg-dark-clear
-                        text-light-base-line dark:text-dark-base-line
+                        bg-light-base-bg dark:bg-dark-base-bg
+                        text-light-label-fg dark:text-dark-label-fg
                         border border-t-0 border-light-outline dark:border-dark-outline
                         rounded-b-md shadow-lg
                         transition-[opacity, transform] duration-400 ease-out origin-top
@@ -205,7 +205,7 @@ export default function Select({
                                         onSelect(item.key);
                                     }
                                 }}
-                                className="px-6 py-2 hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer flex justify-between items-center"
+                                className="px-6 py-2 hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg cursor-pointer flex justify-between items-center"
                             >
                                 <span>{item.value}</span>
                                 {isSelected(item.key) && (

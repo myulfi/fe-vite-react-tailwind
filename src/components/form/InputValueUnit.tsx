@@ -69,7 +69,7 @@ export function LabelValueUnit({
                 px-3 text-sm
                 border border-light-base-fg dark:border-dark-base-fg
                 text-light-base-fg dark:text-dark-base-fg
-                bg-light-clear dark:bg-dark-clear
+                bg-light-base-bg dark:bg-dark-base-bg
             `}>
             {value}
         </span>

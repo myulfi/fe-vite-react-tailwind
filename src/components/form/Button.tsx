@@ -25,43 +25,12 @@ const sizeClasses = {
 };
 
 const typeClasses = {
-    primary: `
-        bg-light-base-fg dark:bg-dark-primary-base
-        hover:bg-light-primary-base-hover hover:dark:bg-dark-primary-base/60
-        border-2 border-light-base-fg dark:border-dark-primary-base
-        hover:border-dark-primary-base hover:dark:border-dark-primary-base-hover
-        text-light-primary-base-line dark:text-dark-primary-base-line`,
-    success: `
-        bg-light-success-base dark:bg-dark-success-base
-        hover:bg-light-success-base-hover hover:dark:bg-dark-success-base/60
-        border-2 border-light-success-base dark:border-dark-success-base
-        hover:border-dark-success-base hover:dark:border-dark-success-base-hover
-        text-light-success-base-line dark:text-dark-success-base-line`,
-    danger: `
-        bg-light-danger-base dark:bg-dark-danger-base
-        hover:bg-light-danger-base-hover hover:dark:bg-dark-danger-base/60
-        border-2 border-light-danger-base dark:border-dark-danger-base
-        hover:border-dark-danger-base hover:dark:border-dark-danger-base-hover
-        text-light-danger-base-line dark:text-dark-danger-base-line`,
-    warning: `
-        bg-light-warning-base dark:bg-dark-warning-base
-        hover:bg-light-warning-base-hover hover:dark:bg-dark-warning-base/60
-        border-2 border-light-warning-base dark:border-dark-warning-base
-        hover:border-dark-warning-base hover:dark:border-dark-warning-base-hover
-        text-light-warning-base-line dark:text-dark-warning-base-line`,
-    secondary: `
-        bg-light-secondary-base dark:bg-dark-secondary-base
-        hover:bg-light-secondary-base-hover hover:dark:bg-dark-secondary-base/60
-        border-2 border-light-secondary-base dark:border-dark-secondary-base
-        hover:bg-light-secondary-base-hover hover:dark:border-dark-secondary-base-hover
-        text-light-secondary-base-line dark:text-dark-secondary-base-line`,
-    // default: `
-    //     bg-light-default-base dark:bg-dark-default-base
-    //     hover:bg-light-default-base-hover hover:dark:bg-dark-default-base
-    //     border-1 border-light-default-base-outline dark:border-dark-default-base-outline
-    //     hover:bg-light-default-base-hover hover:dark:border-dark-default-base-hover
-    //     text-light-default-base-line dark:text-dark-default-base-line
-    // `,
+    primary: 'button-primary',
+    success: 'button-success',
+    danger: 'button-danger',
+    warning: 'button-warning',
+    secondary: 'button-secondary'
+    // default: 'button-default'
 };
 
 export default function Button({
@@ -110,9 +79,9 @@ export default function Button({
                 <div
                     className={`
                         absolute w-48 right-0
-                        bg-light-clear dark:bg-dark-clear
+                        bg-light-base-bg dark:bg-dark-base-bg
                         text-light-base-fg dark:text-dark-base-fg
-                        border border-t-0 border-light-divider dark:border-dark-divider
+                        border border-t-0 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
                         rounded-tl-md rounded-b-md shadow-md z-20
                         transition-[opacity, transform] duration-300 ease-out origin-top
                         ${menuOpenFlag ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible pointer-events-none"}
@@ -121,7 +90,7 @@ export default function Button({
                     {menuArray.map((menu, index) => (
                         <button
                             key={index}
-                            className="w-full text-left px-4 py-2 hover:bg-light-clear-secondary hover:dark:bg-dark-clear-secondary cursor-pointer first:rounded-tl-md last:rounded-b-md flex items-center gap-2"
+                            className="w-full text-left px-4 py-2 hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg cursor-pointer first:rounded-tl-md last:rounded-b-md flex items-center gap-2"
                             onClick={() => {
                                 menu.onClick();
                                 if (menu.autoCloseMenu) {

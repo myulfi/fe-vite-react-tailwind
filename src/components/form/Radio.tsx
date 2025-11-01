@@ -105,11 +105,9 @@ function Radio<T extends string | number>({
                             htmlFor={`${name}_${object.key}`}
                             className={`
                                 block w-full text-center border
-                                rounded px-2 py-2 cursor-pointer
+                                rounded px-2 py-2
                                 ${'sm' === size ? 'text-sm' : ''}
-                                border-light-primary-base-hover dark:border-dark-primary-base-hover
-                                peer-checked:text-light-primary-base-line dark:peer-checked:text-dark-primary-base-line
-                                peer-checked:bg-light-base-fg dark:peer-checked:bg-dark-primary-base
+                                ${value !== object.key ? 'radio-inactive' : 'radio-active'}
                             `}
                         >
                             <i className={`${object.icon} ${'sm' === size ? 'mr-1' : ''}`} />
