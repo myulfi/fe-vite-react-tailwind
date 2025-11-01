@@ -99,7 +99,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
         <div className={`
             flex items-center justify-center z-dialog
             fixed inset-0
-            bg-light-label-fg/50 dark:bg-dark-label-fg/50
+            bg-light-label/50 dark:bg-dark-label/50
             overflow-y-auto
             p-container
             ${isClosing
@@ -124,7 +124,7 @@ function ConfirmDialog({ type, message, onConfirm, onClose }: ConfirmDialogProps
                         <span>{title}</span>
                     </div>
                     <button
-                        className="text-light-label-fg dark:text-dark-label-fg hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg cursor-pointer p-1 rounded"
+                        className="text-light-label dark:text-dark-label hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg cursor-pointer p-1 rounded"
                         onClick={onClose}
                         aria-label="Open sidebar"
                     >

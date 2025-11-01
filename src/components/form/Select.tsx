@@ -126,13 +126,17 @@ export default function Select({
     return (
         <div>
             <InputLabel label={label} />
-            <div className={`relative shadow-sm ${dropdownOpen ? 'rounded-t-md' : 'rounded-md'}`} ref={dropdownRef}>
+            <div className={`relative shadow-sm ${dropdownOpen ? 'rounded-t-element' : 'rounded-element'}`} ref={dropdownRef}>
                 <button
-                    type="button"
-                    className={
-                        `form-input w-full ${dropdownOpen ? "rounded-t border-x border-t" : 'rounded border'} 
-                        cursor-pointer
-                        ${error ? 'form-input-error' : 'form-input-normal'}
+                    type='button'
+                    className={`
+                        not-focus:border-light-outline not-focus:dark:border-dark-outline
+                        ${error ? 'form-input-error' : ''}
+                        w-full cursor-pointer
+                        ${dropdownOpen
+                            ? 'rounded-t-element px-3 py-2 text-sm text-light-label-secondary-fg dark:text-dark-label-secondary-fg placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover border-2 border-b-0 border-light-base-primary dark:border-dark-base-primary'
+                            : 'rounded-element form-input'
+                        } 
                     `}
                     onClick={() => {
                         setDropdownOpen(!dropdownOpen);
@@ -147,24 +151,26 @@ export default function Select({
                         }
                     }
                 >
-                    <div className="flex justify-between items-center">
-                        <span className={`${labelValue ? 'text-light-label-fg dark:text-dark-label-fg' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { "name": label })}</span>
-                        <i className="fa-solid fa-chevron-down text-sm"></i>
+                    <div className='flex justify-between items-center'>
+                        <span className={`${labelValue ? 'text-light-label-secondary-fg dark:text-dark-label-secondary-fg' : 'text-light-secondary-base dark:text-dark-secondary-base-hover'}`}>{labelValue ?? t("text.selectName", { "name": label })}</span>
+                        <i className='fa-solid fa-chevron-down text-sm'></i>
                     </div>
                 </button>
 
                 <div
                     className={`
                         absolute z-10 w-full
-                        bg-light-base-bg dark:bg-dark-base-bg
-                        text-light-label-fg dark:text-dark-label-fg
-                        border border-t-0 border-light-outline dark:border-dark-outline
-                        rounded-b-md shadow-lg
+                        text-light-base-primary dark:text-dark-base-primary
+                        bg-light-layout-primary dark:bg-dark-layout-primary
+                        border-t-1 border-t-light-outline
+                        border-2
+                        border-light-base-primary dark:border-dark-base-primary
+                        rounded-b-element shadow-lg
                         transition-[opacity, transform] duration-400 ease-out origin-top
                         ${dropdownOpen ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible pointer-events-none"}
                     `}>
                     {map.length > dataSize && (
-                        <div className="p-2">
+                        <div className="p-element">
                             <InputText
                                 name=""
                                 autoFocus={autoFocus}
@@ -205,7 +211,7 @@ export default function Select({
                                         onSelect(item.key);
                                     }
                                 }}
-                                className="px-6 py-2 hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg cursor-pointer flex justify-between items-center"
+                                className="px-6 py-2 hover:bg-light-layout-secondary hover:dark:bg-dark-layout-secondary cursor-pointer flex justify-between items-center"
                             >
                                 <span>{item.value}</span>
                                 {isSelected(item.key) && (

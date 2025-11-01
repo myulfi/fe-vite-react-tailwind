@@ -72,11 +72,11 @@ function Radio<T extends string | number>({
             className={`${decode(
                 columnSpan,
                 2,
-                "md:col-span-2",
+                "tablet:col-span-2",
                 3,
-                "md:col-span-3",
+                "tablet:col-span-3",
                 4,
-                "md:col-span-4"
+                "tablet:col-span-4"
             )}`}
         >
             <InputLabel label={label} />

@@ -3,7 +3,6 @@ import { useClickOutside } from "../../hook/useClickOutside";
 
 interface ButtonProps {
     label?: string;
-    className?: string;
     size?: 'xs' | 'sm' | 'md' | 'lg';
     type: 'primary' | 'success' | 'danger' | 'warning' | 'secondary';
     icon?: string;
@@ -35,7 +34,6 @@ const typeClasses = {
 
 export default function Button({
     label,
-    className,
     size = 'sm',
     type,
     icon = '',
@@ -59,7 +57,7 @@ export default function Button({
                     ${menuOpenFlag ? 'rounded-b-none' : 'rounded-b-container'}
                     shadow border-0 disabled:opacity-60 w-auto
                     ${loadingFlag ? "cursor-not-allowed" : "cursor-pointer"}
-                    ${sizeClasses[size]} ${typeClasses[type]} ${className}
+                    ${sizeClasses[size]} ${typeClasses[type]}
                 `}
                 disabled={loadingFlag}
                 onClick={(e) => menuArray.length > 0 ? setMenuOpenFlag((prev) => !prev) : onClick?.(e)}
@@ -79,9 +77,9 @@ export default function Button({
                 <div
                     className={`
                         absolute w-48 right-0
-                        bg-light-base-bg dark:bg-dark-base-bg
-                        text-light-base-fg dark:text-dark-base-fg
-                        border border-t-0 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+                        bg-light-layout-primary dark:bg-dark-layout-primary
+                        text-light-base-primary dark:text-dark-base-primary
+                        border border-t-0 border-light-layout-trinity dark:border-dark-layout-trinity
                         rounded-tl-md rounded-b-md shadow-md z-20
                         transition-[opacity, transform] duration-300 ease-out origin-top
                         ${menuOpenFlag ? "scale-y-100 opacity-100 visible" : "scale-y-0 opacity-0 invisible pointer-events-none"}
@@ -90,7 +88,7 @@ export default function Button({
                     {menuArray.map((menu, index) => (
                         <button
                             key={index}
-                            className="w-full text-left px-4 py-2 hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg cursor-pointer first:rounded-tl-md last:rounded-b-md flex items-center gap-2"
+                            className="w-full text-left px-4 py-2 hover:bg-light-layout-secondary hover:dark:bg-dark-layout-secondary cursor-pointer first:rounded-tl-md last:rounded-b-md flex items-center gap-2"
                             onClick={() => {
                                 menu.onClick();
                                 if (menu.autoCloseMenu) {

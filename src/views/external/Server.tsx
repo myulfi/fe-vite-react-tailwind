@@ -1121,7 +1121,6 @@ export default function Server() {
                             {
                                 data: "name",
                                 name: t("text.name"),
-                                class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'mobile',
                                 render: (data, row) => {
@@ -1171,7 +1170,6 @@ export default function Server() {
                             {
                                 data: "size",
                                 name: t("text.size"),
-                                class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'mobile',
                                 render: (data, row) => {
@@ -1185,7 +1183,6 @@ export default function Server() {
                             {
                                 data: "modified_date",
                                 name: t("text.modifiedDate"),
-                                class: "text-nowrap",
                                 orderable: true,
                                 minDevice: 'tablet',
                                 render: (data, row) => {
@@ -1199,7 +1196,6 @@ export default function Server() {
                             {
                                 data: "status",
                                 name: t("text.status"),
-                                class: "text-nowrap",
                                 minDevice: 'tablet',
                                 render: (data, row) => {
                                     if (row.goToParentFlag) {
@@ -1302,27 +1298,23 @@ export default function Server() {
                     {
                         data: "code",
                         name: t("text.code"),
-                        class: "text-nowrap",
                         orderable: true,
                         minDevice: 'mobile',
                     },
                     {
                         data: "ip",
                         name: "IP",
-                        class: "wrap text-nowrap",
                         minDevice: 'tablet',
                     },
                     {
                         data: "port",
                         name: t("text.port"),
-                        class: "text-nowrap",
                         width: 10,
                         minDevice: 'tablet',
                     },
                     {
                         data: "createdDate",
                         name: t("text.createdDate"),
-                        class: "text-nowrap",
                         width: 15,
                         orderable: true,
                         minDevice: "desktop",
@@ -1333,13 +1325,12 @@ export default function Server() {
                     {
                         data: "id",
                         name: t("text.option"),
-                        class: "text-nowrap",
+                        position: 'center',
                         render: function (data, row) {
                             return (
-                                <div className="flex justify-center max-sm:flex-col gap-4">
+                                <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                     <Button
                                         label={t("text.view")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewServer(data)}
@@ -1347,7 +1338,6 @@ export default function Server() {
                                     />
                                     <Button
                                         label={t("text.connect")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-plug"
                                         onClick={() => connectServer(data, row.code)}
@@ -1355,7 +1345,6 @@ export default function Server() {
                                     />
                                     <Button
                                         label={t("text.delete")}
-                                        className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteServer(data, row.name)}

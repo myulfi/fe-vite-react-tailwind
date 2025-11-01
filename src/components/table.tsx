@@ -312,7 +312,6 @@ export default function Table({
                                     <Button
                                         key={index}
                                         label={additionalButton.label}
-                                        className={additionalButton.className}
                                         size='md'
                                         type={additionalButton.type}
                                         icon={additionalButton.icon}
@@ -505,7 +504,7 @@ export default function Table({
                                                                     grid grid-cols-[auto_1fr]
                                                                     ml-[28px]
                                                                     ${checkBoxArray !== undefined && data.id !== undefined ? 'ml-[28px]' : ''} 
-                                                                    border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+                                                                    border-l border-light-layout-trinity dark:border-dark-layout-trinity
                                                                 `}
                                                         >
                                                             {
@@ -521,7 +520,7 @@ export default function Table({
                                                                                                 w-2 h-2 rounded-full
                                                                                                 -translate-x-1
                                                                                                 translate-y-4
-                                                                                                bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
+                                                                                                bg-light-layout-trinity dark:bg-dark-layout-trinity
                                                                                             `}
                                                                                         />
                                                                                     </div>

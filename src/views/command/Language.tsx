@@ -368,7 +368,7 @@ export default function Language() {
     const [modalLanguage, setModalLanguage] = useState(false);
 
     return (
-        <div className="bg-light-base-bg dark:bg-dark-base-bg m-5 p-5 pb-0 rounded-lg shadow-lg">
+        <div className="bg-light-layout-primary dark:bg-dark-layout-primary m-5 p-5 pb-0 rounded-lg shadow-lg">
             <ModalStackProvider>
                 <Modal
                     show={modalLanguage}
@@ -512,13 +512,11 @@ export default function Language() {
                     {
                         data: "id",
                         name: t("text.option"),
-                        class: "text-nowrap",
                         render: function (data, row) {
                             return (
-                                <div className="flex justify-center max-sm:flex-col gap-4">
+                                <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                     <Button
                                         label={t("text.view")}
-                                        className="max-sm:w-full"
                                         type='primary'
                                         icon="fa-solid fa-list"
                                         onClick={() => viewLanguage(data)}
@@ -526,7 +524,6 @@ export default function Language() {
                                     />
                                     <Button
                                         label={t("text.delete")}
-                                        className="max-sm:w-full"
                                         type='danger'
                                         icon="fa-solid fa-trash"
                                         onClick={() => confirmDeleteLanguage(data, row.name)}

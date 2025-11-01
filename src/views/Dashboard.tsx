@@ -8,10 +8,9 @@ export default function Dashboard() {
 
     useEffect(() => {
         const checkDevice = () => {
-            const tablet = window.innerWidth < 769;
-            const laptop = window.innerWidth < 1024;
+            const tablet = window.innerWidth < 1024;
             setTabletFlag(tablet);
-            setSidebarOpenFlag(!laptop);
+            setSidebarOpenFlag(!tablet);
         }
 
         checkDevice();

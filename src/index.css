@@ -2,13 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --breakpoint-sm: 321px;
-    --breakpoint-md: 769px;
-    --breakpoint-lg: 1025px;
-    --breakpoint-xl: 1441px;
-    --breakpoint-2xl: 1601px;
-
-    /* --breakpoint-*: initial; */
+    --breakpoint-*: initial;
     --breakpoint-tablet: 426px;
     --breakpoint-desktop: 1024px;
     --breakpoint-tv: 1441px;
@@ -18,6 +12,7 @@
     --spacing-container: 20px;
     --spacing-modal: 24px;
     --spacing-dialog: 320px;
+    --spacing-login: 360px;
     --spacing-sidebar: 256px;
 
     --radius-element: 12px;
@@ -37,29 +32,30 @@
     /* https://dribbble.com/shots/25967158-Prop-Firms-Tech-Dashboard-Website-UI-UX-AdTrend */
 
     /* Color Main Light Start*/
-    --color-light-base-fg: #0090E7;
-    --color-light-base-secondary-fg: #26A1EB;
-    --color-light-base-bg: #F9FAFB;
-    --color-light-base-secondary-bg: #E2E8F0;
-    --color-light-base-trinity-bg: #DEE2E6;
+    --color-light-base-primary: #0090E7;
+    --color-light-base-secondary: #26A1EB;
+    --color-light-layout-primary: #F9FAFB;
+    --color-light-layout-secondary: #E2E8F0;
+    --color-light-layout-trinity: #DEE2E6;
 
-    --color-light-label-fg: #314158;
+    --color-light-label: #314158;
+    --color-light-outline: #D1D5DC;
+
     /* penting color-light-label-secondary-fg? */
     --color-light-label-secondary-fg: #314158;
-    --color-light-outline: #D1D5DC;
     /* Color Main Light End*/
 
     /* Color Main Dark Start*/
-    --color-dark-base-fg: #8F5FE8;
-    --color-dark-base-secondary-fg: #A077EB;
-    --color-dark-base-bg: #191C24;
-    --color-dark-base-secondary-bg: #0F1015;
-    --color-dark-base-trinity-bg: #2C2E33;
+    --color-dark-base-primary: #8F5FE8;
+    --color-dark-base-secondary: #A077EB;
+    --color-dark-layout-primary: #191C24;
+    --color-dark-layout-secondary: #0F1015;
+    --color-dark-layout-trinity: #2C2E33;
 
-    --color-dark-label-fg: #6C7293;
+    --color-dark-label: #6C7293;
+    --color-dark-outline: #311B92;
     /* penting color-dark-label-secondary-fg? */
     --color-dark-label-secondary-fg: #F8F8F9;
-    --color-dark-outline: #311B92;
     /* Color Main Dark End*/
 
     /* Color Light Start*/
@@ -211,63 +207,63 @@
 /*Toast End*/
 
 .color-main {
-    @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg
+    @apply text-light-base-primary dark:text-dark-base-primary bg-light-layout-primary dark:bg-dark-layout-primary
 }
 
 .color-main-link {
-    @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg hover:text-light-base-secondary-fg hover:dark:text-dark-base-secondary-fg
+    @apply text-light-base-primary dark:text-dark-base-primary bg-light-layout-primary dark:bg-dark-layout-primary hover:text-light-base-secondary hover:dark:text-dark-base-secondary
 }
 
 .color-main-secondary {
-    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-secondary-bg dark:bg-dark-base-secondary-bg
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-layout-secondary dark:bg-dark-layout-secondary
 }
 
 .color-container {
-    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-layout-primary dark:bg-dark-layout-primary
 }
 
 .border-container {
-    @apply border-light-base-bg dark:border-dark-base-bg
+    @apply border-light-layout-primary dark:border-dark-layout-primary
 }
 
 .color-dropdown {
-    @apply text-light-base-fg dark:text-dark-base-fg bg-light-base-bg dark:bg-dark-base-bg border border-t-0 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply text-light-base-primary dark:text-dark-base-primary bg-light-layout-primary dark:bg-dark-layout-primary border border-t-0 border-light-layout-trinity dark:border-dark-layout-trinity
 }
 
 .color-dropdown-item {
-    @apply hover:bg-light-base-fg hover:dark:bg-dark-base-fg hover:text-light-base-bg hover:dark:text-dark-base-bg
+    @apply hover:bg-light-base-primary hover:dark:bg-dark-base-primary hover:text-light-layout-primary hover:dark:text-dark-layout-primary
 }
 
 .color-divider {
-    @apply my-1 border-t border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply my-1 border-t border-light-layout-trinity dark:border-dark-layout-trinity
 }
 
 .color-table-header {
-    @apply text-light-label-fg dark:text-dark-label-fg border-b-4 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply text-light-label dark:text-dark-label border-b-4 border-light-layout-trinity dark:border-dark-layout-trinity
 }
 
 .color-table-row {
-    @apply border-t-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply border-t-1 border-light-layout-trinity dark:border-dark-layout-trinity
 }
 
 .color-table-hide-row {
-    @apply border-t-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+    @apply border-t-1 border-light-layout-trinity dark:border-dark-layout-trinity
 }
 
 .color-button-main {
-    @apply text-light-base-fg dark:text-dark-base-fg hover:text-light-base-secondary-fg dark:hover:text-dark-base-secondary-fg bg-light-outline dark:bg-dark-outline/30 border-light-outline dark:border-dark-outline/30 disabled:text-light-label-fg disabled:dark:text-dark-label-fg
+    @apply text-light-base-primary dark:text-dark-base-primary hover:text-light-base-secondary dark:hover:text-dark-base-secondary bg-light-outline dark:bg-dark-outline/30 border-light-outline dark:border-dark-outline/30 disabled:text-light-label disabled:dark:text-dark-label
 }
 
 .color-label {
-    @apply text-light-label-fg dark:text-dark-label-fg
+    @apply text-light-label dark:text-dark-label
 }
 
 .color-label-link {
-    @apply text-light-label-fg dark:text-dark-label-fg hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg
+    @apply text-light-label dark:text-dark-label hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg hover:bg-light-layout-secondary hover:dark:bg-dark-layout-secondary
 }
 
 .color-label-active-link {
-    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-secondary-bg dark:bg-dark-base-secondary-bg
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-layout-secondary dark:bg-dark-layout-secondary
 }
 
 .color-label-secondary {
@@ -296,7 +292,7 @@
 }
 
 .column-span-2 {
-    @apply col-span-1 md:col-span-2
+    @apply col-span-1 tablet:col-span-2
 }
 
 .container-row {
@@ -312,14 +308,13 @@
 }
 
 .container-card {
-    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-base-bg dark:bg-dark-base-bg p-container rounded-container shadow-lg
+    @apply text-light-label-secondary-fg dark:text-dark-label-secondary-fg bg-light-layout-primary dark:bg-dark-layout-primary p-container rounded-container shadow-lg
     /* @apply color-container p-container rounded-container shadow-lg */
 }
 
 /*Container End*/
-
 .form-input {
-    @apply border px-3 py-2 text-sm text-light-label-fg dark:text-dark-label-fg placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base-fg focus:dark:border-dark-base-fg focus:outline-none focus:ring-1 focus:ring-light-base-fg focus:dark:ring-dark-base-fg
+    @apply border px-3 py-2 text-sm text-light-label-secondary-fg dark:text-dark-label-secondary-fg placeholder-light-secondary-base dark:placeholder-dark-secondary-base-hover focus:border-light-base-primary focus:dark:border-dark-base-primary focus:outline-none focus:ring-1 focus:ring-light-base-primary focus:dark:ring-dark-base-primary
 }
 
 .form-input-normal {
@@ -331,7 +326,7 @@
 }
 
 .row-hidden-bullet {
-    @apply absolute -translate-x-3 translate-y-2 w-2 h-2 bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg rounded-full
+    @apply absolute -translate-x-3 translate-y-2 w-2 h-2 bg-light-layout-trinity dark:bg-dark-layout-trinity rounded-full
 }
 
 .animate-fade-in-delay-1 {

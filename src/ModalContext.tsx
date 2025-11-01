@@ -74,8 +74,7 @@ type ModalProps = {
 
 const sizeClasses = {
     sm: 'w-[320px]',
-    md: 'w-[640px]',
-    // md: 'w-[768px]',
+    md: 'w-[768px]',
     lg: 'w-[1024px]',
     xl: 'w-full',
 };
@@ -164,7 +163,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
         <div
             className={`
                 fixed inset-0
-                bg-light-label-fg/50 dark:bg-dark-label-fg/50
+                bg-light-label/50 dark:bg-dark-label/50
                 overflow-y-auto 
                 ${show ? 'animate-fade-in-overlay' : 'animate-fade-out-overlay'}`
             }
@@ -199,7 +198,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
                             <span>{title}</span>
                         </div>
                         <button
-                            className='text-light-label-fg dark:text-dark-label-fg hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg cursor-pointer p-1 rounded'
+                            className='text-light-label dark:text-dark-label hover:text-light-label-secondary-fg hover:dark:text-dark-label-secondary-fg cursor-pointer p-1 rounded'
                             onClick={onClose}
                             aria-label='Open sidebar'
                         >
@@ -209,7 +208,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
                     <div className={
                         `py-container
                         ${background === 'primary'
-                            ? 'color-main border-y-1 border-light-base-trinity-bg dark:border-dark-base-trinity-bg'
+                            ? 'color-main border-y-1 border-light-layout-trinity dark:border-dark-layout-trinity'
                             : 'p-modal color-main-secondary'
                         }
                     `}>
@@ -219,7 +218,7 @@ export function Modal({ show, size = 'xl', type = 'static', background = 'primar
                         {
                             loadingFlag &&
                             <div className={`
-                                text-light-base-fg dark:text-dark-base-fg
+                                text-light-base-primary dark:text-dark-base-primary
                                 absolute top-1/2 left-1/2
                                 transform -translate-x-1/2 -translate-y-1/2
                                 fa-solid fa-spinner fa-spin text-9xl

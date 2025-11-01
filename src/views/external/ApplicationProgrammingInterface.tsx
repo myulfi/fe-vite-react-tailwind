@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import Button from "../../components/form/Button";
 import { Fragment, useState } from "react";
-import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type OptionColumn, type TableOptions } from "../../constants/common-constants";
+import { HTTP_CODE, type ButtonArray, type ModalCategory, type ModalType, type TableOptions } from "../../constants/common-constants";
 import { apiRequest } from "../../api";
 import { formatDate } from "../../function/dateHelper";
 import { Modal, ModalStackProvider } from "../../ModalContext";
@@ -9,13 +9,8 @@ import Label from "../../components/form/Label";
 import { toast } from "../../ToastContext";
 import InputText from "../../components/form/InputText";
 import TextArea from "../../components/form/TextArea";
-import InputDecimal from "../../components/form/InputDecimal";
-import InputDate from "../../components/form/InputDate";
-import Switch from "../../components/form/Switch";
-import Select from "../../components/form/Select";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
-import { formatMoney, yesNo } from "../../function/commonHelper";
 import { dialog } from "../../DialogContext";
 import MenuTree from "../../components/containers/MenuTree";
 
@@ -348,20 +343,17 @@ export default function ApplicationProgrammingInterface() {
                     {
                         data: "name",
                         name: t("text.name"),
-                        class: "text-nowrap",
                         orderable: true,
                         minDevice: 'mobile',
                     },
                     {
                         data: "description",
                         name: t("text.description"),
-                        class: "wrap text-nowrap",
                         minDevice: 'tablet',
                     },
                     {
                         data: "createdDate",
                         name: t("text.createdDate"),
-                        class: "text-nowrap",
                         width: 15,
                         orderable: true,
                         minDevice: "desktop",
@@ -372,10 +364,10 @@ export default function ApplicationProgrammingInterface() {
                     {
                         data: "id",
                         name: t("text.option"),
-                        class: "text-nowrap",
+                        position: 'center',
                         render: function (data, row) {
                             return (
-                                <div className="flex justify-center max-sm:flex-col gap-4">
+                                <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                     <Button
                                         label={t("text.view")}
                                         type='primary'

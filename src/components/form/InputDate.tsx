@@ -24,19 +24,21 @@ export default function InputDate({
     return (
         <div>
             <InputLabel label={label} />
-            <input
-                className={`
-                    form-input w-full rounded-md shadow-sm cursor-pointer
+            <div className="flex shadow-sm rounded-element">
+                <input
+                    className={`
+                    form-input w-full rounded-element shadow-sm cursor-pointer
                     ${disabled ? "bg-gray-100 text-gray-400" : "text-gray-900"}
                     ${error ? 'form-input-error' : 'form-input-normal'} 
                 `}
-                name={name}
-                type="date"
-                value={value}
-                disabled={disabled}
-                onChange={onChange}
-                placeholder={t("text.selectName", { name: label })}
-            />
+                    name={name}
+                    type="date"
+                    value={value}
+                    disabled={disabled}
+                    onChange={onChange}
+                    placeholder={t("text.selectName", { name: label })}
+                />
+            </div>
             <ErrorForm text={error} />
         </div>
     );

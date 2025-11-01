@@ -35,7 +35,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
         <div className="relative">
             <div className="relative text-light-label-secondary-fg dark:text-dark-label-secondary-fg">
                 {level > 0 && (
-                    <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 bg-light-base-bg dark:bg-dark-base-bg rounded-full'></span>
+                    <span className='absolute -left-5 top-1/2 -translate-y-1/2 w-2 h-2 bg-light-layout-primary dark:bg-dark-layout-primary rounded-full'></span>
                 )}
 
                 {!hasChildrenFlag ? (
@@ -45,10 +45,10 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                         onClick={onNavigate}
                         className={`
                             flex items-center w-full p-2
-                            hover:text-light-label-fg hover:dark:hover:text-dark-label-fg
-                            hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg
+                            hover:text-light-label hover:dark:hover:text-dark-label
+                            hover:bg-light-layout-secondary hover:dark:bg-dark-layout-secondary
                             cursor-pointer rounded-l-lg
-                            ${activeFlag ? 'text-light-label-fg dark:text-dark-label-fg bg-light-base-secondary-bg dark:bg-dark-base-secondary-bg font-semibold' : ''}`}
+                            ${activeFlag ? 'text-light-label dark:text-dark-label bg-light-layout-secondary dark:bg-dark-layout-secondary font-semibold' : ''}`}
                     >
                         {item.icon && <span className='mr-2'><i className={`${item.icon}`} /></span>}
                         <span className='mr-2'><i className={"fa-solid fa-file-lines"} /></span>
@@ -59,8 +59,8 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                         onClick={handleClick}
                         className={`
                             flex items-center w-full p-2 pl-2
-                            hover:text-light-label-fg hover:dark:hover:text-dark-label-fg
-                            hover:bg-light-base-secondary-bg hover:dark:bg-dark-base-secondary-bg
+                            hover:text-light-label hover:dark:hover:text-dark-label
+                            hover:bg-light-layout-secondary hover:dark:bg-dark-layout-secondary
                             cursor-pointer rounded-l-lg`
                         }
                     >
@@ -79,7 +79,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                 `}
             >
                 {(
-                    <div className="ml-4 pl-4 border-l border-light-base-bg dark:border-dark-base-bg">
+                    <div className="ml-4 pl-4 border-l border-light-layout-primary dark:border-dark-layout-primary">
                         {item.children!.map((c, i) => (
                             <SidebarItem key={i} item={c} level={level + 1} onNavigate={onNavigate} />
                         ))}
@@ -108,20 +108,20 @@ export default function MenuTree({ menuList = [] }) {
     }, []);
 
     return (
-        <div className="bg-light-base-bg dark:bg-dark-base-bg">
+        <div className="bg-light-layout-primary dark:bg-dark-layout-primary">
             <div
                 className={`
                 flex flex-col
                 fixed top-0 left-0 h-full
-                bg-light-base-bg dark:bg-dark-base-bg
-                text-light-label-fg dark:text-dark-label-fg
+                bg-light-layout-primary dark:bg-dark-layout-primary
+                text-light-label dark:text-dark-label
                 z-20 sm:w-[256px] max-sm:w-screen
                 transition-[translate] duration-500 ease-in-out
                 ${sidebarOpenFlag ? 'translate-x-0' : '-translate-x-full'}
             `}
             >
-                <div className='relative border-b border-light-base-bg dark:border-dark-base-bg pb-4 m-4 shrink-0'>
-                    {/* <span className='block text-center font-bold text-3xl text-light-base-fg dark:text-dark-base-fg'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span> */}
+                <div className='relative border-b border-light-layout-primary dark:border-dark-layout-primary pb-4 m-4 shrink-0'>
+                    {/* <span className='block text-center font-bold text-3xl text-light-base-primary dark:text-dark-base-primary'><i className='fa-solid fa-earth-asia mr-1' />EasyCrazy</span> */}
                     <button
                         onClick={() => setSidebarOpenFlag(false)}
                         className='absolute right-0 top-0 md:hidden cursor-pointer'
@@ -148,10 +148,10 @@ export default function MenuTree({ menuList = [] }) {
 
             <div className={`
                 flex flex-col flex-1 min-h-screen relative 
-                bg-light-base-secondary-bg dark:bg-dark-base-secondary-bg
+                bg-light-layout-secondary dark:bg-dark-layout-secondary
                 transition-[margin] duration-500 ease-out ${sidebarOpenFlag ? `max-sm:hidden md:ml-[256px] max-md:ml-0` : 'ml-0'}
             `}>
-                <main className={`text-light-label-fg dark:text-dark-label-fg z-0`}>
+                <main className={`text-light-label dark:text-dark-label z-0`}>
                     Ini Content
                 </main>
             </div>

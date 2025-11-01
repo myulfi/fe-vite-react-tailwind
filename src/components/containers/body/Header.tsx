@@ -85,7 +85,7 @@ export default function Header({
                 >
                     <i className='fa-solid fa-bars text-2xl' />
                 </button>
-                {/* <h1 className="text-light-label-fg dark:text-dark-label-fg text-2xl font-semibold max-sm:hidden">Dashboard Content</h1> */}
+                {/* <h1 className="text-light-label dark:text-dark-label text-2xl font-semibold hidden tablet:inline">Dashboard Content</h1> */}
             </div>
 
             <div className='mx-additional'>
@@ -103,7 +103,7 @@ export default function Header({
                     <span className='text-xs px-1'>{darkModeFlag ? '☀️' : ''}</span>
                     <div
                         className={`
-                            bg-light-base-bg w-element h-element rounded-full shadow-md
+                            bg-light-layout-primary w-element h-element rounded-full shadow-md
                             transform transition-[translate] duration-300
                             ${darkModeFlag ? 'translate-x-1' : 'translate-x-0'}
                         `}

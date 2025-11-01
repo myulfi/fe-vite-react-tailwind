@@ -87,9 +87,9 @@ export default function Login() {
     }
 
     return (
-        <div className="h-screen flex justify-between">
+        <div className="h-screen flex flex-row">
             <div
-                className="flex-1 max-sm:hidden flex items-center justify-center"
+                className="flex-1 hidden tablet:inline"
                 style={{
                     inset: 0,
                     // top: 62,
@@ -107,10 +107,10 @@ export default function Login() {
             >
                 {/* {import.meta.env.VITE_APP_TITLE} */}
             </div >
-            <div className="bg-light-base-bg dark:bg-dark-base-bg text-light-label-fg dark:text-dark-label-fg w-[360px] max-sm:w-screen flex flex-col items-center justify-center">
+            <div className="bg-light-layout-primary dark:bg-dark-layout-primary text-light-label dark:text-dark-label w-screen tablet:w-login flex flex-col items-center justify-center">
                 <h2 className="text-2xl font-bold tracking-tight">{import.meta.env.VITE_APP_TITLE}</h2>
                 <div className="px-10 w-full">
-                    <form className="mt-10 flex flex-col gap-4">
+                    <form className="mt-10 flex flex-col gap-element">
                         <InputText name="username" label={t("text.username")} value={loginForm.username} onChange={onLoginFormChange} />
                         <InputPassword name="password" label={t("text.password")} value={loginForm.password} onChange={onLoginFormChange} />
                         <Button label={t("text.login")} type="primary" icon="fa-solid fa-right-to-bracket" onClick={(e: React.MouseEvent<HTMLButtonElement>) => doLogin(e)} loadingFlag={loginLoadingFlag} />

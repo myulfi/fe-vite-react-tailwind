@@ -446,7 +446,7 @@ export default function Database() {
     type DatabaseQueryManualFormError = Partial<Record<keyof DatabaseQueryManualData, string>>;
 
     const [databaseQueryManualDataTotalTable, setDatabaseQueryManualDataTotalTable] = useState(0);
-    const [databaseQueryManualDataLoadMoreFlag, setDatabaseQueryManualDataLoadMoreFlag] = useState(false);
+    const [databaseQueryManualDataLoadMoreFlag, setDatabaseQueryManualDataLoadMoreFlag] = useState<number>(0);
     const [databaseQueryManualTableLoadingFlag, setDatabaseQueryManualTableLoadingFlag] = useState(false);
     const [databaseQueryManualRefresh, setDatabaseQueryManualRefresh] = useState(false);
     const [databaseQueryManualLoadingFlag, setDatabaseQueryManualLoadingFlag] = useState(false);
@@ -1153,7 +1153,7 @@ export default function Database() {
                 scales: {
                     r: {
                         pointLabels: {
-                            callback: function (value, index) {
+                            callback: function (value) {
                                 return value
                             }
                         },
@@ -1255,33 +1255,28 @@ export default function Database() {
                                         {
                                             data: "object_id",
                                             name: "id",
-                                            class: "text-nowrap",
                                             orderable: true,
                                             minDevice: 'mobile',
                                         },
                                         {
                                             data: "object_name",
                                             name: t("text.name"),
-                                            class: "text-nowrap",
                                             copy: true,
                                             minDevice: 'tablet',
                                         },
                                         {
                                             data: "object_type",
                                             name: t("text.type"),
-                                            class: "text-nowrap",
                                             minDevice: 'tablet',
                                         },
                                         {
                                             data: "object_name",
                                             name: t("text.option"),
-                                            class: "text-nowrap",
                                             render: function (data) {
                                                 return (
-                                                    <div className="flex justify-center max-sm:flex-col gap-4">
+                                                    <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                                         <Button
                                                             label={t("text.data")}
-                                                            className="max-sm:w-full"
                                                             type='primary'
                                                             icon="fa-solid fa-list"
                                                             onClick={() => runDatabaseQueryExact(data)}
@@ -1378,26 +1373,22 @@ export default function Database() {
                                             {
                                                 data: "description",
                                                 name: t("text.description"),
-                                                class: "text-nowrap",
                                                 minDevice: 'mobile',
                                             },
                                             {
                                                 data: "query",
                                                 name: t("text.query"),
-                                                class: "text-nowrap",
                                                 copy: true,
                                                 minDevice: 'tablet',
                                             },
                                             {
                                                 data: "id",
                                                 name: t("text.option"),
-                                                class: "text-nowrap",
                                                 render: function (data) {
                                                     return (
-                                                        <div className="flex justify-center max-sm:flex-col gap-4">
+                                                        <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                                             <Button
                                                                 label={t("text.data")}
-                                                                className="max-sm:w-full"
                                                                 type='primary'
                                                                 icon="fa-solid fa-list"
                                                                 onClick={() => runDatabaseQueryExact(data)}
@@ -1571,20 +1562,17 @@ export default function Database() {
                     {
                         data: "code",
                         name: t("text.code"),
-                        class: "text-nowrap",
                         orderable: true,
                         minDevice: 'mobile',
                     },
                     {
                         data: "description",
                         name: t("text.description"),
-                        class: "wrap text-nowrap",
                         minDevice: 'none',
                     },
                     {
                         data: "externalServerId",
                         name: "SSH",
-                        class: "text-nowrap",
                         width: 10,
                         minDevice: 'tablet',
                         render: function (data) {
@@ -1594,7 +1582,6 @@ export default function Database() {
                     {
                         data: "ip",
                         name: "IP",
-                        class: "text-nowrap",
                         width: 10,
                         minDevice: "desktop",
                         render: function (data, row) {
@@ -1604,7 +1591,6 @@ export default function Database() {
                     {
                         data: "createdDate",
                         name: t("text.createdDate"),
-                        class: "text-nowrap",
                         width: 15,
                         orderable: true,
                         minDevice: "desktop",
@@ -1615,10 +1601,10 @@ export default function Database() {
                     {
                         data: "id",
                         name: t("text.option"),
-                        class: "text-nowrap",
+                        position: 'center',
                         render: function (data, row) {
                             return (
-                                <div className="flex justify-center max-sm:flex-col gap-4">
+                                <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                     <Button
                                         label={t("text.view")}
                                         type='primary'

@@ -50,7 +50,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                                 relative inline-block
                                 translate-y-2 -translate-x-1
                                 w-2 h-2 mr-1 rounded-full
-                                bg-light-base-trinity-bg dark:bg-dark-base-trinity-bg
+                                bg-light-layout-trinity dark:bg-dark-layout-trinity
                             `}
                         ></span>
                     </div>
@@ -107,7 +107,7 @@ const SidebarItem: React.FC<{ item: MenuItem; level?: number; onNavigate?: () =>
                         className={`
                             relative
                             ${level === 1 ? 'ml-7' : 'ml-element'}
-                            border-l border-light-base-trinity-bg dark:border-dark-base-trinity-bg
+                            border-l border-light-layout-trinity dark:border-dark-layout-trinity
                         `}
                     >
                         {item.children!.map((c, i) => (

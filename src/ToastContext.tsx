@@ -46,7 +46,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return (
         <Fragment>
             {children}
-            <div className="fixed top-4 sm:right-4 space-y-2 w-screen px-4 md:w-72 md:px-0" style={{ zIndex: 6000 }}>
+            <div className="fixed top-element right-0 tablet:right-element space-y-2 w-screen px-4 tablet:w-72 tablet:px-0" style={{ zIndex: 6000 }}>
                 {toasts.map((toast) => (
                     <div
                         key={toast.id}

@@ -378,7 +378,7 @@ export default function ExampleTemplate() {
                                     name="amount"
                                     value={exampleTemplateForm.amount}
                                     decimal={2}
-                                    positionUnit="left"
+                                    positionUnit="right"
                                     // valueUnit={"Kuda"}
                                     valueUnitList={selectValueMap}
                                     onChange={onExampleTemplateFormChange}
@@ -489,7 +489,7 @@ export default function ExampleTemplate() {
                         position: 'center',
                         render: function (data, row) {
                             return (
-                                <div className="flex justify-center flex-col tablet:flex-row gap-4">
+                                <div className="flex flex-col tablet:flex-row justify-center gap-element">
                                     <Button
                                         label={t("text.view")}
                                         type='primary'

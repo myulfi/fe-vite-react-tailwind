@@ -86,8 +86,8 @@ export default function InputFile({
                         ? `
                             flex flex-col items-center justify-center
                             hover:border-2    
-                            hover:text-light-base-fg hover:dark:text-dark-base-fg
-                            hover:border-light-base-fg hover:dark:border-dark-base-fg
+                            hover:text-light-base-primary hover:dark:text-dark-base-primary
+                            hover:border-light-base-primary hover:dark:border-dark-base-primary
                             cursor-pointer                   
                         `
                         : 'grid grid-cols-5 gap-1 p-2'
@@ -124,8 +124,8 @@ export default function InputFile({
                                 relative
                                 flex items-center justify-center p-4 m-2
                                 h-[80px]
-                                text-light-label-fg dark:text-dark-label-fg
-                                bg-light-base-bg dark:bg-dark-base-bg
+                                text-light-label dark:text-dark-label
+                                bg-light-layout-primary dark:bg-dark-layout-primary
                                 border border-dashed
                                 rounded text-sm
                             `}
@@ -153,10 +153,10 @@ export default function InputFile({
                                 p-4 m-2
                                 h-[80px]
                                 flex flex-col items-center justify-center
-                                text-light-label-fg dark:text-dark-label-fg
-                                bg-light-base-bg dark:bg-dark-base-bg
-                                hover:text-light-base-fg hover:dark:text-dark-base-fg
-                                hover:border-light-base-fg hover:dark:border-dark-base-fg
+                                text-light-label dark:text-dark-label
+                                bg-light-layout-primary dark:bg-dark-layout-primary
+                                hover:text-light-base-primary hover:dark:text-dark-base-primary
+                                hover:border-light-base-primary hover:dark:border-dark-base-primary
                                 hover:cursor-pointer
                                 border border-dashed
                                 rounded text-sm
