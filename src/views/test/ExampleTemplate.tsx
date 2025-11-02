@@ -422,22 +422,28 @@ export default function ExampleTemplate() {
 
                 additionalButtonArray={[
                     {
-                        label: "success",
+                        label: "Info",
+                        type: 'primary',
+                        icon: "fa-solid fa-list",
+                        onClick: () => toast.show({ type: "info", message: "INFORMATION" })
+                    },
+                    {
+                        label: "Success",
                         type: 'success',
                         icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "done", message: "hahah" })
+                        onClick: () => toast.show({ type: "done", message: "DONE" })
                     },
                     {
-                        label: "warning",
+                        label: "Warning",
                         type: 'warning',
                         icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "done", message: "hahah" })
+                        onClick: () => toast.show({ type: "problem", message: "PROBLEM" })
                     },
                     {
-                        label: "danger",
+                        label: "Danger",
                         type: 'danger',
                         icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "done", message: "hahah" })
+                        onClick: () => toast.show({ type: "error", message: "ERROR" })
                     }
                 ]}
 

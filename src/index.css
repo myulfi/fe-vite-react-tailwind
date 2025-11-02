@@ -43,13 +43,12 @@
     #FFFF33 | yellow
     */
     --color-light-base-primary: #0090E7;
-    --color-dark-base-primary: #8F5FE8;
-
     --color-light-base-success: #00D25B;
     --color-light-base-danger: #FC424A;
     --color-light-base-warning: #FFAB00;
     --color-light-base-alternate: #6C757D;
 
+    --color-dark-base-primary: #8F5FE8;
     --color-dark-base-success: #00D25B;
     --color-dark-base-danger: #FC424A;
     --color-dark-base-warning: #FFAB00;
