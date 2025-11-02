@@ -36,6 +36,7 @@ export const LOCAL_STORAGE = {
     REFRESH_TOKEN: "refreshToken",
     NAME: "name",
     ROLE: "roleList",
+    LASER: "laser",
 }
 export const COOKIES = {
     LANGUAGE: "language"

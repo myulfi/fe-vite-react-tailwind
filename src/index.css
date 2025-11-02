@@ -26,6 +26,7 @@
     --z-index-container: 20;
     --z-index-dropdown: 20;
     --z-index-dialog: 6000;
+    --z-index-laser: 10000;
 
     --font-mono: Consolas, 'Courier New', monospace;
 
@@ -42,7 +43,17 @@
     #FFFF33 | yellow
     */
     --color-light-base-primary: #0090E7;
-    --color-dark-base-primary: #FF10F0;
+    --color-dark-base-primary: #8F5FE8;
+
+    --color-light-base-success: #00D25B;
+    --color-light-base-danger: #FC424A;
+    --color-light-base-warning: #FFAB00;
+    --color-light-base-alternate: #6C757D;
+
+    --color-dark-base-success: #00D25B;
+    --color-dark-base-danger: #FC424A;
+    --color-dark-base-warning: #FFAB00;
+    --color-dark-base-alternate: #6C757D;
 
     --color-light-base-secondary: color-mix(in srgb, var(--color-light-base-primary) 85%, white);
     --color-light-base-trinity: #D1D5DC;
@@ -70,31 +81,31 @@
     --color-dark-primary-base-hover: color-mix(in srgb, var(--color-dark-base-primary) 50%, transparent);
     --color-dark-primary-base-line: var(--color-dark-base-primary);
 
-    --color-light-success-base: #00D25B;
+    --color-light-success-base: var(--color-light-base-success);
     --color-light-success-base-hover: color-mix(in srgb, var(--color-light-success-base) 85%, white);
     --color-light-success-base-line: #FFFFFF;
 
     --color-dark-success-base: color-mix(in srgb, var(--color-dark-success-base-line) 20%, transparent);
     --color-dark-success-base-hover: color-mix(in srgb, var(--color-dark-success-base-line) 50%, transparent);
-    --color-dark-success-base-line: #00D25B;
+    --color-dark-success-base-line: var(--color-dark-base-success);
 
-    --color-light-danger-base: #FC424A;
+    --color-light-danger-base: var(--color-light-base-danger);
     --color-light-danger-base-hover: color-mix(in srgb, var(--color-light-danger-base) 85%, white);
     --color-light-danger-base-line: #FFFFFF;
 
     --color-dark-danger-base: color-mix(in srgb, var(--color-dark-danger-base-line) 20%, transparent);
     --color-dark-danger-base-hover: color-mix(in srgb, var(--color-dark-danger-base-line) 50%, transparent);
-    --color-dark-danger-base-line: #FC424A;
+    --color-dark-danger-base-line: var(--color-dark-base-danger);
 
-    --color-light-warning-base: #FFAB00;
+    --color-light-warning-base: var(--color-light-base-warning);
     --color-light-warning-base-hover: color-mix(in srgb, var(--color-light-warning-base) 85%, white);
     --color-light-warning-base-line: #FFFFFF;
 
     --color-dark-warning-base: color-mix(in srgb, var(--color-dark-warning-base-line) 20%, transparent);
     --color-dark-warning-base-hover: color-mix(in srgb, var(--color-dark-warning-base-line) 50%, transparent);
-    --color-dark-warning-base-line: #FFAB00;
+    --color-dark-warning-base-line: var(--color-dark-base-warning);
 
-    --color-light-secondary-base: #6C757D;
+    --color-light-secondary-base: var(--color-light-base-alternate);
     --color-light-secondary-base-hover: color-mix(in srgb, var(--color-light-secondary-base) 85%, white);
     --color-light-secondary-base-line: #FFFFFF;
 
@@ -119,22 +130,22 @@
     --color-dark-info-base: color-mix(in srgb, var(--color-dark-base-primary) 80%, transparent);
     --color-dark-info-base-line: #FFFFFF;
 
-    --color-light-done-base: #00D25B;
+    --color-light-done-base: var(--color-light-base-success);
     --color-light-done-base-line: #FFFFFF;
 
-    --color-dark-done-base: color-mix(in srgb, #00D25B 80%, transparent);
+    --color-dark-done-base: color-mix(in srgb, var(--color-dark-base-success) 80%, transparent);
     --color-dark-done-base-line: #FFFFFF;
 
-    --color-light-error-base: #FC424A;
+    --color-light-error-base: var(--color-light-base-danger);
     --color-light-error-base-line: #FFFFFF;
 
-    --color-dark-error-base: color-mix(in srgb, #FC424A 80%, transparent);
+    --color-dark-error-base: color-mix(in srgb, var(--color-dark-base-danger) 80%, transparent);
     --color-dark-error-base-line: #FFFFFF;
 
-    --color-light-problem-base: #FFAB00;
+    --color-light-problem-base: var(--color-light-base-warning);
     --color-light-problem-base-line: #FFFFFF;
 
-    --color-dark-problem-base: color-mix(in srgb, #FFAB00 80%, transparent);
+    --color-dark-problem-base: color-mix(in srgb, var(--color-dark-base-warning) 80%, transparent);
     --color-dark-problem-base-line: #FFFFFF;
 }
 
