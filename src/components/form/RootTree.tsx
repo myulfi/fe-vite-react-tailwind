@@ -1,4 +1,3 @@
-// RootTree.tsx
 import React, { useState } from "react";
 import TreeNode from "./TreeNode";
 
@@ -20,7 +19,7 @@ interface RootTreeProps {
 export default function RootTree({ checkBoxFlag, data, onCheckedChange }: RootTreeProps) {
     const [treeData, setTreeData] = useState<MenuItem[]>(data);
 
-    /** Rekursif untuk collect semua checked IDs */
+    // Ambil semua checked IDs
     const getCheckedIds = (nodes: MenuItem[]): number[] => {
         let ids: number[] = [];
         nodes.forEach((node) => {
@@ -30,9 +29,9 @@ export default function RootTree({ checkBoxFlag, data, onCheckedChange }: RootTr
         return ids;
     };
 
-    /** Callback setiap kali ada perubahan checkbox */
-    const handleChange = (updatedNode: MenuItem) => {
-        setTreeData([...treeData]); // trigger rerender
+    // Callback dari TreeNode
+    const handleChange = () => {
+        setTreeData([...treeData]); // rerender
         if (onCheckedChange) {
             onCheckedChange(getCheckedIds(treeData));
         }
@@ -40,9 +39,7 @@ export default function RootTree({ checkBoxFlag, data, onCheckedChange }: RootTr
 
     const rootNode: MenuItem = {
         id: 0,
-        name: import.meta.env.VITE_API_URL,
-        icon: "fa-solid fa-earth-asia",
-        path: "/home.html",
+        name: import.meta.env.VITE_API_URL || "ROOT",
         checkedFlag: 0,
         children: treeData,
     };
@@ -50,7 +47,12 @@ export default function RootTree({ checkBoxFlag, data, onCheckedChange }: RootTr
     return (
         <div className="container-column p-container">
             <div className="container-card p-element animate-fade-in-delay-1">
-                <TreeNode node={rootNode} checkBoxFlag={checkBoxFlag} level={0} onChange={handleChange} />
+                <TreeNode
+                    node={rootNode}
+                    checkBoxFlag={checkBoxFlag}
+                    level={0}
+                    onNodeChange={handleChange}
+                />
             </div>
         </div>
     );

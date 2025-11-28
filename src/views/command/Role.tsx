@@ -326,6 +326,7 @@ export default function Role() {
                 <Modal
                     show={modalMenu}
                     size="md"
+                    type="dynamic"
                     background='secondary'
                     title={roleEntryModal.title}
                     onClose={() => setModalMenu(false)}
