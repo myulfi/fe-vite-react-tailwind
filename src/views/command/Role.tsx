@@ -12,6 +12,8 @@ import TextArea from "../../components/form/TextArea";
 import Table from "../../components/Table";
 import { HttpStatusCode } from "axios";
 import { dialog } from "../../DialogContext";
+import Tree from "../../components/form/Tree";
+import RootTree from "../../components/form/RootTree";
 
 export default function Role() {
     const { t } = useTranslation();
@@ -243,6 +245,9 @@ export default function Role() {
         }));
     };
 
+    const [menuArray, setMenuArray] = useState<Array<{ key: number; value: string }>>([]);
+
+
     const viewMenu = async (id: number) => {
         setRoleId(id);
         setRoleOptionColumnTable(prev => ({
@@ -253,24 +258,11 @@ export default function Role() {
             },
         }));
 
-        const response = await apiRequest('get', `/command/${id}/role.json`);
+        const response = await apiRequest('get', `/command/${id}/role-menu.json`);
         if (HTTP_CODE.OK === response.status) {
-            const role = response.data;
-
-            setRoleId(role.id);
-            setRoleForm({
-                name: role.name,
-                description: role.description,
-                version: role.version,
-            });
-
-            setRoleEntryModal({
-                ...roleEntryModal,
-                title: role.name,
-                submitLabel: t("text.edit"),
-                submitIcon: "fa-solid fa-pen",
-                submitLoadingFlag: false,
-            });
+            const role_menu = response.data;
+            setRoleId(id);
+            setMenuArray(role_menu);
 
             setModalMenu(true);
         } else {
@@ -329,6 +321,29 @@ export default function Role() {
                                 <Label text={t("text.description")} value={roleForm.description} />
                             </Fragment>
                         }
+                    </div>
+                </Modal>
+                <Modal
+                    show={modalMenu}
+                    size="md"
+                    background='secondary'
+                    title={roleEntryModal.title}
+                    onClose={() => setModalMenu(false)}
+                    buttonArray={[
+                        {
+                            label: roleEntryModal.submitLabel,
+                            type: "primary",
+                            icon: roleEntryModal.submitIcon,
+                            onClick: () => confirmStoreRole(),
+                            loadingFlag: roleEntryModal.submitLoadingFlag
+                        }
+                    ]}
+                >
+                    <div className="container-column">
+                        <RootTree
+                            checkBoxFlag={true}
+                            data={menuArray}
+                        />
                     </div>
                 </Modal>
             </ModalStackProvider>

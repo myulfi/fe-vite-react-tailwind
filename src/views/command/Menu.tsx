@@ -431,24 +431,7 @@ export default function Menu() {
                 </Modal>
             </ModalStackProvider>
             <Tree
-                data={[{
-                    "id": 0,
-                    "name": import.meta.env.VITE_API_URL,
-                    "icon": "fa-solid fa-earth-asia",
-                    "sequence": 1,
-                    "path": "/home.html",
-                    "menuParentId": 0,
-                    "color": "00AA00",
-                    "newFlag": 0,
-                    "blankTargetFlag": 0,
-                    "deletedFlag": 0,
-                    "createdBy": 1764248315616711,
-                    "createdDate": "2025-11-27T00:00:00",
-                    "updatedBy": null,
-                    "updatedDate": null,
-                    "version": 0,
-                    "children": masterMenuArray
-                }]} />
+                data={masterMenuArray} />
         </div>
     )
 }

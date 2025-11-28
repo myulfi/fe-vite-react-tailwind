@@ -17,7 +17,15 @@ export default function Tree({ checkBoxFlag, data }: TreeProps) {
     return (
         <div className='container-column p-container'>
             <div className="container-card p-element animate-fade-in-delay-1">
-                {data.map((node) => (
+                {[{
+                    "id": 0,
+                    "name": import.meta.env.VITE_API_URL,
+                    "icon": "fa-solid fa-earth-asia",
+                    "sequence": 1,
+                    "path": "/home.html",
+                    "menuParentId": 0,
+                    "children": data
+                }].map((node) => (
                     <TreeNode key={node.id} checkBoxFlag={checkBoxFlag} node={node} level={0} />
                 ))}
             </div>
@@ -35,7 +43,7 @@ interface TreeNodeProps {
 
 const TreeNode: React.FC<TreeNodeProps> = ({ node, checkBoxFlag = false, level, isLast }) => {
     const [expanded, setExpanded] = useState<boolean>(level === 0);
-    const [checked, setChecked] = useState<boolean>(false);
+    const [checked, setChecked] = useState<boolean>(node.checkedFlag);
 
     const hasChildren = node.children && node.children.length > 0;
 
@@ -136,6 +144,7 @@ const TreeNode: React.FC<TreeNodeProps> = ({ node, checkBoxFlag = false, level, 
                         <TreeNode
                             key={child.id}
                             node={child}
+                            checkBoxFlag={checkBoxFlag}
                             level={level + 1}
                             isLast={index === node.children!.length - 1}
                         />
