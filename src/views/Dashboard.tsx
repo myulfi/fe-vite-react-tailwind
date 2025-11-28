@@ -85,7 +85,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <div className="absolute top-0 left-0 w-full h-[200vh] bg-gray-900 overflow-visible">
+        <div className="absolute top-0 left-0 w-full h-[100vh] bg-gray-900 overflow-visible">
             {
                 laserActive &&
                 [...Array(TAIL_LENGTH)].map((_, i) => (

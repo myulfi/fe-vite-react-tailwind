@@ -6,6 +6,8 @@ import ExampleTemplate from "./views/test/ExampleTemplate";
 import Server from "./views/external/Server";
 import ApplicationProgrammingInterface from "./views/external/ApplicationProgrammingInterface";
 import Language from "./views/command/Language";
+import Menu from "./views/command/Menu";
+import Role from "./views/command/Role";
 
 function Routes() {
     return (
@@ -16,6 +18,8 @@ function Routes() {
             <Route path="/external/server.html" element={<Server />} />
             <Route path="/external/database.html" element={<Database />} />
             <Route path="/external/api.html" element={<ApplicationProgrammingInterface />} />
+            <Route path="/command/menu.html" element={<Menu />} />
+            <Route path="/command/role.html" element={<Role />} />
             <Route path="/command/language.html" element={<Language />} />
             <Route path="/test/example-template.html" element={<ExampleTemplate />} />
         </ReactRoutes>

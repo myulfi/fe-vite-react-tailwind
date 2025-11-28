@@ -422,12 +422,6 @@ export default function ExampleTemplate() {
 
                 additionalButtonArray={[
                     {
-                        label: "Info",
-                        type: 'primary',
-                        icon: "fa-solid fa-list",
-                        onClick: () => toast.show({ type: "info", message: "INFORMATION" })
-                    },
-                    {
                         label: "Success",
                         type: 'success',
                         icon: "fa-solid fa-list",
